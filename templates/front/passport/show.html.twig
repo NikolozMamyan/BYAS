@@ -42,6 +42,11 @@
                     <li>{{ account.provider }} — {{ account.email }}</li>
                 {% else %}
                     <li>Aucun compte OAuth lié.</li>
+                    <a href="{{ path('app_spotify_start') }}">Connecter Spotify</a>
+
+<form method="post" action="{{ path('app_spotify_disconnect') }}" style="margin-top: 12px;">
+    <button type="submit">Déconnecter Spotify</button>
+</form>
                 {% endfor %}
             </ul>
         </section>

@@ -63,6 +63,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserFandom::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $userFandoms;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: CollectionItem::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $collectionItems;
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, cascade: ['persist'], orphanRemoval: false)]
     private Collection $xpTransactions;
 
@@ -72,6 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->streamingAccounts = new ArrayCollection();
         $this->userFandoms = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
+        $this->collectionItems = new ArrayCollection();
 
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
@@ -439,4 +443,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    /**
+ * @return Collection<int, CollectionItem>
+ */
+public function getCollectionItems(): Collection
+{
+    return $this->collectionItems;
+}
+
+public function addCollectionItem(CollectionItem $collectionItem): self
+{
+    if (!$this->collectionItems->contains($collectionItem)) {
+        $this->collectionItems->add($collectionItem);
+        $collectionItem->setUser($this);
+    }
+
+    return $this;
+}
+
+public function removeCollectionItem(CollectionItem $collectionItem): self
+{
+    if ($this->collectionItems->removeElement($collectionItem)) {
+        if ($collectionItem->getUser() === $this) {
+            $collectionItem->setUser(null);
+        }
+    }
+
+    return $this;
+}
 }

@@ -13,7 +13,7 @@
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
-
+/src/Controller/Api/SpotifyDataControllerTest.php
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/

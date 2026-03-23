@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <div style="max-width: 420px; margin: 40px auto;">
+        <h1>Connexion</h1>
+
+        {% if error %}
+            <div style="color: red; margin-bottom: 16px;">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ path('app_front_login_check') }}">
+            <div style="margin-bottom: 12px;">
+                <label for="username">Email</label><br>
+                <input type="email" id="username" name="_username" value="{{ last_username }}" required>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label for="password">Mot de passe</label><br>
+                <input type="password" id="password" name="_password" required>
+            </div>
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+{% endblock %}

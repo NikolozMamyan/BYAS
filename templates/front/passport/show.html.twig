@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Passport{% endblock %}
+
+{% block body %}
+    <div style="max-width: 900px; margin: 40px auto;">
+        <h1>Passport BYAS</h1>
+
+        <section style="margin-bottom: 24px;">
+            <h2>Profil</h2>
+            <p><strong>Nom :</strong> {{ user.displayName }}</p>
+            <p><strong>Email :</strong> {{ user.email }}</p>
+            <p><strong>XP global :</strong> {{ user.globalXp }}</p>
+            <p><strong>Niveau global :</strong> {{ user.globalLevel }}</p>
+
+            {% if profile %}
+                <p><strong>Username :</strong> {{ profile.username }}</p>
+                <p><strong>Bio :</strong> {{ profile.bio }}</p>
+                <p><strong>Pays :</strong> {{ profile.countryCode }}</p>
+            {% endif %}
+        </section>
+
+        <section style="margin-bottom: 24px;">
+            <h2>Fandoms</h2>
+            <ul>
+                {% for fandom in fandoms %}
+                    <li>
+                        {{ fandom.artist ? fandom.artist.name : 'Artiste inconnu' }}
+                        — XP: {{ fandom.xp }}
+                        — Level: {{ fandom.level }}
+                    </li>
+                {% else %}
+                    <li>Aucun fandom pour le moment.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+            <h2>Comptes OAuth</h2>
+            <ul>
+                {% for account in oauthAccounts %}
+                    <li>{{ account.provider }} — {{ account.email }}</li>
+                {% else %}
+                    <li>Aucun compte OAuth lié.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section style="margin-bottom: 24px;">
+            <h2>Comptes Streaming</h2>
+            <ul>
+                {% for account in streamingAccounts %}
+                    <li>{{ account.provider }} — {{ account.displayName }} — {{ account.syncStatus }}</li>
+                {% else %}
+                    <li>Aucun compte streaming lié.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section>
+            <a href="{{ path('app_front_logout') }}">Se déconnecter</a>
+        </section>
+    </div>
+{% endblock %}

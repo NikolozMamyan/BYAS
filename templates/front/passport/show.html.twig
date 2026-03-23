@@ -1,69 +1,737 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Passport{% endblock %}
+{% block title %}BYAS | Digital Passport{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #0B0E14;
+            --bg-soft: #111520;
+            --card-glass: rgba(25, 28, 36, 0.72);
+            --card-line: rgba(255, 255, 255, 0.08);
+            --neon-pink: #FF007A;
+            --neon-cyan: #00F2FF;
+            --soft-purple: #9D50BB;
+            --text-main: #FFFFFF;
+            --text-dim: #9CA3AF;
+            --text-fade: #6B7280;
+            --success: #4CAF50;
+            --manga-radius: 22px;
+            --section-gap: 26px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 15%, rgba(255, 0, 122, 0.07) 0%, transparent 24%),
+                radial-gradient(circle at 85% 20%, rgba(0, 242, 255, 0.07) 0%, transparent 22%),
+                linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
+            color: var(--text-main);
+            font-family: 'Outfit', 'Inter', sans-serif;
+            margin: 0;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+
+        .app-wrapper {
+            width: 100%;
+        }
+
+        /* ===== PASSPORT HERO ===== */
+        .passport-hero {
+            padding: 20px 20px 8px;
+        }
+
+        .passport-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            padding: 1px;
+            background: linear-gradient(135deg,
+                rgba(255, 0, 122, 0.45),
+                rgba(157, 80, 187, 0.28),
+                rgba(0, 242, 255, 0.38));
+            box-shadow:
+                0 16px 40px rgba(0,0,0,0.35),
+                0 0 0 1px rgba(255,255,255,0.03);
+        }
+
+        .passport-shell::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 28%),
+                radial-gradient(circle at bottom left, rgba(255,0,122,0.10), transparent 26%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .user-main-card {
+            position: relative;
+            z-index: 1;
+            background:
+                linear-gradient(180deg, rgba(20, 24, 34, 0.96) 0%, rgba(14, 18, 26, 0.96) 100%);
+            backdrop-filter: blur(18px);
+            border-radius: 25px;
+            padding: 18px;
+            overflow: hidden;
+        }
+
+        .user-main-card::before {
+            content: "DIGITAL PASSPORT";
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            font-size: 0.62rem;
+            letter-spacing: 0.22em;
+            color: rgba(255,255,255,0.14);
+            font-weight: 700;
+        }
+
+        .user-main-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -30px -30px auto;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(0,242,255,0.12), transparent 65%);
+            pointer-events: none;
+        }
+
+        .passport-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .avatar-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
+            box-shadow: 0 0 20px rgba(255, 0, 122, 0.18);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #0B0E14;
+            border: 3px solid #0F131C;
+        }
+
+        .level-badge {
+            position: absolute;
+            left: 50%;
+            bottom: -7px;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple));
+            color: white;
+            font-size: 0.66rem;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            box-shadow: 0 8px 20px rgba(255, 0, 122, 0.25);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .user-meta {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .passport-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            margin-bottom: 8px;
+        }
+
+        .user-meta h1 {
+            margin: 0;
+            font-size: 1.45rem;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            word-break: break-word;
+        }
+
+        .user-location {
+            margin: 7px 0 0;
+            color: var(--text-dim);
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .passport-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .passport-stat {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 10px 10px 9px;
+            min-width: 0;
+        }
+
+        .passport-stat-label {
+            font-size: 0.62rem;
+            color: var(--text-fade);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 5px;
+        }
+
+        .passport-stat-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .xp-block {
+            margin-top: 16px;
+            padding: 12px 13px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .xp-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 0.72rem;
+            margin-bottom: 8px;
+        }
+
+        .xp-head span:first-child {
+            color: var(--text-dim);
+        }
+
+        .xp-head span:last-child {
+            font-weight: 700;
+            color: white;
+        }
+
+        .xp-bar-bg {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
+            box-shadow: 0 0 18px rgba(255, 0, 122, 0.25);
+        }
+
+        /* ===== SECTION TITLES ===== */
+        .section-label {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--section-gap);
+            margin-bottom: 14px;
+            gap: 12px;
+        }
+
+        .section-label h2 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-meta {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* ===== MINI COLLECTION PREVIEW ===== */
+        .vault-preview-container {
+            padding: 0 20px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .preview-card {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 11px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+            transition: 0.22s ease;
+            overflow: hidden;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 0, 122, 0.28);
+            box-shadow: 0 12px 22px rgba(0,0,0,0.28);
+        }
+
+        .preview-thumb {
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 0, 122, 0.14), rgba(0, 242, 255, 0.10));
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.72);
+            overflow: hidden;
+        }
+
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-thumb i {
+            font-size: 1rem;
+        }
+
+        .preview-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .preview-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+
+        .preview-subline {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .preview-type {
+            font-size: 0.62rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-qty {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            flex-shrink: 0;
+        }
+
+        .preview-empty {
+            opacity: 0.52;
+        }
+
+        .btn-all-vault {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: 14px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.18);
+            color: var(--neon-cyan);
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: block;
+            transition: 0.22s ease;
+        }
+
+        .btn-all-vault:hover {
+            background: rgba(0, 242, 255, 0.09);
+            border-color: rgba(0, 242, 255, 0.30);
+            transform: translateY(-1px);
+        }
+
+        /* ===== FANDOM ===== */
+        .fandom-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 20px 8px 20px;
+            scrollbar-width: none;
+        }
+
+        .fandom-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fandom-card {
+            min-width: 138px;
+            background: var(--card-glass);
+            border-radius: 18px;
+            padding: 14px 12px;
+            border: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+        }
+
+        .fandom-icon {
+            font-size: 1.35rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 20%, var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fandom-name {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .fandom-lvl {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* ===== SETTINGS / ACTIONS ===== */
+        .settings-list {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+            transition: 0.2s ease;
+        }
+
+        .action-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .action-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .action-info > i {
+            font-size: 1rem;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .action-info > div {
+            min-width: 0;
+        }
+
+        .action-info > div > div:last-child {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-badge {
+            font-size: 0.68rem;
+            color: var(--success);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            padding: 4px 8px;
+            border-radius: 999px;
+            flex-shrink: 0;
+            font-weight: 700;
+            background: rgba(76, 175, 80, 0.08);
+        }
+
+        .logout-wrap {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.46;
+        }
+
+        .logout-wrap a {
+            color: white;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .passport-hero,
+            .section-label,
+            .vault-preview-container,
+            .fandom-scroll,
+            .settings-list {
+                max-width: 980px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .preview-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .passport-top {
+                gap: 20px;
+            }
+
+            .avatar-ring {
+                width: 96px;
+                height: 96px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .passport-stats {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .passport-stat {
+                padding: 9px 8px;
+            }
+
+            .passport-stat-value {
+                font-size: 0.86rem;
+            }
+
+            .user-meta h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div style="max-width: 900px; margin: 40px auto;">
-        <h1>Passport BYAS</h1>
+<div class="app-wrapper">
 
-        <section style="margin-bottom: 24px;">
-            <h2>Profil</h2>
-            <p><strong>Nom :</strong> {{ user.displayName }}</p>
-            <p><strong>Email :</strong> {{ user.email }}</p>
-            <p><strong>XP global :</strong> {{ user.globalXp }}</p>
-            <p><strong>Niveau global :</strong> {{ user.globalLevel }}</p>
+    <section class="passport-hero">
+        <div class="passport-shell">
+            <div class="user-main-card">
+                <div class="passport-top">
+                    <div class="avatar-wrap">
+                        <div class="avatar-ring">
+                            <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed={{ user.displayName }}" class="avatar-img" alt="Avatar">
+                        </div>
+                        <div class="level-badge">LVL {{ user.globalLevel }}</div>
+                    </div>
 
-            {% if profile %}
-                <p><strong>Username :</strong> {{ profile.username }}</p>
-                <p><strong>Bio :</strong> {{ profile.bio }}</p>
-                <p><strong>Pays :</strong> {{ profile.countryCode }}</p>
-            {% endif %}
-        </section>
+                    <div class="user-meta">
+                        <div class="passport-kicker">
+                            <i class="fas fa-id-card"></i>
+                            Fan Identity
+                        </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2>Fandoms</h2>
-            <ul>
-                {% for fandom in fandoms %}
-                    <li>
-                        {{ fandom.artist ? fandom.artist.name : 'Artiste inconnu' }}
-                        — XP: {{ fandom.xp }}
-                        — Level: {{ fandom.level }}
-                    </li>
-                {% else %}
-                    <li>Aucun fandom pour le moment.</li>
-                {% endfor %}
-            </ul>
-        </section>
+                        <h1>{{ profile.username|default(user.displayName) }}</h1>
 
-        <section style="margin-bottom: 24px;">
-            <h2>Comptes OAuth</h2>
-            <ul>
-                {% for account in oauthAccounts %}
-                    <li>{{ account.provider }} — {{ account.email }}</li>
-                {% else %}
-                    <li>Aucun compte OAuth lié.</li>
-                    <a href="{{ path('app_spotify_start') }}">Connecter Spotify</a>
+                        <p class="user-location">
+                            <i class="fas fa-location-dot"></i>
+                            {{ profile.countryCode|default('Global Fan') }}
+                        </p>
+                    </div>
+                </div>
 
-<form method="post" action="{{ path('app_spotify_disconnect') }}" style="margin-top: 12px;">
-    <button type="submit">Déconnecter Spotify</button>
-</form>
-                {% endfor %}
-            </ul>
-        </section>
+                <div class="passport-stats">
+                    <div class="passport-stat">
+                        <div class="passport-stat-label">Collection</div>
+                        <div class="passport-stat-value">{{ items|length }}</div>
+                    </div>
+                    <div class="passport-stat">
+                        <div class="passport-stat-label">Fandoms</div>
+                        <div class="passport-stat-value">{{ fandoms|length }}</div>
+                    </div>
+                    <div class="passport-stat">
+                        <div class="passport-stat-label">Sources</div>
+                        <div class="passport-stat-value">{{ oauthAccounts|length }}</div>
+                    </div>
+                </div>
 
-        <section style="margin-bottom: 24px;">
-            <h2>Comptes Streaming</h2>
-            <ul>
-                {% for account in streamingAccounts %}
-                    <li>{{ account.provider }} — {{ account.displayName }} — {{ account.syncStatus }}</li>
-                {% else %}
-                    <li>Aucun compte streaming lié.</li>
-                {% endfor %}
-            </ul>
-        </section>
+                <div class="xp-block">
+                    <div class="xp-head">
+                        <span>Global Progress</span>
+                        <span>{{ user.globalXp }} XP</span>
+                    </div>
+                    <div class="xp-bar-bg">
+                        <div class="xp-bar-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <section>
-            <a href="{{ path('app_front_logout') }}">Se déconnecter</a>
-        </section>
+    <div class="section-label">
+        <h2>My Collection</h2>
+        <span class="section-meta">{{ items|length }} items</span>
     </div>
+
+    <div class="vault-preview-container">
+        <div class="preview-grid">
+            {% for userItem in items|slice(0, 4) %}
+                {% set itemData = userItem.item is defined ? userItem.item : userItem %}
+                <article class="preview-card">
+                    <div class="preview-thumb">
+                        {# {% if itemData.imageName is defined and itemData.imageName %}
+                            <img src="{{ asset('uploads/items/' ~ itemData.imageName) }}" alt="{{ itemData.title|default('Album') }}">
+                        {% else %} #}
+                            <i class="fas fa-record-vinyl"></i>
+                        {# {% endif %} #}
+                    </div>
+
+                    <div class="preview-content">
+                        <p class="preview-title">{{ itemData.title|default('Untitled album') }}</p>
+                        <div class="preview-subline">
+                            <span class="preview-type">{{ itemData.type.label|default('Album') }}</span>
+                            {% if userItem.quantity is defined %}
+                                <span class="preview-qty">x{{ userItem.quantity }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            {% else %}
+                {% for i in 1..4 %}
+                    <article class="preview-card preview-empty">
+                        <div class="preview-thumb">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="preview-content">
+                            <p class="preview-title">Empty slot</p>
+                            <div class="preview-subline">
+                                <span class="preview-type">Collection</span>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <a href="{{ path('app_front_collection_index') }}" class="btn-all-vault">
+            <i class="fas fa-th-large" style="margin-right: 5px;"></i> View All Vault
+        </a>
+    </div>
+
+    <div class="section-label">
+        <h2>Active Fandoms</h2>
+    </div>
+
+    <div class="fandom-scroll">
+        {% for fandom in fandoms %}
+            <div class="fandom-card">
+                <i class="fas fa-bolt fandom-icon"></i>
+                <span class="fandom-name">{{ fandom.artist ? fandom.artist.name : 'Idol' }}</span>
+                <span class="fandom-lvl">Rank {{ fandom.level }}</span>
+            </div>
+        {% else %}
+            <div class="fandom-card" style="min-width: 240px;">
+                <p style="font-size: 0.8rem; color: var(--text-dim); margin: 0;">No Fandom linked yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-label">
+        <h2>Identity Sources</h2>
+    </div>
+
+    <div class="settings-list">
+        {% for account in oauthAccounts %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fab fa-{{ account.provider|lower }}"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">{{ account.provider|capitalize }}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ account.email }}</div>
+                    </div>
+                </div>
+                <span class="status-badge">Linked</span>
+            </div>
+        {% else %}
+            <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
+                <div class="action-info">
+                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                    <span style="font-size: 0.9rem;">Connect Spotify Music</span>
+                </div>
+                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
+            </a>
+        {% endfor %}
+
+        <a href="#" class="action-item">
+            <div class="action-info">
+                <i class="fas fa-share-alt"></i>
+                <span style="font-size: 0.9rem;">Generate Share Card</span>
+            </div>
+            <i class="fas fa-magic" style="color: var(--neon-pink);"></i>
+        </a>
+    </div>
+
+    <div class="logout-wrap">
+        <a href="{{ path('app_front_logout') }}">
+            <i class="fas fa-sign-out-alt"></i> Sign out
+        </a>
+    </div>
+</div>
 {% endblock %}

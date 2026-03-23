@@ -1,0 +1,679 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Hall of Fame{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --bg-dark: #0B0E14;
+        --bg-soft: #111520;
+        --glass: rgba(255, 255, 255, 0.035);
+        --glass-strong: rgba(255, 255, 255, 0.06);
+        --line: rgba(255,255,255,0.08);
+
+        --gold: #FFD700;
+        --silver: #D9DEE7;
+        --bronze: #FF8C42;
+
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+        --soft-purple: #9D50BB;
+
+        --text-main: #FFFFFF;
+        --text-dim: #9CA3AF;
+        --text-fade: #6B7280;
+
+        --radius-xl: 24px;
+        --radius-lg: 18px;
+        --radius-md: 14px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        background:
+            radial-gradient(circle at 50% -10%, rgba(0, 242, 255, 0.13) 0%, transparent 40%),
+            radial-gradient(circle at 0% 100%, rgba(255, 0, 122, 0.10) 0%, transparent 35%),
+            linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
+        color: var(--text-main);
+        font-family: 'Outfit', sans-serif;
+        padding-bottom: 120px;
+        margin: 0;
+    }
+
+    .leaderboard-page {
+        padding: 20px;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    /* ===== HERO ===== */
+    .ranking-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 1px;
+        background: linear-gradient(135deg,
+            rgba(255, 0, 122, 0.45),
+            rgba(157, 80, 187, 0.22),
+            rgba(0, 242, 255, 0.35));
+        box-shadow:
+            0 18px 40px rgba(0,0,0,0.35),
+            0 0 0 1px rgba(255,255,255,0.03);
+        margin-bottom: 18px;
+    }
+
+    .ranking-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at top right, rgba(255,255,255,0.10), transparent 28%),
+            radial-gradient(circle at bottom left, rgba(255,0,122,0.10), transparent 24%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .ranking-hero-inner {
+        position: relative;
+        z-index: 1;
+        border-radius: 27px;
+        padding: 20px 18px 18px;
+        background: linear-gradient(180deg, rgba(20,24,34,0.96) 0%, rgba(14,18,26,0.96) 100%);
+        backdrop-filter: blur(16px);
+        overflow: hidden;
+    }
+
+    .ranking-hero-inner::before {
+        content: "HALL OF FAME";
+        position: absolute;
+        top: 14px;
+        right: 16px;
+        font-size: 0.62rem;
+        letter-spacing: 0.20em;
+        font-weight: 800;
+        color: rgba(255,255,255,0.12);
+    }
+
+    .ranking-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--neon-cyan);
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .ranking-title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    .ranking-subtitle {
+        margin: 10px 0 0;
+        color: var(--text-dim);
+        font-size: 0.88rem;
+        max-width: 420px;
+        line-height: 1.45;
+    }
+
+    .ranking-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .ranking-stat {
+        background: rgba(255,255,255,0.035);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        padding: 11px 10px;
+    }
+
+    .ranking-stat-label {
+        font-size: 0.62rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-fade);
+        margin-bottom: 5px;
+    }
+
+    .ranking-stat-value {
+        font-size: 0.95rem;
+        font-weight: 800;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ===== TABS ===== */
+    .fandom-tabs {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 2px 2px 16px;
+        scrollbar-width: none;
+        margin-bottom: 8px;
+    }
+
+    .fandom-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .fandom-tab {
+        padding: 10px 16px;
+        background: rgba(255,255,255,0.035);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text-dim);
+        border: 1px solid rgba(255,255,255,0.08);
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: 0.2s ease;
+    }
+
+    .fandom-tab.active {
+        background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(235,235,235,0.92));
+        color: #000;
+        border-color: rgba(255,255,255,0.95);
+        box-shadow: 0 8px 18px rgba(255,255,255,0.10);
+    }
+
+    /* ===== PODIUM ===== */
+    .podium-shell {
+        position: relative;
+        border-radius: 24px;
+        padding: 18px 14px 16px;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.20);
+        margin-bottom: 18px;
+        overflow: hidden;
+    }
+
+    .podium-shell::after {
+        content: "";
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 14px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(255,0,122,0.14), rgba(0,242,255,0.14));
+        opacity: 0.45;
+    }
+
+    .podium-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+        color: var(--text-dim);
+    }
+
+    .podium-section {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 12px;
+        margin: 0;
+    }
+
+    .podium-card {
+        position: relative;
+        width: 31%;
+        min-width: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 14px 10px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        overflow: visible;
+    }
+
+    .podium-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .podium-card.first {
+        width: 34%;
+        border-color: rgba(255, 215, 0, 0.50);
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.14);
+        transform: translateY(-10px);
+        z-index: 2;
+    }
+
+    .podium-card.second {
+        border-color: rgba(217, 222, 231, 0.35);
+    }
+
+    .podium-card.third {
+        border-color: rgba(255, 140, 66, 0.35);
+    }
+
+    .podium-rank-chip {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        min-width: 28px;
+        height: 28px;
+        padding: 0 8px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.74rem;
+        font-weight: 900;
+        background: rgba(11, 14, 20, 0.78);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .first .podium-rank-chip { color: var(--gold); }
+    .second .podium-rank-chip { color: var(--silver); }
+    .third .podium-rank-chip { color: var(--bronze); }
+
+    .podium-avatar-wrapper {
+        position: relative;
+        margin-top: 6px;
+        margin-bottom: 10px;
+    }
+
+    .podium-avatar {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        border: 3px solid var(--border-color);
+        background: var(--bg-dark);
+        object-fit: cover;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    }
+
+    .first .podium-avatar {
+        width: 84px;
+        height: 84px;
+    }
+
+    .crown {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-10deg);
+        font-size: 1.25rem;
+        color: var(--gold);
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    }
+
+    .podium-name {
+        font-weight: 800;
+        font-size: 0.82rem;
+        margin: 0;
+        color: #fff;
+        line-height: 1.2;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .first .podium-name {
+        font-size: 0.92rem;
+    }
+
+    .podium-xp {
+        font-size: 0.72rem;
+        color: var(--neon-cyan);
+        font-weight: 700;
+        margin-top: 5px;
+    }
+
+    .podium-label {
+        margin-top: 8px;
+        font-size: 0.62rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .first .podium-label {
+        color: var(--gold);
+        border-color: rgba(255, 215, 0, 0.35);
+        background: rgba(255, 215, 0, 0.08);
+    }
+
+    .second .podium-label {
+        color: var(--silver);
+        border-color: rgba(217, 222, 231, 0.30);
+        background: rgba(217, 222, 231, 0.06);
+    }
+
+    .third .podium-label {
+        color: var(--bronze);
+        border-color: rgba(255, 140, 66, 0.28);
+        background: rgba(255, 140, 66, 0.06);
+    }
+
+    /* ===== LIST ===== */
+    .rank-list-shell {
+        border-radius: 24px;
+        padding: 14px;
+        background: rgba(255,255,255,0.025);
+        border: 1px solid rgba(255,255,255,0.06);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.18);
+    }
+
+    .list-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 2px 2px 6px;
+    }
+
+    .list-head h2 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .list-head span {
+        font-size: 0.72rem;
+        color: var(--text-dim);
+    }
+
+    .rank-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rank-item {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 12px;
+        transition: 0.22s ease;
+    }
+
+    .rank-item:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255,255,255,0.10);
+    }
+
+    .rank-item.is-me {
+        background: linear-gradient(90deg, rgba(255, 0, 122, 0.12), rgba(0, 242, 255, 0.05));
+        border: 1px solid rgba(255, 0, 122, 0.45);
+        box-shadow: 0 10px 24px rgba(255, 0, 122, 0.10);
+    }
+
+    .rank-pos {
+        width: 34px;
+        flex-shrink: 0;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 900;
+        font-style: italic;
+        color: rgba(255,255,255,0.22);
+    }
+
+    .is-me .rank-pos {
+        color: var(--neon-pink);
+    }
+
+    .rank-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rank-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: #222;
+        border: 1px solid rgba(255,255,255,0.08);
+        flex-shrink: 0;
+    }
+
+    .rank-user-data {
+        min-width: 0;
+    }
+
+    .rank-user-data .name {
+        display: block;
+        font-weight: 700;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rank-user-data .xp {
+        font-size: 0.74rem;
+        color: var(--text-dim);
+        margin-top: 3px;
+        display: block;
+    }
+
+    .badge-pill {
+        font-size: 0.62rem;
+        font-weight: 900;
+        padding: 6px 9px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        flex-shrink: 0;
+    }
+
+    .badge-s {
+        background: rgba(255, 0, 122, 0.08);
+        color: var(--neon-pink);
+        border: 1px solid rgba(255, 0, 122, 0.30);
+    }
+
+    .badge-top {
+        background: rgba(0, 242, 255, 0.95);
+        color: #051218;
+        border: 1px solid rgba(0, 242, 255, 1);
+        box-shadow: 0 0 16px rgba(0, 242, 255, 0.20);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 560px) {
+        .leaderboard-page {
+            padding: 16px;
+        }
+
+        .ranking-title {
+            font-size: 1.55rem;
+        }
+
+        .ranking-stats {
+            gap: 8px;
+        }
+
+        .ranking-stat {
+            padding: 10px 8px;
+        }
+
+        .ranking-stat-value {
+            font-size: 0.86rem;
+        }
+
+        .podium-section {
+            gap: 8px;
+        }
+
+        .podium-card {
+            padding: 14px 8px 10px;
+        }
+
+        .podium-avatar {
+            width: 50px;
+            height: 50px;
+        }
+
+        .first .podium-avatar {
+            width: 74px;
+            height: 74px;
+        }
+
+        .podium-name {
+            font-size: 0.74rem;
+        }
+
+        .first .podium-name {
+            font-size: 0.82rem;
+        }
+
+        .podium-xp {
+            font-size: 0.68rem;
+        }
+
+        .badge-pill {
+            padding: 5px 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="leaderboard-page">
+
+    <section class="ranking-hero">
+        <div class="ranking-hero-inner">
+            <div class="ranking-kicker">
+                <i class="fas fa-trophy"></i>
+                Competitive Board
+            </div>
+
+            <h1 class="ranking-title">Rankings</h1>
+
+            <p class="ranking-subtitle">
+                Track the top collectors, compare fan power, and climb your way into the BYAS Hall of Fame.
+            </p>
+
+            <div class="ranking-stats">
+                <div class="ranking-stat">
+                    <div class="ranking-stat-label">Mode</div>
+                    <div class="ranking-stat-value">Global</div>
+                </div>
+                <div class="ranking-stat">
+                    <div class="ranking-stat-label">Players</div>
+                    <div class="ranking-stat-value">10,000+</div>
+                </div>
+                <div class="ranking-stat">
+                    <div class="ranking-stat-label">Season</div>
+                    <div class="ranking-stat-value">S Rank</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="fandom-tabs">
+        <div class="fandom-tab active">Global</div>
+        <div class="fandom-tab">Blackpink</div>
+        <div class="fandom-tab">BTS</div>
+        <div class="fandom-tab">NewJeans</div>
+    </div>
+
+    <section class="podium-shell">
+        <div class="podium-title">
+            <i class="fas fa-crown"></i>
+            Top 3 Champions
+        </div>
+
+        <div class="podium-section">
+            <article class="podium-card second" style="--border-color: var(--silver)">
+                <div class="podium-rank-chip">#2</div>
+                <div class="podium-avatar-wrapper">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" class="podium-avatar" alt="Lisa_Fan">
+                </div>
+                <p class="podium-name">Lisa_Fan</p>
+                <span class="podium-xp">11,200 XP</span>
+                <span class="podium-label">Silver Tier</span>
+            </article>
+
+            <article class="podium-card first" style="--border-color: var(--gold)">
+                <div class="podium-rank-chip">#1</div>
+                <i class="fas fa-crown crown"></i>
+                <div class="podium-avatar-wrapper">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jimin" class="podium-avatar" alt="JK_World">
+                </div>
+                <p class="podium-name">JK_World</p>
+                <span class="podium-xp">15,400 XP</span>
+                <span class="podium-label">Legend</span>
+            </article>
+
+            <article class="podium-card third" style="--border-color: var(--bronze)">
+                <div class="podium-rank-chip">#3</div>
+                <div class="podium-avatar-wrapper">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Hanni" class="podium-avatar" alt="Hanni_B">
+                </div>
+                <p class="podium-name">Hanni_B</p>
+                <span class="podium-xp">9,800 XP</span>
+                <span class="podium-label">Bronze Tier</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="rank-list-shell">
+        <div class="list-head">
+            <h2>Leaderboard</h2>
+            <span>Positions 4–10</span>
+        </div>
+
+        <div class="rank-list">
+            {% for i in 4..10 %}
+                <div class="rank-item {{ i == 7 ? 'is-me' : '' }}">
+                    <div class="rank-pos">{{ i }}</div>
+
+                    <div class="rank-info">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ i }}2" class="rank-img" alt="User {{ i }}">
+                        <div class="rank-user-data">
+                            <span class="name">User_Fandom_{{ i }}</span>
+                            <span class="xp">{{ 10000 - (i * 450) }} XP</span>
+                        </div>
+                    </div>
+
+                    {% if i == 7 %}
+                        <span class="badge-pill badge-top">You</span>
+                    {% else %}
+                        <span class="badge-pill badge-s">Rank S</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

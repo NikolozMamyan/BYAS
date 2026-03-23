@@ -1,29 +1,256 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion{% endblock %}
+{% block title %}BYAS | Welcome Fan{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+        --bg-dark: #0B0E14;
+        --glass: rgba(255, 255, 255, 0.03);
+    }
+
+    body {
+        background: var(--bg-dark);
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* Animation de fond manga */
+    body::before {
+        content: "";
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(255, 0, 122, 0.02) 100px, rgba(255, 0, 122, 0.02) 200px);
+        animation: slide 20s linear infinite;
+        z-index: -1;
+    }
+
+    @keyframes slide {
+        from { transform: translate(-50%, -50%); }
+        to { transform: translate(0, 0); }
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 40px 25px;
+        text-align: center;
+    }
+
+    .logo-area {
+        margin-bottom: 40px;
+    }
+
+    .logo-area h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        margin: 0;
+        background: linear-gradient(to bottom, #fff, var(--neon-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+    }
+
+    .logo-area span {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+    }
+
+    /* --- SOCIAL LOGINS --- */
+    .social-auth {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .btn-google { background: white; color: #000; }
+    .btn-apple { background: #000; border-color: #333; }
+    .btn-spotify { background: #1DB954; }
+
+    .btn-social:active { transform: scale(0.98); }
+
+    /* --- DIVIDER --- */
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        color: var(--text-dim);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        opacity: 0.5;
+    }
+    .divider::before, .divider::after {
+        content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.1); margin: 0 10px;
+    }
+
+    /* --- FORMULAIRE --- */
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neon-pink);
+        font-size: 0.9rem;
+    }
+
+    input {
+        width: 100%;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px 15px 15px 45px;
+        border-radius: 12px;
+        color: white;
+        box-sizing: border-box;
+        transition: 0.3s;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        background: rgba(255,255,255,0.05);
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+    }
+
+   /* --- NOUVEAU BOUTON CONNEXION (Style Merch/Poster) --- */
+    .btn-login {
+        position: relative;
+        width: 100%;
+        padding: 18px;
+        background: var(--neon-cyan); /* Fond solide et flashy */
+        color: #000; /* Texte noir pour le contraste maximal */
+        font-family: 'Outfit', sans-serif;
+        font-weight: 900;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+        z-index: 1;
+        margin-top: 10px;
+    }
+
+    /* L'effet de double bordure décalée (Le "Shadow Box") */
+    .btn-login::before {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--neon-pink);
+        z-index: -1;
+        transition: 0.2s;
+    }
+
+    /* Animation au survol */
+    .btn-login:hover {
+        transform: translate(-3px, -3px);
+        background: #fff; /* Devient blanc pur au hover */
+    }
+
+    .btn-login:hover::before {
+        transform: translate(6px, 6px);
+        background: rgba(255, 0, 122, 0.2);
+    }
+
+    /* Effet de clic (Impact) */
+    .btn-login:active {
+        transform: translate(2px, 2px);
+    }
+
+    .btn-login:active::before {
+        transform: translate(-2px, -2px);
+    }
+
+    .error-msg {
+        background: rgba(255, 0, 0, 0.1);
+        color: #ff5555;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-    <div style="max-width: 420px; margin: 40px auto;">
-        <h1>Connexion</h1>
-
-        {% if error %}
-            <div style="color: red; margin-bottom: 16px;">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
-
-        <form method="post" action="{{ path('app_front_login_check') }}">
-            <div style="margin-bottom: 12px;">
-                <label for="username">Email</label><br>
-                <input type="email" id="username" name="_username" value="{{ last_username }}" required>
-            </div>
-
-            <div style="margin-bottom: 12px;">
-                <label for="password">Mot de passe</label><br>
-                <input type="password" id="password" name="_password" required>
-            </div>
-
-            <button type="submit">Se connecter</button>
-        </form>
+<div class="login-container">
+    <div class="logo-area">
+        <h1>BYAS</h1>
+        <span>Fandom Passport</span>
     </div>
+
+    {% if error %}
+        <div class="error-msg">
+            <i class="fas fa-exclamation-circle"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <div class="social-auth">
+        <a href="#" class="btn-social btn-google">
+            <i class="fab fa-google"></i> Continue with Google
+        </a>
+        <a href="#" class="btn-social btn-spotify">
+            <i class="fab fa-spotify"></i> Continue with Spotify
+        </a>
+    </div>
+
+    <div class="divider">Or with email</div>
+
+    <form method="post" action="{{ path('app_front_login_check') }}">
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="username" name="_username" value="{{ last_username }}" placeholder="Email Address" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="_password" placeholder="Password" required>
+        </div>
+
+        <button type="submit" class="btn-login">
+            Login to Passport
+        </button>
+    </form>
+
+    <p style="margin-top: 30px; font-size: 0.8rem; color: #666;">
+        New to the fandom? <a href="#" style="color: var(--neon-cyan); text-decoration: none;">Create Account</a>
+    </p>
+</div>
 {% endblock %}

@@ -26,6 +26,7 @@ class PassportController extends AbstractController
             'oauthAccounts' => $user->getOauthAccounts(),
             'streamingAccounts' => $user->getStreamingAccounts(),
             'xpTransactions' => $user->getXpTransactions(),
+            'items' => $user->getCollectionItems(),
         ]);
     }
 }

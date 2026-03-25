@@ -1,0 +1,962 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Your Fandom Passport{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+        --bg-dark: #0B0E14;
+        --glass: rgba(255, 255, 255, 0.03);
+        --text-dim: rgba(255, 255, 255, 0.6);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--bg-dark);
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* Animation de fond manga */
+    body::before {
+        content: "";
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(255, 0, 122, 0.02) 100px, rgba(255, 0, 122, 0.02) 200px);
+        animation: slide 20s linear infinite;
+        z-index: -1;
+    }
+
+    @keyframes slide {
+        from { transform: translate(-50%, -50%); }
+        to { transform: translate(0, 0); }
+    }
+
+    /* NAVBAR */
+    nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(11, 14, 20, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .logo {
+        font-size: 2rem;
+        font-weight: 900;
+        letter-spacing: -1px;
+        background: linear-gradient(to bottom, #fff, var(--neon-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 40px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: var(--text-dim);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .nav-links a:hover {
+        color: var(--neon-cyan);
+    }
+
+    .btn-nav {
+        padding: 12px 28px;
+        background: var(--neon-cyan);
+        color: #000;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        position: relative;
+        font-size: 0.85rem;
+    }
+
+    .btn-nav::before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--neon-pink);
+        z-index: -1;
+        transition: 0.2s;
+    }
+
+    .btn-nav:hover {
+        transform: translate(-2px, -2px);
+        background: #fff;
+    }
+
+    /* HERO SECTION */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 120px 8% 80px;
+        gap: 60px;
+    }
+
+    .hero-content {
+        flex: 1;
+        max-width: 600px;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: rgba(0, 242, 255, 0.1);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--neon-cyan);
+        margin-bottom: 30px;
+    }
+
+    .hero-badge i {
+        font-size: 0.6rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    h1 {
+        font-size: 4.5rem;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 25px;
+        letter-spacing: -3px;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+        font-size: 1.2rem;
+        line-height: 1.7;
+        color: var(--text-dim);
+        margin-bottom: 40px;
+    }
+
+    .cta-group {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .btn-primary {
+        position: relative;
+        padding: 20px 45px;
+        background: var(--neon-pink);
+        color: white;
+        font-weight: 900;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+        z-index: 1;
+    }
+
+    .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--neon-cyan);
+        z-index: -1;
+        transition: 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translate(-3px, -3px);
+        background: var(--neon-cyan);
+        color: #000;
+    }
+
+    .btn-primary:hover::before {
+        transform: translate(6px, 6px);
+        background: rgba(255, 0, 122, 0.2);
+    }
+
+    .btn-secondary {
+        padding: 18px 40px;
+        background: transparent;
+        color: white;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        background: rgba(0, 242, 255, 0.05);
+    }
+
+    /* HERO VISUAL */
+    .hero-visual {
+        flex: 1;
+        position: relative;
+        min-height: 500px;
+    }
+
+    .passport-mockup {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        perspective: 1000px;
+    }
+
+    .passport-card {
+        background: linear-gradient(135deg, rgba(255, 0, 122, 0.1), rgba(0, 242, 255, 0.1));
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(20px);
+        transform: rotateY(-5deg) rotateX(5deg);
+        transition: 0.5s;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .passport-card:hover {
+        transform: rotateY(0deg) rotateX(0deg);
+    }
+
+    .passport-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .passport-title {
+        font-size: 1.5rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--neon-cyan);
+    }
+
+    .passport-subtitle {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-dim);
+        margin-top: 5px;
+    }
+
+    .passport-stat {
+        margin-bottom: 25px;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: white;
+    }
+
+    .level-bar {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .level-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+        width: 65%;
+        animation: fillBar 2s ease-out;
+    }
+
+    @keyframes fillBar {
+        from { width: 0; }
+    }
+
+    .badge-showcase {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: center;
+    }
+
+    .mini-badge {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 0, 122, 0.2);
+        border: 2px solid var(--neon-pink);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    /* FEATURES SECTION */
+    .features {
+        padding: 120px 8%;
+        background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.02));
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 80px;
+    }
+
+    .section-tag {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--neon-cyan);
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 900;
+        line-height: 1.2;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+        transform: scaleX(0);
+        transition: 0.5s;
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 242, 255, 0.03);
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+
+    .feature-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .feature-description {
+        color: var(--text-dim);
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+
+    /* STATS SECTION */
+    .stats {
+        padding: 100px 8%;
+        text-align: center;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 50px;
+        margin-top: 60px;
+    }
+
+    .stat-item {
+        position: relative;
+    }
+
+    .stat-number {
+        font-size: 4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+
+    .stat-text {
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    /* HOW IT WORKS */
+    .how-it-works {
+        padding: 120px 8%;
+        background: linear-gradient(180deg, rgba(255, 0, 122, 0.02), transparent);
+    }
+
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        margin-top: 60px;
+    }
+
+    .step-card {
+        text-align: center;
+        position: relative;
+    }
+
+    .step-number {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 900;
+        margin: 0 auto 25px;
+        position: relative;
+    }
+
+    .step-card:not(:last-child) .step-number::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-cyan), transparent);
+    }
+
+    .step-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .step-description {
+        color: var(--text-dim);
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+        padding: 120px 8%;
+        text-align: center;
+    }
+
+    .cta-box {
+        background: linear-gradient(135deg, rgba(255, 0, 122, 0.1), rgba(0, 242, 255, 0.1));
+        border: 2px solid var(--neon-cyan);
+        border-radius: 30px;
+        padding: 80px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-box::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255, 0, 122, 0.03) 50px, rgba(255, 0, 122, 0.03) 100px);
+        animation: slide 15s linear infinite;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .cta-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-dim);
+        margin-bottom: 40px;
+    }
+
+    /* FOOTER */
+    footer {
+        padding: 60px 8% 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .footer-section h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        color: var(--neon-cyan);
+    }
+
+    .footer-links {
+        list-style: none;
+    }
+
+    .footer-links li {
+        margin-bottom: 12px;
+    }
+
+    .footer-links a {
+        color: var(--text-dim);
+        text-decoration: none;
+        transition: 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .footer-links a:hover {
+        color: white;
+        padding-left: 5px;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        color: var(--text-dim);
+        font-size: 0.85rem;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .social-links a {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .social-links a:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        background: rgba(0, 242, 255, 0.1);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 968px) {
+        .hero {
+            flex-direction: column;
+            text-align: center;
+            padding-top: 150px;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        .cta-group {
+            flex-direction: column;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .step-card:not(:last-child) .step-number::after {
+            display: none;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">BYAS</div>
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+    <a href="{{ path('app_front_login') }}" class="btn-nav">Get Started</a>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-circle"></i>
+            Beta Now Live
+        </div>
+        <h1>
+            Your <span class="gradient-text">Fandom</span><br>
+            Identity Lives Here
+        </h1>
+        <p class="hero-description">
+            BYAS is your digital passport to the K-pop universe. Level up through streams, unlock exclusive perks, and prove you're the ultimate fan.
+        </p>
+        <div class="cta-group">
+            <a href="{{ path('app_front_login') }}" class="btn-primary">
+                Create Your Passport
+            </a>
+            <a href="#how-it-works" class="btn-secondary">
+                <i class="fas fa-play"></i> Watch Demo
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="passport-mockup">
+            <div class="passport-card">
+                <div class="passport-header">
+                    <div class="passport-title">Fandom Passport</div>
+                    <div class="passport-subtitle">Certified Super Fan</div>
+                </div>
+                
+                <div class="passport-stat">
+                    <div class="stat-label">Global Rank</div>
+                    <div class="stat-value">#2,847</div>
+                    <div class="level-bar">
+                        <div class="level-progress"></div>
+                    </div>
+                </div>
+
+                <div class="passport-stat">
+                    <div class="stat-label">Fandom Level</div>
+                    <div class="stat-value">Level 42</div>
+                </div>
+
+                <div class="badge-showcase">
+                    <div class="mini-badge">🏆</div>
+                    <div class="mini-badge">⭐</div>
+                    <div class="mini-badge">💎</div>
+                    <div class="mini-badge">🔥</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features" id="features">
+    <div class="section-header">
+        <div class="section-tag">What We Offer</div>
+        <h2 class="section-title">
+            One Passport.<br>
+            Infinite <span class="gradient-text">Possibilities</span>
+        </h2>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3 class="feature-title">XP & Leveling System</h3>
+            <p class="feature-description">
+                Every stream, every album purchased, every concert attended adds to your experience points. Watch your fandom level grow and climb the global leaderboards.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h3 class="feature-title">Exclusive Perks</h3>
+            <p class="feature-description">
+                Unlock early access to tickets, limited merch drops, and special discounts from partner stores. Your loyalty earns real rewards.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Fandom Circles</h3>
+            <p class="feature-description">
+                Join communities of fans who share your passion. Connect, organize events, and build friendships with people who get it.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+            <h3 class="feature-title">Badge Collection</h3>
+            <p class="feature-description">
+                Earn digital badges for milestones and achievements. Show off your dedication with a collection that tells your fan story.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="feature-title">Multi-Fandom Tracking</h3>
+            <p class="feature-description">
+                Stan multiple groups? No problem. Track your level, rank, and stats separately for each of your favorite artists.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h3 class="feature-title">Verified Identity</h3>
+            <p class="feature-description">
+                Generate QR codes to verify your fan status IRL at concerts, cafés, and pop-up stores. Your passport works everywhere.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="stats">
+    <div class="section-header">
+        <div class="section-tag">Join The Movement</div>
+        <h2 class="section-title">
+            The Fandom <span class="gradient-text">Revolution</span>
+        </h2>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-number">50K+</div>
+            <div class="stat-text">Active Fans</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">120+</div>
+            <div class="stat-text">Artist Groups</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2M+</div>
+            <div class="stat-text">XP Points Earned</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-text">Partner Perks</div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how-it-works">
+    <div class="section-header">
+        <div class="section-tag">Getting Started</div>
+        <h2 class="section-title">
+            Level Up in <span class="gradient-text">3 Simple Steps</span>
+        </h2>
+    </div>
+
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Connect Your Accounts</h3>
+            <p class="step-description">
+                Link your Spotify or Apple Music to automatically track your listening activity and start earning XP.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 class="step-title">Build Your Collection</h3>
+            <p class="step-description">
+                Add your physical albums, lightsticks, and fanclub memberships to boost your fandom score.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Unlock & Enjoy</h3>
+            <p class="step-description">
+                Redeem exclusive perks, climb leaderboards, and share your achievements with the community.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+    <div class="cta-box">
+        <div class="cta-content">
+            <h2 class="cta-title">
+                Ready to <span class="gradient-text">Join the Fandom?</span>
+            </h2>
+            <p class="cta-subtitle">
+                Create your passport today and start your journey to becoming a certified super fan.
+            </p>
+            <a href="{{ path('app_front_login') }}" class="btn-primary">
+                Get Your Passport Now
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>BYAS</h4>
+            <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.7;">
+                Your digital identity in the K-pop universe. Level up, unlock perks, and connect with fans worldwide.
+            </p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h4>Product</h4>
+            <ul class="footer-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="#">Partners</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Company</h4>
+            <ul class="footer-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Press Kit</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Support</h4>
+            <ul class="footer-links">
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 BYAS. All rights reserved. Built for fans, by fans.</p>
+    </div>
+</footer>
+{% endblock %}

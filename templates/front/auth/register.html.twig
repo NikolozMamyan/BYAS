@@ -1,0 +1,290 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Create Account{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+        --bg-dark: #0B0E14;
+        --glass: rgba(255, 255, 255, 0.03);
+    }
+
+    body {
+        background: var(--bg-dark);
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 100px,
+            rgba(255, 0, 122, 0.02) 100px,
+            rgba(255, 0, 122, 0.02) 200px
+        );
+        animation: slide 20s linear infinite;
+        z-index: -1;
+    }
+
+    @keyframes slide {
+        from { transform: translate(-50%, -50%); }
+        to { transform: translate(0, 0); }
+    }
+
+    .register-container {
+        width: 100%;
+        max-width: 420px;
+        padding: 40px 25px;
+        text-align: center;
+    }
+
+    .logo-area {
+        margin-bottom: 35px;
+    }
+
+    .logo-area h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        letter-spacing: -2px;
+        margin: 0;
+        background: linear-gradient(to bottom, #fff, var(--neon-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+    }
+
+    .logo-area span {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+    }
+
+    .form-card {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 28px 22px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+
+    .form-title {
+        font-size: 1.1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+        color: #fff;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--neon-pink);
+        font-size: 0.9rem;
+    }
+
+    .input-group input {
+        width: 100%;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px 15px 15px 45px;
+        border-radius: 12px;
+        color: white;
+        box-sizing: border-box;
+        transition: 0.3s;
+        font-size: 0.95rem;
+    }
+
+    .input-group input::placeholder {
+        color: rgba(255,255,255,0.45);
+    }
+
+    .input-group input:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        background: rgba(255,255,255,0.05);
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+    }
+
+    .btn-register {
+        position: relative;
+        width: 100%;
+        padding: 18px;
+        background: var(--neon-cyan);
+        color: #000;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 900;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+        z-index: 1;
+        margin-top: 10px;
+    }
+
+    .btn-register::before {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 100%;
+        height: 100%;
+        border: 2px solid var(--neon-pink);
+        z-index: -1;
+        transition: 0.2s;
+    }
+
+    .btn-register:hover {
+        transform: translate(-3px, -3px);
+        background: #fff;
+    }
+
+    .btn-register:hover::before {
+        transform: translate(6px, 6px);
+        background: rgba(255, 0, 122, 0.2);
+    }
+
+    .btn-register:active {
+        transform: translate(2px, 2px);
+    }
+
+    .btn-register:active::before {
+        transform: translate(-2px, -2px);
+    }
+
+    .error-msg {
+        background: rgba(255, 0, 0, 0.1);
+        color: #ff6b6b;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+        border: 1px solid rgba(255, 0, 0, 0.2);
+        text-align: left;
+    }
+
+    .success-msg {
+        background: rgba(0, 242, 255, 0.08);
+        color: var(--neon-cyan);
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        text-align: left;
+    }
+
+    .footer-link {
+        margin-top: 28px;
+        font-size: 0.85rem;
+        color: #8b8f98;
+    }
+
+    .footer-link a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .footer-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="register-container">
+    <div class="logo-area">
+        <h1>BYAS</h1>
+        <span>Fandom Passport</span>
+    </div>
+
+    <div class="form-card">
+        <div class="form-title">Create your account</div>
+
+        {% for message in app.flashes('success') %}
+            <div class="success-msg">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        {% if error is defined and error %}
+            <div class="error-msg">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ path('app_front_register') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('register_form') }}">
+
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input
+                    type="text"
+                    name="displayName"
+                    placeholder="Display Name"
+                    value="{{ old.displayName|default('') }}"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value="{{ old.email|default('') }}"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn-register">
+                Join the Passport
+            </button>
+        </form>
+    </div>
+
+    <p class="footer-link">
+        Already in the fandom?
+        <a href="{{ path('app_front_login') }}">Login here</a>
+    </p>
+</div>
+{% endblock %}

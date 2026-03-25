@@ -629,6 +629,11 @@
         <h2>My Collection</h2>
         <span class="section-meta">{{ items|length }} items</span>
     </div>
+                <form method="POST" action="{{path('api_streaming_sync')}}">
+                <button type="submit" class="btn btn-primary">
+                    Lancer la sync
+                </button>
+            </form>
 
     <div class="vault-preview-container">
         <div class="preview-grid">

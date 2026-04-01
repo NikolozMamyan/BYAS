@@ -51,11 +51,11 @@ class StreamingAccount
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $displayName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $accessToken = null;
+#[ORM\Column(type: 'text', nullable: true)]
+private ?string $accessToken = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $refreshToken = null;
+#[ORM\Column(type: 'text', nullable: true)]
+private ?string $refreshToken = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;

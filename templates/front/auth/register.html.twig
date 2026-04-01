@@ -241,7 +241,7 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{{ path('app_front_register') }}">
+        <form method="post" action="{{ path('api_register') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('register_form') }}">
 
             <div class="input-group">
@@ -284,7 +284,7 @@
 
     <p class="footer-link">
         Already in the fandom?
-        <a href="{{ path('app_front_login') }}">Login here</a>
+        <a href="{{ path('show_login') }}" data-turbo="false">Login here</a>
     </p>
 </div>
 {% endblock %}

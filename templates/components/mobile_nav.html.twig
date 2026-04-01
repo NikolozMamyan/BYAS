@@ -58,25 +58,31 @@
         }
 </style>
 <nav class="bottom-nav">
-        <a href="{{path('app_front_passport')}}" class="nav-link active">
-            <i class="fas fa-id-card"></i>
-            <span>Passport</span>
-        </a>
-        <a href="{{path('app_front_leaderboard')}}" class="nav-link">
-            <i class="fas fa-chart-line"></i>
-            <span>Leaderboard</span>
-        </a>
-        
-        <div class="nav-scan">
-            <i class="fas fa-qrcode fa-lg"></i>
-        </div>
+    <a href="{{ path('app_front_passport') }}"
+       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_passport' ? 'active' : '' }}">
+        <i class="fas fa-id-card"></i>
+        <span>Passport</span>
+    </a>
 
-        <a href="#" class="nav-link">
-            <i class="fas fa-gem"></i>
-            <span>Perks</span>
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fas fa-comment-dots"></i>
-            <span>Circles</span>
-        </a>
-    </nav>
+    <a href="{{ path('app_front_leaderboard') }}"
+       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_leaderboard' ? 'active' : '' }}">
+        <i class="fas fa-chart-line"></i>
+        <span>Leaderboard</span>
+    </a>
+
+    <div class="nav-scan">
+        <i class="fas fa-qrcode fa-lg"></i>
+    </div>
+
+    <a href="{{ path('app_front_play_history') }}"
+       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_play_history' ? 'active' : '' }}">
+        <i class="fas fa-clock-rotate-left"></i>
+        <span>Play History</span>
+    </a>
+
+    <a href="#"
+       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}">
+        <i class="fas fa-comment-dots"></i>
+        <span>Circles</span>
+    </a>
+</nav>

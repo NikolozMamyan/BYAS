@@ -216,11 +216,7 @@
         <span>Fandom Passport</span>
     </div>
 
-    {% if error %}
-        <div class="error-msg">
-            <i class="fas fa-exclamation-circle"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
-        </div>
-    {% endif %}
+
 
     <div class="social-auth">
         <a href="#" class="btn-social btn-google">
@@ -233,10 +229,10 @@
 
     <div class="divider">Or with email</div>
 
-    <form method="post" action="{{ path('app_front_login_check') }}">
+    <form id="loginForm">
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" id="username" name="_username" value="{{ last_username }}" placeholder="Email Address" required>
+            <input type="email" id="username" name="_username" value="" placeholder="Email Address" required>
         </div>
 
         <div class="input-group">
@@ -250,7 +246,36 @@
     </form>
 
     <p style="margin-top: 30px; font-size: 0.8rem; color: #666;">
-        New to the fandom? <a href="#" style="color: var(--neon-cyan); text-decoration: none;">Create Account</a>
+        New to the fandom? <a href="/register" data-turbo="false" style="color: var(--neon-cyan); text-decoration: none;">Create Account</a>
     </p>
 </div>
+
+<script>
+const loginForm = document.getElementById('loginForm');
+
+
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+     userLogin();
+});
+async function userLogin() {
+    const formData = {
+    email : loginForm._username.value,
+    password : loginForm._password.value
+}
+    const response = await fetch('/api/login', {
+        method: "POST",
+        headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(formData),
+      credentials: 'include'
+    })
+     if (!response.ok) {
+      throw new Error(`Statut de réponse : ${response.status}`);
+    }
+      window.location.href = '/app/passport'
+}
+</script>
 {% endblock %}

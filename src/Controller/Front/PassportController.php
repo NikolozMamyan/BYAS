@@ -2,12 +2,13 @@
 
 namespace App\Controller\Front;
 
+use App\Entity\StreamingAccount;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('app', name: 'app_front_')]
+#[Route('/app', name: 'app_front_')]
 class PassportController extends AbstractController
 {
     #[Route('/passport', name: 'passport', methods: ['GET'])]
@@ -19,12 +20,29 @@ class PassportController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in.');
         }
 
+        $streamingAccounts = $user->getStreamingAccounts();
+
+        $spotifyAccount = null;
+        $isSpotifyConnected = false;
+
+        foreach ($streamingAccounts as $streamingAccount) {
+            if (
+                $streamingAccount->getProvider() === StreamingAccount::PROVIDER_SPOTIFY
+            ) {
+                $spotifyAccount = $streamingAccount;
+                $isSpotifyConnected = $streamingAccount->isConnected();
+                break;
+            }
+        }
+
         return $this->render('front/passport/show.html.twig', [
             'user' => $user,
             'profile' => $user->getProfile(),
             'fandoms' => $user->getUserFandoms(),
             'oauthAccounts' => $user->getOauthAccounts(),
-            'streamingAccounts' => $user->getStreamingAccounts(),
+            'streamingAccounts' => $streamingAccounts,
+            'spotifyAccount' => $spotifyAccount,
+            'isSpotifyConnected' => $isSpotifyConnected,
             'xpTransactions' => $user->getXpTransactions(),
             'items' => $user->getCollectionItems(),
         ]);

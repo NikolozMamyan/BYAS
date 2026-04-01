@@ -40,6 +40,20 @@
         .app-wrapper {
             width: 100%;
         }
+            .btn-nav {
+        padding: 12px 28px;
+        background: var(--neon-cyan);
+        color: #000;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        position: relative;
+        font-size: 0.85rem;
+    }
 
         /* ===== PASSPORT HERO ===== */
         .passport-hero {
@@ -628,12 +642,12 @@
     <div class="section-label">
         <h2>My Collection</h2>
         <span class="section-meta">{{ items|length }} items</span>
-    </div>
-                <form method="POST" action="{{path('api_streaming_sync')}}">
-                <button type="submit" class="btn btn-primary">
-                    Lancer la sync
+                        <button id="syncHistoryBtn" class="btn-nav">
+                    Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>
                 </button>
-            </form>
+    </div>
+                
+
 
     <div class="vault-preview-container">
         <div class="preview-grid">
@@ -715,13 +729,23 @@
                 <span class="status-badge">Linked</span>
             </div>
         {% else %}
-            <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
-                <div class="action-info">
-                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
-                    <span style="font-size: 0.9rem;">Connect Spotify Music</span>
-                </div>
-                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
-            </a>
+{% set isSpotifyConnected = false %}
+
+{% for account in streamingAccounts %}
+    {% if account.provider == 'spotify' and account.isConnected() %}
+        {% set isSpotifyConnected = true %}
+    {% endif %}
+{% endfor %}
+
+{% if not isSpotifyConnected %}
+    <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
+        <div class="action-info">
+            <i class="fab fa-spotify" style="color: #1DB954;"></i>
+            <span style="font-size: 0.9rem;">Connect Spotify Music</span>
+        </div>
+        <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
+    </a>
+{% endif %}
         {% endfor %}
 
         <a href="#" class="action-item">
@@ -734,9 +758,47 @@
     </div>
 
     <div class="logout-wrap">
-        <a href="{{ path('app_front_logout') }}">
+        <button class="logout" id="btnLogout">
             <i class="fas fa-sign-out-alt"></i> Sign out
-        </a>
+        </button>
     </div>
 </div>
+
+<script>
+const logout = document.getElementById('btnLogout');
+const syncBtn = document.getElementById('syncHistoryBtn');
+
+syncBtn.addEventListener('click', () => {
+syncBtnHistory();
+});
+logout.addEventListener('click', () => {
+logOut();
+});
+
+async function syncBtnHistory() {
+const response = await fetch('/api/streaming/sync', {
+    method:"POST",
+});
+    if (!response.ok) {
+      throw new Error(`Statut de réponse : ${response.status}`);
+    }
+    const resultat = await response.json();
+    console.log(resultat);
+    
+};
+
+async function logOut() {
+const response = await fetch('/api/logout', {
+    method:"POST",
+});
+    if (!response.ok) {
+      throw new Error(`Statut de réponse : ${response.status}`);
+    }
+    const resultat = await response.json();
+    console.log(resultat);
+window.location.href = '/?t=' + Date.now();
+    
+};
+
+</script>
 {% endblock %}

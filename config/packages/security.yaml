@@ -1,6 +1,6 @@
 security:
     password_hashers:
-        App\Entity\User: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     providers:
         app_user_provider:
@@ -10,33 +10,51 @@ security:
 
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/(_(profiler|wdt)|css|images|js|build|assets|bundles|fonts|uploads|media)/
             security: false
-
-        api:
-            pattern: ^/api
-            stateless: false
-            lazy: true
-            provider: app_user_provider
-            context: main
 
         main:
             lazy: true
             provider: app_user_provider
-            context: main
+            custom_authenticators:
+                - App\Security\ApiTokenAuthenticator
+            entry_point: App\Security\ApiAuthenticationEntryPoint
 
-            form_login:
-                login_path: app_front_login
-                check_path: app_front_login_check
-                default_target_path: app_front_passport
-
-            logout:
-                path: app_front_logout
-                target: app_front_login
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_USER]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     access_control:
+        - { path: ^/api/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/logout$, roles: PUBLIC_ACCESS }
+
+        # Login challenge public
+        - { path: ^/api/login-challenge/status$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login-challenge/complete$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login-challenge/[A-Fa-f0-9]+/approve$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login-challenge/[A-Fa-f0-9]+/reject$, roles: PUBLIC_ACCESS }
+
+        # Pages publiques web
+        - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/logout$, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: ROLE_USER }
-        - { path: ^/app, roles: ROLE_USER }
+        - { path: ^/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/forgot-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/app/security/pending-login$, roles: PUBLIC_ACCESS }
+
+        - { path: ^/stripe/webhook$, roles: PUBLIC_ACCESS }
+
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/app$, roles: ROLE_USER }
+        - { path: ^/app/, roles: ROLE_USER }
+        - { path: ^/admin/, roles: ROLE_ADMIN }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

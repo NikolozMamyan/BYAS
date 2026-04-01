@@ -28,7 +28,7 @@
       {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
   </head>
-      <body>
+      <body  data-turbo="false">
         {% block body %}{% endblock %}
         {% if app.user %}
         {% include "components/mobile_nav.html.twig" %}

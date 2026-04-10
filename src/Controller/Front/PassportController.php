@@ -10,6 +10,7 @@ use App\Service\XpEngine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route('/app', name: 'app_front_')]
 class PassportController extends AbstractController
@@ -92,6 +93,7 @@ class PassportController extends AbstractController
             'userBadges' => array_slice($userBadges, 0, 3),
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+            'shareUrl' => $this->generateUrl('app_front_passport_share', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 }

@@ -29,10 +29,10 @@ final class AuthController extends AbstractController
 
         $email = $this->normalizeEmail($data['email'] ?? null);
         $password = $data['password'] ?? null;
-        $displayName = $data['displayName'] ?? null;
+        $displayName = trim((string) ($data['displayName'] ?? ''));
 
-        if (!$email || !$password) {
-            return $this->jsonError('Email and password are required', 400);
+        if (!$email || !$password || $displayName === '') {
+            return $this->jsonError('Display name, email and password are required', 400);
         }
 
         if ($userRepository->findOneBy(['email' => $email])) {
@@ -41,7 +41,7 @@ final class AuthController extends AbstractController
 
         $user = new User();
         $user->setEmail($email);
-        $user->setDisplayName($displayName ?: null);
+        $user->setDisplayName($displayName);
         $user->setRoles(['ROLE_USER']);
         $user->setPassword($passwordHasher->hashPassword($user, $password));
 

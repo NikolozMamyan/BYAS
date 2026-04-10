@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['email', 'password', 'submit', 'error'];
+    static targets = ['displayName', 'email', 'password', 'submit', 'error'];
 
     async submit(event) {
         event.preventDefault();
@@ -9,13 +9,14 @@ export default class extends Controller {
         this.setLoading(true);
 
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('/api/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
                 body: JSON.stringify({
+                    displayName: this.displayNameTarget.value,
                     email: this.emailTarget.value,
                     password: this.passwordTarget.value,
                 }),
@@ -29,27 +30,9 @@ export default class extends Controller {
 
             window.location.href = this.redirectTo();
         } catch (error) {
-            this.setError(error.message || 'Connexion impossible pour le moment.');
+            this.setError(error.message || 'Creation de compte impossible pour le moment.');
             this.setLoading(false);
         }
-    }
-
-    setLoading(isLoading) {
-        if (!this.hasSubmitTarget) {
-            return;
-        }
-
-        this.submitTarget.disabled = isLoading;
-        this.submitTarget.textContent = isLoading ? 'Connexion...' : 'Login to Passport';
-    }
-
-    setError(message) {
-        if (!this.hasErrorTarget) {
-            return;
-        }
-
-        this.errorTarget.hidden = message === '';
-        this.errorTarget.textContent = message;
     }
 
     redirectTo() {
@@ -60,5 +43,23 @@ export default class extends Controller {
         }
 
         return '/app/passport';
+    }
+
+    setLoading(isLoading) {
+        if (!this.hasSubmitTarget) {
+            return;
+        }
+
+        this.submitTarget.disabled = isLoading;
+        this.submitTarget.textContent = isLoading ? 'Creation...' : 'Join the Passport';
+    }
+
+    setError(message) {
+        if (!this.hasErrorTarget) {
+            return;
+        }
+
+        this.errorTarget.hidden = message === '';
+        this.errorTarget.textContent = message;
     }
 }

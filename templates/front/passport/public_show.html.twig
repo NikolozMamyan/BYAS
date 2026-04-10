@@ -291,7 +291,7 @@
                 </div>
                 <div class="stat">
                     <small>Top Fandom</small>
-                    <strong>{{ fandoms|length and fandoms[0].artist ? fandoms[0].artist.name : 'None yet' }}</strong>
+                    <strong>{{ profile.isShowFandomLevels() ? (fandoms|length and fandoms[0].artist ? fandoms[0].artist.name : 'None yet') : 'Hidden' }}</strong>
                 </div>
                 <div class="stat">
                     <small>Badges</small>
@@ -352,10 +352,40 @@
             </section>
         {% endif %}
 
+        {% if profile.isShowCollection() %}
+            <section class="section-card">
+                <div class="section-head">
+                    <h2>Collection</h2>
+                    <span class="pill">{{ collectionItems|length }}</span>
+                </div>
+                <div class="list">
+                    {% for item in collectionItems %}
+                        <div class="row">
+                            <div>
+                                <strong>{{ item.title }}</strong>
+                                <span class="muted">{{ item.type ? item.type.label : 'Collection item' }}{% if item.artist %} - {{ item.artist.name }}{% endif %}</span>
+                            </div>
+                            <span class="pill">x{{ item.quantity }}</span>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <span class="muted">No public collection item yet.</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
         <section class="cta-card">
-            <strong>Want to message {{ displayName }}?</strong>
-            <p class="muted">Join BYAS to connect with fans. Messaging will unlock in the social layer.</p>
-            <a href="{{ path('show_register', { intent: 'message', passport: profile.shareSlug }) }}">Join BYAS to message</a>
+            {% if isOwner %}
+                <strong>This is your public Passport.</strong>
+                <p class="muted">Share this link or QR code to let people discover your BYAS status.</p>
+                <a href="{{ path('app_front_passport_settings') }}">Edit public settings</a>
+            {% else %}
+                <strong>Want to message {{ displayName }}?</strong>
+                <p class="muted">Join BYAS to connect with fans. Messaging will unlock in the social layer.</p>
+                <a href="{{ path('app_public_passport_message', { shareSlug: profile.shareSlug }) }}">Message intent</a>
+            {% endif %}
         </section>
     {% endif %}
 </main>

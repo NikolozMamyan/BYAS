@@ -4,6 +4,8 @@ namespace App\Controller\Front;
 
 use App\Entity\StreamingAccount;
 use App\Entity\User;
+use App\Repository\PublicPassportContactIntentRepository;
+use App\Repository\PublicPassportVisitRepository;
 use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
 use App\Service\PublicPassportProfileService;
@@ -23,6 +25,9 @@ class PassportController extends AbstractController
         UserRepository $userRepository,
         XpEngine $xpEngine,
         XpTransactionRepository $xpTransactionRepository,
+        PublicPassportProfileService $publicPassportProfileService,
+        PublicPassportVisitRepository $visitRepository,
+        PublicPassportContactIntentRepository $contactIntentRepository,
     ): Response
     {
         $user = $this->getUser();
@@ -30,6 +35,8 @@ class PassportController extends AbstractController
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('You must be logged in.');
         }
+
+        $profile = $publicPassportProfileService->ensureProfile($user);
 
         $streamingAccounts = $user->getStreamingAccounts();
 
@@ -57,7 +64,7 @@ class PassportController extends AbstractController
 
         return $this->render('front/passport/show.html.twig', [
             'user' => $user,
-            'profile' => $user->getProfile(),
+            'profile' => $profile,
             'fandoms' => $fandoms,
             'oauthAccounts' => $user->getOauthAccounts(),
             'streamingAccounts' => $streamingAccounts,
@@ -68,6 +75,10 @@ class PassportController extends AbstractController
             'userBadges' => $userBadges,
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+            'publicVisitCount' => $visitRepository->countForProfile($profile),
+            'publicVisitCount7d' => $visitRepository->countForProfileSince($profile, new \DateTimeImmutable('-7 days')),
+            'recentPublicVisits' => $visitRepository->findRecentForProfile($profile, 5),
+            'contactIntentCount' => $contactIntentRepository->countForProfile($profile),
         ]);
     }
 

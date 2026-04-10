@@ -241,8 +241,9 @@
             </div>
         {% endif %}
 
-        <form method="post" action="{{ path('api_register') }}">
+        <form method="post" action="{{ path('api_register') }}" data-controller="register" data-action="submit->register#submit" data-next="{{ next|default('') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('register_form') }}">
+            <div class="error-msg" data-register-target="error" hidden></div>
 
             <div class="input-group">
                 <i class="fas fa-user"></i>
@@ -251,6 +252,7 @@
                     name="displayName"
                     placeholder="Display Name"
                     value="{{ old.displayName|default('') }}"
+                    data-register-target="displayName"
                     required
                 >
             </div>
@@ -262,6 +264,7 @@
                     name="email"
                     placeholder="Email Address"
                     value="{{ old.email|default('') }}"
+                    data-register-target="email"
                     required
                 >
             </div>
@@ -272,11 +275,12 @@
                     type="password"
                     name="password"
                     placeholder="Password"
+                    data-register-target="password"
                     required
                 >
             </div>
 
-            <button type="submit" class="btn-register">
+            <button type="submit" class="btn-register" data-register-target="submit">
                 Join the Passport
             </button>
         </form>
@@ -284,7 +288,7 @@
 
     <p class="footer-link">
         Already in the fandom?
-        <a href="{{ path('show_login') }}" data-turbo="false">Login here</a>
+        <a href="{{ path('show_login', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false">Login here</a>
     </p>
 </div>
 {% endblock %}

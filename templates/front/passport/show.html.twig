@@ -922,6 +922,15 @@
     </div>
 
     <div class="settings-list">
+        {% for message in app.flashes('success') %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-circle-check" style="color: var(--success);"></i>
+                    <span style="font-size: 0.9rem;">{{ message }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
         {% for account in oauthAccounts %}
             <div class="action-item">
                 <div class="action-info">
@@ -971,6 +980,54 @@
             </div>
             <i class="fas fa-chevron-right" style="color: var(--neon-cyan);"></i>
         </a>
+    </div>
+
+    <div class="section-label">
+        <h2>Public Activity</h2>
+        <span class="section-meta">{{ publicVisitCount }} views</span>
+    </div>
+
+    <div class="settings-list">
+        <div class="action-item">
+            <div class="action-info">
+                <i class="fas fa-qrcode" style="color: var(--neon-cyan);"></i>
+                <div>
+                    <div style="font-size: 0.9rem; font-weight: 600;">Public Passport views</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim);">{{ publicVisitCount7d }} in the last 7 days</div>
+                </div>
+            </div>
+            <span class="status-badge">{{ publicVisitCount }}</span>
+        </div>
+
+        <div class="action-item">
+            <div class="action-info">
+                <i class="fas fa-message" style="color: var(--neon-pink);"></i>
+                <div>
+                    <div style="font-size: 0.9rem; font-weight: 600;">Message intents</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim);">Saved for the future social layer</div>
+                </div>
+            </div>
+            <span class="status-badge">{{ contactIntentCount }}</span>
+        </div>
+
+        {% for visit in recentPublicVisits %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">Public profile opened</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ visit.createdAt|date('M d, H:i') }}{% if visit.viewer %} by {{ visit.viewer.displayName }}{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-eye-slash"></i>
+                    <span style="font-size: 0.9rem;">No public visit yet</span>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="logout-wrap">

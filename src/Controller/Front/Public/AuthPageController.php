@@ -25,7 +25,11 @@ class AuthPageController extends AbstractController
         }
     
         $response->setContent(
-            $this->renderView('front/auth/login.html.twig')
+            $this->renderView('front/auth/login.html.twig', [
+                'intent' => $request->query->get('intent'),
+                'passport' => $request->query->get('passport'),
+                'next' => $request->query->get('next'),
+            ])
         );
     
         return $response;
@@ -43,7 +47,11 @@ class AuthPageController extends AbstractController
         }
     
         $response->setContent(
-            $this->renderView('front/auth/register.html.twig')
+            $this->renderView('front/auth/register.html.twig', [
+                'intent' => $request->query->get('intent'),
+                'passport' => $request->query->get('passport'),
+                'next' => $request->query->get('next'),
+            ])
         );
     
         return $response;

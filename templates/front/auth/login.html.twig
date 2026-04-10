@@ -229,7 +229,7 @@
 
     <div class="divider">Or with email</div>
 
-    <form id="loginForm" data-controller="login" data-action="submit->login#submit">
+    <form id="loginForm" data-controller="login" data-action="submit->login#submit" data-next="{{ next|default('') }}">
         <div class="error-msg" data-login-target="error" hidden></div>
 
         <div class="input-group">
@@ -248,7 +248,7 @@
     </form>
 
     <p style="margin-top: 30px; font-size: 0.8rem; color: #666;">
-        New to the fandom? <a href="/register" data-turbo="false" style="color: var(--neon-cyan); text-decoration: none;">Create Account</a>
+        New to the fandom? <a href="{{ path('show_register', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false" style="color: var(--neon-cyan); text-decoration: none;">Create Account</a>
     </p>
 </div>
 

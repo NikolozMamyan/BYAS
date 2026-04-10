@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Passport Settings{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --bg-deep: #0B0E14;
+        --bg-soft: #111520;
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+        --soft-purple: #9D50BB;
+        --text-main: #FFFFFF;
+        --text-dim: rgba(255,255,255,0.66);
+        --line: rgba(255,255,255,0.12);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at 15% 12%, rgba(255, 0, 122, 0.14), transparent 26%),
+            radial-gradient(circle at 86% 8%, rgba(0, 242, 255, 0.10), transparent 25%),
+            linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
+        color: var(--text-main);
+        font-family: 'Outfit', 'Inter', sans-serif;
+        padding: 92px 14px 104px;
+    }
+
+    .settings-page {
+        width: min(760px, 100%);
+        margin: 0 auto;
+        display: grid;
+        gap: 14px;
+    }
+
+    .settings-hero,
+    .settings-panel,
+    .public-link {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.045);
+        box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+    }
+
+    .settings-hero {
+        padding: 18px;
+        background:
+            linear-gradient(135deg, rgba(255,0,122,0.16), transparent 36%),
+            linear-gradient(45deg, rgba(0,242,255,0.12), transparent 42%),
+            rgba(255,255,255,0.045);
+    }
+
+    .kicker {
+        color: var(--neon-cyan);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 2rem;
+        line-height: 1;
+        letter-spacing: 0;
+    }
+
+    .muted {
+        color: var(--text-dim);
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .settings-panel {
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+    }
+
+    .setting-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 13px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+    }
+
+    .setting-row strong {
+        display: block;
+        font-size: 0.94rem;
+        margin-bottom: 4px;
+    }
+
+    .switch {
+        position: relative;
+        width: 54px;
+        height: 30px;
+        flex: 0 0 auto;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        inset: 0;
+        cursor: pointer;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 8px;
+        transition: 0.2s ease;
+    }
+
+    .slider::before {
+        content: "";
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        left: 3px;
+        top: 3px;
+        border-radius: 6px;
+        background: rgba(255,255,255,0.84);
+        transition: 0.2s ease;
+    }
+
+    .switch input:checked + .slider {
+        background: rgba(0, 242, 255, 0.28);
+        border-color: rgba(0, 242, 255, 0.58);
+    }
+
+    .switch input:checked + .slider::before {
+        transform: translateX(24px);
+        background: var(--neon-cyan);
+    }
+
+    .public-link {
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+    }
+
+    .link-box {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 242, 255, 0.22);
+        background: rgba(0, 242, 255, 0.06);
+        color: var(--neon-cyan);
+        padding: 12px;
+        font: inherit;
+        font-size: 0.82rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin-top: 4px;
+    }
+
+    .btn {
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 8px;
+        padding: 11px 14px;
+        background: rgba(255,255,255,0.06);
+        color: white;
+        text-decoration: none;
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--neon-cyan);
+        color: #061014;
+        border-color: var(--neon-cyan);
+    }
+
+    .flash {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid rgba(76, 175, 80, 0.42);
+        background: rgba(76, 175, 80, 0.08);
+        color: #7ce38b;
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 560px) {
+        h1 {
+            font-size: 1.65rem;
+        }
+
+        .setting-row {
+            padding: 12px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .btn {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="settings-page">
+    <section class="settings-hero">
+        <div class="kicker">Public Passport</div>
+        <h1>Privacy settings</h1>
+        <p class="muted">Choose what people can see when they scan your story QR code or open your public Passport link.</p>
+    </section>
+
+    {% for message in app.flashes('success') %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    <section class="public-link" data-controller="clipboard">
+        <strong>Public link</strong>
+        <input class="link-box" id="publicPassportUrl" value="{{ publicUrl }}" data-clipboard-target="source" readonly>
+        <div class="actions">
+            <a class="btn" href="{{ publicUrl }}" target="_blank" rel="noopener">Preview</a>
+            <button class="btn" type="button" id="copyPublicUrl" data-clipboard-target="button" data-action="clipboard#copy">Copy link</button>
+        </div>
+    </section>
+
+    <form method="post" class="settings-panel">
+        <input type="hidden" name="_token" value="{{ csrf_token('passport_settings') }}">
+
+        <label class="setting-row">
+            <span>
+                <strong>Public Passport</strong>
+                <span class="muted">Allow anyone with the link or QR code to view your public Passport.</span>
+            </span>
+            <span class="switch">
+                <input type="checkbox" name="isProfilePublic" {{ profile.isProfilePublic() ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </span>
+        </label>
+
+        <label class="setting-row">
+            <span>
+                <strong>Global rank</strong>
+                <span class="muted">Show your global BYAS rank on the public page.</span>
+            </span>
+            <span class="switch">
+                <input type="checkbox" name="showGlobalRank" {{ profile.isShowGlobalRank() ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </span>
+        </label>
+
+        <label class="setting-row">
+            <span>
+                <strong>Fandom levels</strong>
+                <span class="muted">Show your top artist fandom levels and XP.</span>
+            </span>
+            <span class="switch">
+                <input type="checkbox" name="showFandomLevels" {{ profile.isShowFandomLevels() ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </span>
+        </label>
+
+        <label class="setting-row">
+            <span>
+                <strong>Badges</strong>
+                <span class="muted">Show earned badges on your public Passport.</span>
+            </span>
+            <span class="switch">
+                <input type="checkbox" name="showBadges" {{ profile.isShowBadges() ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </span>
+        </label>
+
+        <label class="setting-row">
+            <span>
+                <strong>Collection</strong>
+                <span class="muted">Reserve this for collection previews on the public Passport.</span>
+            </span>
+            <span class="switch">
+                <input type="checkbox" name="showCollection" {{ profile.isShowCollection() ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </span>
+        </label>
+
+        <div class="actions">
+            <a class="btn" href="{{ path('app_front_passport') }}">Back</a>
+            <button class="btn btn-primary" type="submit">Save settings</button>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

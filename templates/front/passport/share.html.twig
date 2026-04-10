@@ -346,8 +346,8 @@
 
 {% block body %}
 {% set displayName = profile.username|default(user.displayName) %}
-<main class="share-page">
-    <section class="story-card" id="shareCard" data-share-url="{{ shareUrl }}">
+<main class="share-page" data-controller="share-export" data-share-export-url-value="{{ shareUrl }}">
+    <section class="story-card" id="shareCard" data-share-export-target="card">
         <div class="share-top">
             <div class="brand">BYAS</div>
             <div class="rank-pill">Global #{{ globalRank }}</div>
@@ -396,75 +396,19 @@
 
         <div class="story-bottom">
             <div class="caption">Scan the code to open this BYAS Passport story.</div>
-            <div class="qr-box" id="shareQr" aria-label="QR code"></div>
+            <div class="qr-box" id="shareQr" aria-label="QR code" data-share-export-target="qr"></div>
         </div>
     </section>
 
     <div class="share-actions">
         <a href="{{ path('app_front_passport') }}">Back to Passport</a>
-        <button type="button" class="primary" id="downloadStory">Download PNG</button>
-        <button type="button" onclick="window.print()">Save as PDF</button>
+        <button type="button" class="primary" id="downloadStory" data-share-export-target="download" data-action="share-export#download">Download PNG</button>
+        <button type="button" data-action="share-export#print">Save as PDF</button>
     </div>
 
-    <p class="share-note" id="shareExportStatus">PNG export uses the story card only, with dark colors preserved.</p>
+    <p class="share-note" id="shareExportStatus" data-share-export-target="status">PNG export uses the story card only, with dark colors preserved.</p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script>
-const shareCard = document.getElementById('shareCard');
-const qrTarget = document.getElementById('shareQr');
-const downloadButton = document.getElementById('downloadStory');
-const exportStatus = document.getElementById('shareExportStatus');
-
-function initShareQr() {
-    if (!window.QRCode) {
-        qrTarget.textContent = 'QR';
-        return;
-    }
-
-    qrTarget.innerHTML = '';
-    new QRCode(qrTarget, {
-        text: shareCard.dataset.shareUrl,
-        width: 72,
-        height: 72,
-        colorDark: '#0B0E14',
-        colorLight: '#FFFFFF',
-        correctLevel: QRCode.CorrectLevel.M,
-    });
-}
-
-async function downloadStoryPng() {
-    if (!window.html2canvas) {
-        exportStatus.textContent = 'PNG export is still loading. Try again in a moment.';
-        return;
-    }
-
-    downloadButton.disabled = true;
-    downloadButton.textContent = 'Rendering...';
-    exportStatus.textContent = 'Rendering your story card...';
-
-    try {
-        const canvas = await html2canvas(shareCard, {
-            backgroundColor: '#0B0E14',
-            scale: 3,
-            useCORS: true,
-        });
-
-        const link = document.createElement('a');
-        link.download = 'byas-passport-story.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        exportStatus.textContent = 'PNG ready for Instagram Stories.';
-    } catch (error) {
-        exportStatus.textContent = 'PNG export failed. Save as PDF is still available.';
-    } finally {
-        downloadButton.disabled = false;
-        downloadButton.textContent = 'Download PNG';
-    }
-}
-
-initShareQr();
-downloadButton.addEventListener('click', downloadStoryPng);
-</script>
 {% endblock %}

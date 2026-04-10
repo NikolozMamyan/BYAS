@@ -229,18 +229,20 @@
 
     <div class="divider">Or with email</div>
 
-    <form id="loginForm">
+    <form id="loginForm" data-controller="login" data-action="submit->login#submit">
+        <div class="error-msg" data-login-target="error" hidden></div>
+
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" id="username" name="_username" value="" placeholder="Email Address" required>
+            <input type="email" id="username" name="_username" value="" placeholder="Email Address" data-login-target="email" required>
         </div>
 
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" name="_password" placeholder="Password" required>
+            <input type="password" id="password" name="_password" placeholder="Password" data-login-target="password" required>
         </div>
 
-        <button type="submit" class="btn-login">
+        <button type="submit" class="btn-login" data-login-target="submit">
             Login to Passport
         </button>
     </form>
@@ -250,32 +252,4 @@
     </p>
 </div>
 
-<script>
-const loginForm = document.getElementById('loginForm');
-
-
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-     userLogin();
-});
-async function userLogin() {
-    const formData = {
-    email : loginForm._username.value,
-    password : loginForm._password.value
-}
-    const response = await fetch('/api/login', {
-        method: "POST",
-        headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(formData),
-      credentials: 'include'
-    })
-     if (!response.ok) {
-      throw new Error(`Statut de réponse : ${response.status}`);
-    }
-      window.location.href = '/app/passport'
-}
-</script>
 {% endblock %}

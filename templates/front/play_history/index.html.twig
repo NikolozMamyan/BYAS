@@ -590,7 +590,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container" data-controller="play-history">
     <!-- Header -->
     <div class="page-header">
         <h1 class="page-title">
@@ -630,11 +630,11 @@
             <div class="filters-grid">
                 <div class="filter-group">
                     <label class="filter-label">Search Track</label>
-                    <input type="text" class="filter-input" id="searchInput" placeholder="Search by title, artist, or album...">
+                    <input type="text" class="filter-input" id="searchInput" placeholder="Search by title, artist, or album..." data-play-history-target="search" data-action="input->play-history#filter">
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Provider</label>
-                    <select class="filter-input" id="providerFilter">
+                    <select class="filter-input" id="providerFilter" data-play-history-target="provider" data-action="change->play-history#filter">
                         <option value="">All Providers</option>
                         <option value="spotify">Spotify</option>
                         <option value="apple">Apple Music</option>
@@ -643,7 +643,7 @@
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Type</label>
-                    <select class="filter-input" id="typeFilter">
+                    <select class="filter-input" id="typeFilter" data-play-history-target="type" data-action="change->play-history#filter">
                         <option value="">All Types</option>
                         <option value="track">Track</option>
                         <option value="episode">Episode</option>
@@ -655,7 +655,8 @@
         <!-- Play History List -->
         <div class="play-history-list">
             {% for play in playHistory %}
-                <div class="play-item" 
+                <div class="play-item"
+                     data-play-history-target="item"
                      data-provider="{{ play.provider }}" 
                      data-type="{{ play.providerType }}"
                      data-title="{{ play.itemName|lower }}"
@@ -719,7 +720,7 @@
                                 </a>
                             {% endif %}
                             
-                            <button class="action-btn toggle-details" title="Show details">
+                            <button class="action-btn toggle-details" title="Show details" data-action="play-history#toggleDetails">
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                         </div>
@@ -789,84 +790,4 @@
     {% endif %}
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle details
-    document.querySelectorAll('.toggle-details').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const playItem = this.closest('.play-item');
-            const icon = this.querySelector('i');
-            
-            playItem.classList.toggle('expanded');
-            
-            if (playItem.classList.contains('expanded')) {
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                icon.style.transform = 'rotate(0deg)';
-            }
-        });
-    });
-
-    // Filters
-    const searchInput = document.getElementById('searchInput');
-    const providerFilter = document.getElementById('providerFilter');
-    const typeFilter = document.getElementById('typeFilter');
-    const playItems = document.querySelectorAll('.play-item');
-
-    function filterItems() {
-        const searchTerm = searchInput?.value.toLowerCase() || '';
-        const providerValue = providerFilter?.value.toLowerCase() || '';
-        const typeValue = typeFilter?.value.toLowerCase() || '';
-
-        playItems.forEach(item => {
-            const title = item.dataset.title || '';
-            const artist = item.dataset.artist || '';
-            const album = item.dataset.album || '';
-            const provider = item.dataset.provider || '';
-            const type = item.dataset.type || '';
-
-            const matchesSearch = !searchTerm || 
-                title.includes(searchTerm) || 
-                artist.includes(searchTerm) || 
-                album.includes(searchTerm);
-            
-            const matchesProvider = !providerValue || provider === providerValue;
-            const matchesType = !typeValue || type === typeValue;
-
-            if (matchesSearch && matchesProvider && matchesType) {
-                item.style.display = '';
-                setTimeout(() => item.classList.add('visible'), 10);
-            } else {
-                item.style.display = 'none';
-                item.classList.remove('visible');
-            }
-        });
-    }
-
-    searchInput?.addEventListener('input', filterItems);
-    providerFilter?.addEventListener('change', filterItems);
-    typeFilter?.addEventListener('change', filterItems);
-
-    // Initial visibility animation
-    setTimeout(() => {
-        playItems.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add('visible');
-            }, index * 50);
-        });
-    }, 100);
-
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, { threshold: 0.1 });
-
-    playItems.forEach(item => observer.observe(item));
-});
-</script>
 {% endblock %}

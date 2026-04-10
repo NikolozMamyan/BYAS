@@ -8,6 +8,8 @@ use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -100,6 +102,48 @@ class PassportController extends AbstractController
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
             'shareUrl' => $this->generateUrl('app_public_passport', [
+                'shareSlug' => $profile->getShareSlug(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
+    }
+
+    #[Route('/passport/settings', name: 'passport_settings', methods: ['GET', 'POST'])]
+    public function settings(
+        Request $request,
+        PublicPassportProfileService $publicPassportProfileService,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('You must be logged in.');
+        }
+
+        $profile = $publicPassportProfileService->ensureProfile($user);
+
+        if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('passport_settings', (string) $request->request->get('_token'))) {
+                throw $this->createAccessDeniedException('Invalid CSRF token.');
+            }
+
+            $profile
+                ->setIsProfilePublic($request->request->has('isProfilePublic'))
+                ->setShowGlobalRank($request->request->has('showGlobalRank'))
+                ->setShowFandomLevels($request->request->has('showFandomLevels'))
+                ->setShowBadges($request->request->has('showBadges'))
+                ->setShowCollection($request->request->has('showCollection'))
+                ->setUpdatedAt(new \DateTimeImmutable());
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Passport privacy settings updated.');
+
+            return $this->redirectToRoute('app_front_passport_settings');
+        }
+
+        return $this->render('front/passport/settings.html.twig', [
+            'user' => $user,
+            'profile' => $profile,
+            'publicUrl' => $this->generateUrl('app_public_passport', [
                 'shareSlug' => $profile->getShareSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);

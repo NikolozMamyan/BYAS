@@ -295,7 +295,7 @@
                 </div>
                 <div class="stat">
                     <small>Badges</small>
-                    <strong>{{ profile.showBadges ? userBadges|length : 'Hidden' }}</strong>
+                    <strong>{{ profile.isShowBadges() ? userBadges|length : 'Hidden' }}</strong>
                 </div>
             </div>
 
@@ -304,7 +304,7 @@
             </div>
         </section>
 
-        {% if profile.showFandomLevels %}
+        {% if profile.isShowFandomLevels() %}
             <section class="section-card">
                 <div class="section-head">
                     <h2>Top Fandoms</h2>
@@ -328,7 +328,7 @@
             </section>
         {% endif %}
 
-        {% if profile.showBadges %}
+        {% if profile.isShowBadges() %}
             <section class="section-card">
                 <div class="section-head">
                     <h2>Badges</h2>

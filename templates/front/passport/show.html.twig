@@ -726,7 +726,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="app-wrapper">
+<div class="app-wrapper" data-controller="passport-sync">
 
     <section class="passport-hero">
         <div class="passport-shell">
@@ -785,12 +785,12 @@
     <div class="section-label">
         <h2>My Collection</h2>
         <span class="section-meta">{{ items|length }} items</span>
-                        <button id="syncHistoryBtn" class="btn-nav">
+                        <button id="syncHistoryBtn" class="btn-nav" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync">
                     Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>
                 </button>
     </div>
-    <div id="syncFeedback" class="sync-feedback" role="status" aria-live="polite" hidden>
-        <span></span>
+    <div id="syncFeedback" class="sync-feedback" role="status" aria-live="polite" data-passport-sync-target="feedback" hidden>
+        <span data-passport-sync-target="feedbackText"></span>
     </div>
                 
 
@@ -963,112 +963,21 @@
             </div>
             <i class="fas fa-magic" style="color: var(--neon-pink);"></i>
         </a>
+
+        <a href="{{ path('app_front_passport_settings') }}" class="action-item">
+            <div class="action-info">
+                <i class="fas fa-sliders"></i>
+                <span style="font-size: 0.9rem;">Public Passport Settings</span>
+            </div>
+            <i class="fas fa-chevron-right" style="color: var(--neon-cyan);"></i>
+        </a>
     </div>
 
     <div class="logout-wrap">
-        <button class="logout" id="btnLogout">
+        <button class="logout" id="btnLogout" type="button" data-passport-sync-target="logoutButton" data-action="passport-sync#logout">
             <i class="fas fa-sign-out-alt"></i> Sign out
         </button>
     </div>
 </div>
 
-<script>
-const logout = document.getElementById('btnLogout');
-const syncBtn = document.getElementById('syncHistoryBtn');
-
-syncBtn.addEventListener('click', () => {
-syncBtnHistory();
-});
-logout.addEventListener('click', () => {
-logOut();
-});
-
-async function syncBtnHistory() {
-const response = await fetch('/api/streaming/sync', {
-    method:"POST",
-});
-    if (!response.ok) {
-      throw new Error(`Statut de réponse : ${response.status}`);
-    }
-    const resultat = await response.json();
-    console.log(resultat);
-    
-};
-
-async function logOut() {
-const response = await fetch('/api/logout', {
-    method:"POST",
-});
-    if (!response.ok) {
-      throw new Error(`Statut de réponse : ${response.status}`);
-    }
-    const resultat = await response.json();
-    console.log(resultat);
-window.location.href = '/?t=' + Date.now();
-    
-};
-
-</script>
-<script>
-async function syncBtnHistory() {
-    const button = document.getElementById('syncHistoryBtn');
-    const feedback = document.getElementById('syncFeedback');
-    const feedbackText = feedback.querySelector('span');
-
-    button.disabled = true;
-    button.innerHTML = 'Syncing <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate fa-spin"></i>';
-    setSyncFeedbackState(feedback, feedbackText, 'Synchronisation Spotify en cours...', '');
-
-    try {
-        const response = await fetch('/api/streaming/sync', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
-
-        const payload = await response.json().catch(() => null);
-
-        if (!response.ok) {
-            throw new Error(payload?.error || payload?.message || `Statut de reponse : ${response.status}`);
-        }
-
-        const result = payload?.result || {};
-        const inserted = result.totalInserted ?? 0;
-        const skipped = result.totalSkipped ?? 0;
-        const xpAwarded = result.totalXpAwarded ?? 0;
-
-        setSyncFeedbackState(
-            feedback,
-            feedbackText,
-            `Sync terminee : ${inserted} nouveaux streams, ${skipped} ignores, +${xpAwarded} XP.`,
-            'success'
-        );
-
-        if (inserted > 0 || xpAwarded > 0) {
-            window.setTimeout(() => window.location.reload(), 900);
-        }
-    } catch (error) {
-        setSyncFeedbackState(feedback, feedbackText, error.message || 'La sync a echoue.', 'error');
-    } finally {
-        button.disabled = false;
-        button.innerHTML = 'Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>';
-    }
-}
-
-function setSyncFeedbackState(feedback, feedbackText, message, type) {
-    feedback.hidden = false;
-    feedback.classList.remove('is-success', 'is-error');
-
-    if (type === 'success') {
-        feedback.classList.add('is-success');
-    }
-
-    if (type === 'error') {
-        feedback.classList.add('is-error');
-    }
-
-    feedbackText.textContent = message;
-}
-</script>
 {% endblock %}

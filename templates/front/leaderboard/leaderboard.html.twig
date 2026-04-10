@@ -569,6 +569,9 @@
 
 {% block body %}
 <div class="leaderboard-page">
+    {% set first = podium[0] ?? null %}
+    {% set second = podium[1] ?? null %}
+    {% set third = podium[2] ?? null %}
 
     <section class="ranking-hero">
         <div class="ranking-hero-inner">
@@ -590,11 +593,11 @@
                 </div>
                 <div class="ranking-stat">
                     <div class="ranking-stat-label">Players</div>
-                    <div class="ranking-stat-value">10,000+</div>
+                    <div class="ranking-stat-value">{{ playerCount }}</div>
                 </div>
                 <div class="ranking-stat">
-                    <div class="ranking-stat-label">Season</div>
-                    <div class="ranking-stat-value">S Rank</div>
+                    <div class="ranking-stat-label">Your Rank</div>
+                    <div class="ranking-stat-value">{{ currentUserRank ? '#' ~ currentUserRank : '-' }}</div>
                 </div>
             </div>
         </div>
@@ -617,10 +620,10 @@
             <article class="podium-card second" style="--border-color: var(--silver)">
                 <div class="podium-rank-chip">#2</div>
                 <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" class="podium-avatar" alt="Lisa_Fan">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ second ? second.displayName : 'empty-2' }}" class="podium-avatar" alt="{{ second ? second.displayName : 'Empty rank' }}">
                 </div>
-                <p class="podium-name">Lisa_Fan</p>
-                <span class="podium-xp">11,200 XP</span>
+                <p class="podium-name">{{ second ? second.displayName : 'Open spot' }}</p>
+                <span class="podium-xp">{{ second ? second.globalXp : 0 }} XP</span>
                 <span class="podium-label">Silver Tier</span>
             </article>
 
@@ -628,20 +631,20 @@
                 <div class="podium-rank-chip">#1</div>
                 <i class="fas fa-crown crown"></i>
                 <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jimin" class="podium-avatar" alt="JK_World">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ first ? first.displayName : 'empty-1' }}" class="podium-avatar" alt="{{ first ? first.displayName : 'Empty rank' }}">
                 </div>
-                <p class="podium-name">JK_World</p>
-                <span class="podium-xp">15,400 XP</span>
+                <p class="podium-name">{{ first ? first.displayName : 'Open spot' }}</p>
+                <span class="podium-xp">{{ first ? first.globalXp : 0 }} XP</span>
                 <span class="podium-label">Legend</span>
             </article>
 
             <article class="podium-card third" style="--border-color: var(--bronze)">
                 <div class="podium-rank-chip">#3</div>
                 <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Hanni" class="podium-avatar" alt="Hanni_B">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ third ? third.displayName : 'empty-3' }}" class="podium-avatar" alt="{{ third ? third.displayName : 'Empty rank' }}">
                 </div>
-                <p class="podium-name">Hanni_B</p>
-                <span class="podium-xp">9,800 XP</span>
+                <p class="podium-name">{{ third ? third.displayName : 'Open spot' }}</p>
+                <span class="podium-xp">{{ third ? third.globalXp : 0 }} XP</span>
                 <span class="podium-label">Bronze Tier</span>
             </article>
         </div>
@@ -654,23 +657,33 @@
         </div>
 
         <div class="rank-list">
-            {% for i in 4..10 %}
-                <div class="rank-item {{ i == 7 ? 'is-me' : '' }}">
-                    <div class="rank-pos">{{ i }}</div>
+            {% for user in others %}
+                {% set position = loop.index + 3 %}
+                <div class="rank-item {{ currentUser and currentUser.id == user.id ? 'is-me' : '' }}">
+                    <div class="rank-pos">{{ position }}</div>
 
                     <div class="rank-info">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ i }}2" class="rank-img" alt="User {{ i }}">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.displayName }}" class="rank-img" alt="{{ user.displayName }}">
                         <div class="rank-user-data">
-                            <span class="name">User_Fandom_{{ i }}</span>
-                            <span class="xp">{{ 10000 - (i * 450) }} XP</span>
+                            <span class="name">{{ user.displayName }}</span>
+                            <span class="xp">{{ user.globalXp }} XP · Level {{ user.globalLevel }}</span>
                         </div>
                     </div>
 
-                    {% if i == 7 %}
+                    {% if currentUser and currentUser.id == user.id %}
                         <span class="badge-pill badge-top">You</span>
                     {% else %}
-                        <span class="badge-pill badge-s">Rank S</span>
+                        <span class="badge-pill badge-s">#{{ position }}</span>
                     {% endif %}
+                </div>
+            {% else %}
+                <div class="rank-item">
+                    <div class="rank-info">
+                        <div class="rank-user-data">
+                            <span class="name">No ranking data yet</span>
+                            <span class="xp">Sync Spotify to start earning XP.</span>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>

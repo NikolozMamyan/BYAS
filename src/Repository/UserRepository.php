@@ -16,6 +16,43 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * @return User[]
+     */
+    public function findTopByGlobalXp(int $limit = 50): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('active', true)
+            ->orderBy('u.globalXp', 'DESC')
+            ->addOrderBy('u.createdAt', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getGlobalRankPosition(User $user): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id) + 1')
+            ->andWhere('u.globalXp > :xp')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('xp', $user->getGlobalXp())
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countActiveUsers(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

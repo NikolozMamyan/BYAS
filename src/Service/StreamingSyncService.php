@@ -15,6 +15,7 @@ class StreamingSyncService
         private readonly StreamingAccountRepository $accountRepository,
         private readonly StreamingPlayHistoryRepository $historyRepository,
         private readonly SpotifyDataService $spotifyDataService,
+        private readonly XpEngine $xpEngine,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -27,6 +28,7 @@ class StreamingSyncService
         $totalFetched = 0;
         $totalInserted = 0;
         $totalSkipped = 0;
+        $totalXpAwarded = 0;
 
         foreach ($accounts as $account) {
             $result = $this->syncAccount($user, $account);
@@ -35,6 +37,7 @@ class StreamingSyncService
             $totalFetched += $result['fetched'];
             $totalInserted += $result['inserted'];
             $totalSkipped += $result['skipped'];
+            $totalXpAwarded += $result['xpAwarded'] ?? 0;
         }
 
         if ($totalInserted > 0) {
@@ -46,6 +49,7 @@ class StreamingSyncService
             'totalFetched' => $totalFetched,
             'totalInserted' => $totalInserted,
             'totalSkipped' => $totalSkipped,
+            'totalXpAwarded' => $totalXpAwarded,
             'providers' => $providers,
         ];
     }
@@ -60,6 +64,7 @@ class StreamingSyncService
                 'fetched' => 0,
                 'inserted' => 0,
                 'skipped' => 0,
+                'xpAwarded' => 0,
                 'message' => 'Apple Music sync not implemented yet.',
             ],
             default => [
@@ -68,6 +73,7 @@ class StreamingSyncService
                 'fetched' => 0,
                 'inserted' => 0,
                 'skipped' => 0,
+                'xpAwarded' => 0,
                 'message' => sprintf('Unsupported provider "%s".', $account->getProvider()),
             ],
         };
@@ -81,6 +87,8 @@ class StreamingSyncService
         $fetched = 0;
         $inserted = 0;
         $skipped = 0;
+        $xpAwarded = 0;
+        $seenPlays = [];
 
         foreach ($items as $item) {
             $fetched++;
@@ -117,6 +125,15 @@ class StreamingSyncService
                 continue;
             }
 
+            $playKey = sprintf('%s:%s:%s', $account->getId() ?? spl_object_hash($account), $providerItemId, $playedAt->format('U.u'));
+
+            if (isset($seenPlays[$playKey])) {
+                $skipped++;
+                continue;
+            }
+
+            $seenPlays[$playKey] = true;
+
             $history = new StreamingPlayHistory();
             $history
                 ->setUser($user)
@@ -132,6 +149,8 @@ class StreamingSyncService
                 ->setRawData($item);
 
             $this->entityManager->persist($history);
+            $transaction = $this->xpEngine->awardStreamingPlay($history);
+            $xpAwarded += $transaction->getXpAmount();
             $inserted++;
         }
 
@@ -146,6 +165,7 @@ class StreamingSyncService
             'fetched' => $fetched,
             'inserted' => $inserted,
             'skipped' => $skipped,
+            'xpAwarded' => $xpAwarded,
             'message' => 'Spotify sync completed.',
         ];
     }

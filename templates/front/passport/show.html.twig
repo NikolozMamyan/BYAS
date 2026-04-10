@@ -55,6 +55,41 @@
         font-size: 0.85rem;
     }
 
+    .btn-nav:disabled {
+        cursor: wait;
+        opacity: 0.65;
+    }
+
+    .sync-feedback {
+        width: 100%;
+        padding: 0 20px;
+        margin: 8px 0 0;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+    }
+
+    .sync-feedback span {
+        display: block;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 10px 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.035);
+    }
+
+    .sync-feedback.is-success span {
+        color: var(--success);
+        border-color: rgba(76, 175, 80, 0.45);
+        background: rgba(76, 175, 80, 0.08);
+    }
+
+    .sync-feedback.is-error span {
+        color: #ff7a90;
+        border-color: rgba(255, 0, 122, 0.45);
+        background: rgba(255, 0, 122, 0.08);
+    }
+
         /* ===== PASSPORT HERO ===== */
         .passport-hero {
             padding: 20px 20px 8px;
@@ -621,18 +656,18 @@
                         <div class="passport-stat-value">{{ fandoms|length }}</div>
                     </div>
                     <div class="passport-stat">
-                        <div class="passport-stat-label">Sources</div>
-                        <div class="passport-stat-value">{{ oauthAccounts|length }}</div>
+                        <div class="passport-stat-label">Rank</div>
+                        <div class="passport-stat-value">#{{ globalRank }}</div>
                     </div>
                 </div>
 
                 <div class="xp-block">
                     <div class="xp-head">
                         <span>Global Progress</span>
-                        <span>{{ user.globalXp }} XP</span>
+                        <span>{{ user.globalXp }} / {{ globalProgress.next }} XP</span>
                     </div>
                     <div class="xp-bar-bg">
-                        <div class="xp-bar-fill" style="width: 65%;"></div>
+                        <div class="xp-bar-fill" style="width: {{ globalProgress.percent }}%;"></div>
                     </div>
                 </div>
             </div>
@@ -645,6 +680,9 @@
                         <button id="syncHistoryBtn" class="btn-nav">
                     Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>
                 </button>
+    </div>
+    <div id="syncFeedback" class="sync-feedback" role="status" aria-live="polite" hidden>
+        <span></span>
     </div>
                 
 
@@ -703,7 +741,7 @@
             <div class="fandom-card">
                 <i class="fas fa-bolt fandom-icon"></i>
                 <span class="fandom-name">{{ fandom.artist ? fandom.artist.name : 'Idol' }}</span>
-                <span class="fandom-lvl">Rank {{ fandom.level }}</span>
+                <span class="fandom-lvl">Level {{ fandom.level }} · {{ fandom.xp }} XP</span>
             </div>
         {% else %}
             <div class="fandom-card" style="min-width: 240px;">
@@ -728,25 +766,36 @@
                 </div>
                 <span class="status-badge">Linked</span>
             </div>
-        {% else %}
-{% set isSpotifyConnected = false %}
-
-{% for account in streamingAccounts %}
-    {% if account.provider == 'spotify' and account.isConnected() %}
-        {% set isSpotifyConnected = true %}
-    {% endif %}
-{% endfor %}
-
-{% if not isSpotifyConnected %}
-    <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
-        <div class="action-info">
-            <i class="fab fa-spotify" style="color: #1DB954;"></i>
-            <span style="font-size: 0.9rem;">Connect Spotify Music</span>
-        </div>
-        <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
-    </a>
-{% endif %}
         {% endfor %}
+
+        {% if isSpotifyConnected and spotifyAccount %}
+            <form method="post" action="{{ path('app_spotify_disconnect') }}" class="action-item">
+                <div class="action-info">
+                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">Spotify</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ spotifyAccount.displayName|default(spotifyAccount.providerUserId) }}</div>
+                    </div>
+                </div>
+                <button type="submit" class="status-badge" style="cursor: pointer;">Disconnect</button>
+            </form>
+        {% else %}
+            <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
+                <div class="action-info">
+                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                    <span style="font-size: 0.9rem;">Connect Spotify Music</span>
+                </div>
+                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
+            </a>
+        {% endif %}
+
+        <div class="action-item">
+            <div class="action-info">
+                <i class="fas fa-medal"></i>
+                <span style="font-size: 0.9rem;">Badges earned</span>
+            </div>
+            <span class="status-badge">{{ userBadges|length }}</span>
+        </div>
 
         <a href="#" class="action-item">
             <div class="action-info">
@@ -800,5 +849,67 @@ window.location.href = '/?t=' + Date.now();
     
 };
 
+</script>
+<script>
+async function syncBtnHistory() {
+    const button = document.getElementById('syncHistoryBtn');
+    const feedback = document.getElementById('syncFeedback');
+    const feedbackText = feedback.querySelector('span');
+
+    button.disabled = true;
+    button.innerHTML = 'Syncing <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate fa-spin"></i>';
+    setSyncFeedbackState(feedback, feedbackText, 'Synchronisation Spotify en cours...', '');
+
+    try {
+        const response = await fetch('/api/streaming/sync', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok) {
+            throw new Error(payload?.error || payload?.message || `Statut de reponse : ${response.status}`);
+        }
+
+        const result = payload?.result || {};
+        const inserted = result.totalInserted ?? 0;
+        const skipped = result.totalSkipped ?? 0;
+        const xpAwarded = result.totalXpAwarded ?? 0;
+
+        setSyncFeedbackState(
+            feedback,
+            feedbackText,
+            `Sync terminee : ${inserted} nouveaux streams, ${skipped} ignores, +${xpAwarded} XP.`,
+            'success'
+        );
+
+        if (inserted > 0 || xpAwarded > 0) {
+            window.setTimeout(() => window.location.reload(), 900);
+        }
+    } catch (error) {
+        setSyncFeedbackState(feedback, feedbackText, error.message || 'La sync a echoue.', 'error');
+    } finally {
+        button.disabled = false;
+        button.innerHTML = 'Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>';
+    }
+}
+
+function setSyncFeedbackState(feedback, feedbackText, message, type) {
+    feedback.hidden = false;
+    feedback.classList.remove('is-success', 'is-error');
+
+    if (type === 'success') {
+        feedback.classList.add('is-success');
+    }
+
+    if (type === 'error') {
+        feedback.classList.add('is-error');
+    }
+
+    feedbackText.textContent = message;
+}
 </script>
 {% endblock %}

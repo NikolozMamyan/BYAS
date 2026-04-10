@@ -69,6 +69,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: XpTransaction::class, cascade: ['persist'], orphanRemoval: false)]
     private Collection $xpTransactions;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserBadge::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $userBadges;
+
     public function __construct()
     {
         $this->oauthAccounts = new ArrayCollection();
@@ -76,6 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userFandoms = new ArrayCollection();
         $this->xpTransactions = new ArrayCollection();
         $this->collectionItems = new ArrayCollection();
+        $this->userBadges = new ArrayCollection();
 
         $now = new \DateTimeImmutable();
         $this->createdAt = $now;
@@ -466,6 +470,35 @@ public function removeCollectionItem(CollectionItem $collectionItem): self
     if ($this->collectionItems->removeElement($collectionItem)) {
         if ($collectionItem->getUser() === $this) {
             $collectionItem->setUser(null);
+        }
+    }
+
+    return $this;
+}
+
+/**
+ * @return Collection<int, UserBadge>
+ */
+public function getUserBadges(): Collection
+{
+    return $this->userBadges;
+}
+
+public function addUserBadge(UserBadge $userBadge): self
+{
+    if (!$this->userBadges->contains($userBadge)) {
+        $this->userBadges->add($userBadge);
+        $userBadge->setUser($this);
+    }
+
+    return $this;
+}
+
+public function removeUserBadge(UserBadge $userBadge): self
+{
+    if ($this->userBadges->removeElement($userBadge)) {
+        if ($userBadge->getUser() === $this) {
+            $userBadge->setUser(null);
         }
     }
 

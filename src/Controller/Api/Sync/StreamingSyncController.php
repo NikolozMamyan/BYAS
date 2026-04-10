@@ -21,7 +21,14 @@ class StreamingSyncController extends AbstractController
             return $this->json(['message' => 'Unauthorized'], 401);
         }
 
-        $result = $syncService->syncUser($user);
+        try {
+            $result = $syncService->syncUser($user);
+        } catch (\Throwable $exception) {
+            return $this->json([
+                'message' => 'Sync failed',
+                'error' => $exception->getMessage(),
+            ], 500);
+        }
 
         return $this->json([
             'message' => 'Sync completed',

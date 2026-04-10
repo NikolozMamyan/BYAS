@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\UserFandomRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserFandomRepository::class)]
 #[ORM\Table(name: 'user_fandom')]
 #[ORM\UniqueConstraint(name: 'uniq_user_artist', columns: ['user_id', 'artist_id'])]
 class UserFandom
@@ -18,7 +19,7 @@ class UserFandom
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'userFandoms')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Artist $artist = null;
 

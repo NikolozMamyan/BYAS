@@ -1,0 +1,250 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Share Card{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: #080a0f;
+        color: #fff;
+        font-family: 'Outfit', 'Inter', sans-serif;
+        display: grid;
+        place-items: center;
+        padding: 92px 18px 96px;
+    }
+
+    .share-page {
+        display: grid;
+        gap: 16px;
+        justify-items: center;
+        width: 100%;
+    }
+
+    .story-card {
+        width: min(420px, 100%);
+        aspect-ratio: 9 / 16;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        background:
+            linear-gradient(160deg, rgba(255, 0, 122, 0.26), transparent 34%),
+            linear-gradient(20deg, rgba(0, 242, 255, 0.22), transparent 40%),
+            #111520;
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 24px 70px rgba(0,0,0,0.38);
+    }
+
+    .share-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .brand {
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #00F2FF;
+        font-weight: 800;
+    }
+
+    .rank-pill {
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        background: rgba(255,255,255,0.06);
+    }
+
+    .profile-block {
+        display: grid;
+        gap: 18px;
+    }
+
+    .avatar {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.88);
+        background: #0b0e14;
+        object-fit: cover;
+    }
+
+    .name {
+        margin: 0;
+        font-size: 2.4rem;
+        line-height: 0.95;
+        letter-spacing: 0;
+        word-break: break-word;
+    }
+
+    .level {
+        font-size: 1rem;
+        color: rgba(255,255,255,0.72);
+        font-weight: 700;
+    }
+
+    .xp-bar {
+        height: 10px;
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .xp-bar span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, #FF007A, #00F2FF);
+        border-radius: inherit;
+    }
+
+    .share-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .share-stat {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(255,255,255,0.05);
+    }
+
+    .share-stat small {
+        display: block;
+        color: rgba(255,255,255,0.58);
+        text-transform: uppercase;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+    }
+
+    .share-stat strong {
+        display: block;
+        font-size: 1rem;
+    }
+
+    .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .badge {
+        border: 1px solid rgba(0, 242, 255, 0.28);
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #00F2FF;
+        background: rgba(0, 242, 255, 0.06);
+    }
+
+    .share-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .share-actions a,
+    .share-actions button {
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: rgba(255,255,255,0.06);
+        color: #fff;
+        text-decoration: none;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    @media print {
+        body {
+            padding: 0;
+            background: #111520;
+        }
+
+        .share-actions {
+            display: none;
+        }
+    }
+
+    @media (max-width: 560px) {
+        body {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .story-card {
+            padding: 22px;
+        }
+
+        .name {
+            font-size: 2rem;
+        }
+
+        .avatar {
+            width: 92px;
+            height: 92px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="share-page">
+    <section class="story-card" id="shareCard">
+        <div class="share-top">
+            <div class="brand">BYAS Passport</div>
+            <div class="rank-pill">#{{ globalRank }}</div>
+        </div>
+
+        <div class="profile-block">
+            <img class="avatar" src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed={{ user.displayName }}" alt="{{ user.displayName }}">
+            <div>
+                <h1 class="name">{{ profile.username|default(user.displayName) }}</h1>
+                <div class="level">Level {{ user.globalLevel }} &middot; {{ user.globalXp }} XP</div>
+            </div>
+            <div class="xp-bar" aria-label="Global progress">
+                <span style="width: {{ globalProgress.percent }}%;"></span>
+            </div>
+        </div>
+
+        <div>
+            <div class="share-stats">
+                <div class="share-stat">
+                    <small>Top Fandom</small>
+                    <strong>{{ topFandom and topFandom.artist ? topFandom.artist.name : 'No fandom yet' }}</strong>
+                </div>
+                <div class="share-stat">
+                    <small>Fandom Level</small>
+                    <strong>{{ topFandom ? 'Level ' ~ topFandom.level : '-' }}</strong>
+                </div>
+            </div>
+
+            <div class="badges" style="margin-top: 12px;">
+                {% for userBadge in userBadges %}
+                    <span class="badge">{{ userBadge.badge.name }}</span>
+                {% else %}
+                    <span class="badge">First badge loading</span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <div class="share-actions">
+        <a href="{{ path('app_front_passport') }}">Back to Passport</a>
+        <button type="button" onclick="window.print()">Save as PDF</button>
+    </div>
+</main>
+{% endblock %}

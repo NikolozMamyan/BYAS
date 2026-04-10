@@ -614,6 +614,114 @@
                 font-size: 1.25rem;
             }
         }
+
+        .app-wrapper {
+            padding-top: 74px;
+        }
+
+        .passport-shell,
+        .user-main-card,
+        .xp-block,
+        .passport-stat,
+        .preview-card,
+        .preview-thumb,
+        .btn-all-vault,
+        .fandom-card,
+        .action-item {
+            border-radius: 8px;
+        }
+
+        .section-label {
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .section-label h2 {
+            letter-spacing: 0;
+        }
+
+        .btn-nav {
+            border-radius: 8px;
+            margin-left: auto;
+        }
+
+        .fandom-card {
+            min-width: 168px;
+            text-align: left;
+        }
+
+        .fandom-icon {
+            display: inline-block;
+        }
+
+        .settings-list {
+            gap: 10px;
+        }
+
+        .action-item {
+            min-height: 64px;
+        }
+
+        .status-badge {
+            border-radius: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .app-wrapper {
+                padding-top: 92px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding-bottom: 96px;
+            }
+
+            .passport-hero {
+                padding: 14px 14px 6px;
+            }
+
+            .section-label,
+            .vault-preview-container,
+            .settings-list {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .fandom-scroll {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .section-label {
+                margin-top: 22px;
+                margin-bottom: 10px;
+            }
+
+            .btn-nav {
+                width: 100%;
+                margin-top: 8px;
+                padding: 12px 14px;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-card,
+            .action-item {
+                padding: 12px;
+            }
+
+            .action-item {
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .action-info {
+                gap: 10px;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -741,7 +849,7 @@
             <div class="fandom-card">
                 <i class="fas fa-bolt fandom-icon"></i>
                 <span class="fandom-name">{{ fandom.artist ? fandom.artist.name : 'Idol' }}</span>
-                <span class="fandom-lvl">Level {{ fandom.level }} · {{ fandom.xp }} XP</span>
+                <span class="fandom-lvl">Level {{ fandom.level }} &middot; {{ fandom.xp }} XP</span>
                 {% if fandom.progressPercent is not null %}
                     <span class="fandom-lvl">{{ fandom.progressPercent|round }}% to next</span>
                 {% endif %}
@@ -766,7 +874,7 @@
                     <div>
                         <div style="font-size: 0.9rem; font-weight: 600;">{{ transaction.reason }}</div>
                         <div style="font-size: 0.72rem; color: var(--text-dim);">
-                            {{ transaction.artist ? transaction.artist.name ~ ' · ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}
+                            {{ transaction.artist ? transaction.artist.name ~ ' - ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}
                         </div>
                     </div>
                 </div>
@@ -848,7 +956,7 @@
             </a>
         {% endif %}
 
-        <a href="#" class="action-item">
+        <a href="{{ path('app_front_passport_share') }}" class="action-item">
             <div class="action-info">
                 <i class="fas fa-share-alt"></i>
                 <span style="font-size: 0.9rem;">Generate Share Card</span>

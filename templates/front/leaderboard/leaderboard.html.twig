@@ -564,6 +564,72 @@
             padding: 5px 8px;
         }
     }
+
+    .leaderboard-page {
+        padding-top: 92px;
+    }
+
+    .ranking-hero,
+    .ranking-hero-inner,
+    .ranking-stat,
+    .podium-shell,
+    .podium-card,
+    .rank-list-shell,
+    .rank-item,
+    .rank-img {
+        border-radius: 8px;
+    }
+
+    .ranking-title,
+    .ranking-subtitle,
+    .ranking-kicker,
+    .fandom-tab,
+    .podium-title,
+    .badge-pill {
+        letter-spacing: 0;
+    }
+
+    .fandom-tab {
+        text-decoration: none;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 560px) {
+        .leaderboard-page {
+            padding-top: 82px;
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .ranking-hero-inner {
+            padding: 18px 14px 14px;
+        }
+
+        .ranking-subtitle {
+            font-size: 0.82rem;
+        }
+
+        .podium-shell {
+            padding: 14px 10px 12px;
+        }
+
+        .podium-section {
+            align-items: stretch;
+        }
+
+        .podium-card {
+            justify-content: space-between;
+            transform: none !important;
+        }
+
+        .rank-list-shell {
+            padding: 10px;
+        }
+
+        .rank-item {
+            padding: 10px;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -653,7 +719,7 @@
     <section class="rank-list-shell">
         <div class="list-head">
             <h2>Leaderboard</h2>
-            <span>Positions 4â€“10</span>
+            <span>Positions 4+</span>
         </div>
 
         <div class="rank-list">
@@ -666,7 +732,7 @@
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.displayName }}" class="rank-img" alt="{{ user.displayName }}">
                         <div class="rank-user-data">
                             <span class="name">{{ user.displayName }}</span>
-                            <span class="xp">{{ user.xp }} XP · Level {{ user.level }}</span>
+                            <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
                         </div>
                     </div>
 
@@ -690,4 +756,5 @@
     </section>
 </div>
 {% endblock %}
+
 

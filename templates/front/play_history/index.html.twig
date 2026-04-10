@@ -50,7 +50,7 @@
     .container {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 40px 24px;
+        padding: 104px 24px 40px;
     }
 
     /* ===== HEADER ===== */
@@ -70,6 +70,22 @@
         display: flex;
         align-items: center;
         gap: 16px;
+        letter-spacing: 0;
+    }
+
+    @media (max-width: 560px) {
+        .container {
+            padding: 86px 14px 28px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            gap: 10px;
+        }
     }
 
     .page-title i {

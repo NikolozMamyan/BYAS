@@ -23,7 +23,7 @@
     .collection-page {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 92px 20px 20px;
     }
 
     .collection-header {
@@ -35,7 +35,7 @@
     .collection-header h1 {
         font-size: 2rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 0;
         background: linear-gradient(to right, var(--neon-pink), var(--neon-cyan));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -71,8 +71,29 @@
         perspective: 1000px; /* Crucial pour l'effet 3D */
         padding: 20px 10px 40px;
         background: rgba(255, 255, 255, 0.02);
-        border-radius: 10px;
+        border-radius: 8px;
         position: relative;
+    }
+
+    @media (max-width: 560px) {
+        .collection-page {
+            padding: 82px 14px 20px;
+        }
+
+        .collection-header {
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .collection-header h1 {
+            font-size: 1.7rem;
+        }
+
+        .shelf-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px 12px;
+            padding: 16px 8px 32px;
+        }
     }
 
     /* Le socle de l'étagère */

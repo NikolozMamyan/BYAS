@@ -3,10 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Artist;
-use App\Entity\Badge;
 use App\Entity\StreamingPlayHistory;
 use App\Entity\User;
-use App\Entity\UserBadge;
 use App\Entity\UserFandom;
 use App\Entity\XpTransaction;
 use App\Repository\XpTransactionRepository;
@@ -33,11 +31,6 @@ class XpEngine
     private array $userFandomsByKey = [];
 
     /**
-     * @var array<string, Badge>
-     */
-    private array $badgesByCode = [];
-
-    /**
      * @var array<string, true>
      */
     private array $xpSourcesAwarded = [];
@@ -45,6 +38,7 @@ class XpEngine
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly XpTransactionRepository $xpTransactionRepository,
+        private readonly BadgeAwarder $badgeAwarder,
     ) {
         $this->slugger = new AsciiSlugger();
     }
@@ -106,13 +100,6 @@ class XpEngine
         $user->setGlobalXp($user->getGlobalXp() + $xpAmount);
         $user->setGlobalLevel($this->levelForXp($user->getGlobalXp()));
 
-        if ($sourceType === self::SOURCE_STREAMING_PLAY) {
-            $this->awardBadgeIfMissing($user, 'first_stream', 'First Stream', 'First streaming play counted on BYAS.', [
-                'sourceType' => $sourceType,
-                'sourceReference' => $sourceReference,
-            ]);
-        }
-
         $userFandom = null;
         if ($artist instanceof Artist) {
             $userFandom = $this->findOrCreateUserFandom($user, $artist, $occurredAt);
@@ -123,24 +110,15 @@ class XpEngine
             $userFandom->setUpdatedAt(new \DateTimeImmutable());
 
             $this->entityManager->persist($userFandom);
-
-            if ($userFandom->getLevel() >= 10) {
-                $this->awardBadgeIfMissing(
-                    $user,
-                    sprintf('fandom_level_10_%s', substr($artist->getSlug() ?? 'artist', 0, 56)),
-                    sprintf('Level 10: %s', $artist->getName() ?? 'Artist'),
-                    'Reached fandom level 10.',
-                    ['artistId' => $artist->getId(), 'artistName' => $artist->getName()],
-                    $artist,
-                );
-            }
         }
 
-        if ($user->getGlobalLevel() >= 10) {
-            $this->awardBadgeIfMissing($user, 'global_level_10', 'Global Level 10', 'Reached global fan level 10.', [
-                'globalXp' => $user->getGlobalXp(),
-            ]);
-        }
+        $this->badgeAwarder->awardForXpEvent(
+            $user,
+            $sourceType,
+            $sourceReference,
+            $userFandom,
+            $metadata,
+        );
 
         $transaction = new XpTransaction();
         $transaction
@@ -280,51 +258,6 @@ class XpEngine
         $this->userFandomsByKey[$cacheKey] = $userFandom;
 
         return $userFandom;
-    }
-
-    /**
-     * @param array<string, mixed> $contextData
-     */
-    private function awardBadgeIfMissing(
-        User $user,
-        string $code,
-        string $name,
-        string $description,
-        array $contextData,
-        ?Artist $artist = null,
-    ): void {
-        foreach ($user->getUserBadges() as $userBadge) {
-            if ($userBadge->getBadge()?->getCode() === $code) {
-                return;
-            }
-        }
-
-        $badge = $this->badgesByCode[$code] ?? $this->entityManager->getRepository(Badge::class)->findOneBy(['code' => $code]);
-
-        if (!$badge instanceof Badge) {
-            $badge = new Badge();
-            $badge
-                ->setCode($code)
-                ->setName($name)
-                ->setDescription($description)
-                ->setScope($artist instanceof Artist ? 'fandom' : 'global')
-                ->setRuleType('xp_threshold')
-                ->setRuleConfig(['managedBy' => 'xp_engine'])
-                ->setArtist($artist);
-
-            $this->entityManager->persist($badge);
-        }
-
-        $this->badgesByCode[$code] = $badge;
-
-        $userBadge = new UserBadge();
-        $userBadge
-            ->setUser($user)
-            ->setBadge($badge)
-            ->setContextData($contextData);
-
-        $user->addUserBadge($userBadge);
-        $this->entityManager->persist($userBadge);
     }
 
     private function slugForArtist(string $name): string

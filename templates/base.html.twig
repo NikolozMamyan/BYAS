@@ -29,6 +29,9 @@
     {% endblock %}
   </head>
       <body  data-turbo="false">
+        {% if app.user and app.request.attributes.get('_route') starts with 'app_front_' %}
+        {% include "components/app_header.html.twig" %}
+        {% endif %}
         {% block body %}{% endblock %}
         {% if app.user %}
         {% include "components/mobile_nav.html.twig" %}

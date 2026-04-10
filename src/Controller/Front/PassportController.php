@@ -66,4 +66,32 @@ class PassportController extends AbstractController
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
         ]);
     }
+
+    #[Route('/passport/share', name: 'passport_share', methods: ['GET'])]
+    public function share(UserRepository $userRepository, XpEngine $xpEngine): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('You must be logged in.');
+        }
+
+        $fandoms = $user->getUserFandoms()->toArray();
+        usort($fandoms, static fn ($a, $b): int => $b->getXp() <=> $a->getXp());
+
+        $userBadges = $user->getUserBadges()->toArray();
+        usort(
+            $userBadges,
+            static fn ($a, $b): int => $b->getAwardedAt()->getTimestamp() <=> $a->getAwardedAt()->getTimestamp()
+        );
+
+        return $this->render('front/passport/share.html.twig', [
+            'user' => $user,
+            'profile' => $user->getProfile(),
+            'topFandom' => $fandoms[0] ?? null,
+            'userBadges' => array_slice($userBadges, 0, 3),
+            'globalRank' => $userRepository->getGlobalRankPosition($user),
+            'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+        ]);
+    }
 }

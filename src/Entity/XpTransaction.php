@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\XpTransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: XpTransactionRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_xp_source_reference', columns: ['source_type', 'source_reference'])]
 #[ORM\Index(columns: ['source_type'], name: 'idx_xp_source_type')]
 #[ORM\Index(columns: ['occurred_at'], name: 'idx_xp_occurred_at')]
 class XpTransaction

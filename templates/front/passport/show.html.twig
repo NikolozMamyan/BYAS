@@ -737,15 +737,74 @@
     </div>
 
     <div class="fandom-scroll">
-        {% for fandom in fandoms %}
+        {% for fandom in fandoms|slice(0, 8) %}
             <div class="fandom-card">
                 <i class="fas fa-bolt fandom-icon"></i>
                 <span class="fandom-name">{{ fandom.artist ? fandom.artist.name : 'Idol' }}</span>
                 <span class="fandom-lvl">Level {{ fandom.level }} · {{ fandom.xp }} XP</span>
+                {% if fandom.progressPercent is not null %}
+                    <span class="fandom-lvl">{{ fandom.progressPercent|round }}% to next</span>
+                {% endif %}
             </div>
         {% else %}
             <div class="fandom-card" style="min-width: 240px;">
                 <p style="font-size: 0.8rem; color: var(--text-dim); margin: 0;">No Fandom linked yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-label">
+        <h2>Recent XP</h2>
+        <span class="section-meta">{{ xpTransactions|length }} events</span>
+    </div>
+
+    <div class="settings-list">
+        {% for transaction in xpTransactions %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-plus" style="color: var(--neon-cyan);"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">{{ transaction.reason }}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">
+                            {{ transaction.artist ? transaction.artist.name ~ ' · ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}
+                        </div>
+                    </div>
+                </div>
+                <span class="status-badge">+{{ transaction.xpAmount }} XP</span>
+            </div>
+        {% else %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-clock"></i>
+                    <span style="font-size: 0.9rem;">No XP event yet</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section-label">
+        <h2>Badges</h2>
+        <span class="section-meta">{{ userBadges|length }} earned</span>
+    </div>
+
+    <div class="settings-list">
+        {% for userBadge in userBadges|slice(0, 5) %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-medal" style="color: var(--neon-cyan);"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">{{ userBadge.badge.name }}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ userBadge.awardedAt|date('M d, Y') }}</div>
+                    </div>
+                </div>
+                <span class="status-badge">Earned</span>
+            </div>
+        {% else %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-medal"></i>
+                    <span style="font-size: 0.9rem;">No badge unlocked yet</span>
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -788,14 +847,6 @@
                 <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
             </a>
         {% endif %}
-
-        <div class="action-item">
-            <div class="action-info">
-                <i class="fas fa-medal"></i>
-                <span style="font-size: 0.9rem;">Badges earned</span>
-            </div>
-            <span class="status-badge">{{ userBadges|length }}</span>
-        </div>
 
         <a href="#" class="action-item">
             <div class="action-info">

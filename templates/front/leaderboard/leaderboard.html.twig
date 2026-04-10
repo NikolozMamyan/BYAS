@@ -589,7 +589,7 @@
             <div class="ranking-stats">
                 <div class="ranking-stat">
                     <div class="ranking-stat-label">Mode</div>
-                    <div class="ranking-stat-value">Global</div>
+                    <div class="ranking-stat-value">{{ mode }}</div>
                 </div>
                 <div class="ranking-stat">
                     <div class="ranking-stat-label">Players</div>
@@ -604,10 +604,10 @@
     </section>
 
     <div class="fandom-tabs">
-        <div class="fandom-tab active">Global</div>
-        <div class="fandom-tab">Blackpink</div>
-        <div class="fandom-tab">BTS</div>
-        <div class="fandom-tab">NewJeans</div>
+        <a href="{{ path('app_front_leaderboard') }}" class="fandom-tab {{ selectedArtist ? '' : 'active' }}">Global</a>
+        {% for artist in artists %}
+            <a href="{{ path('app_front_leaderboard', { artist: artist.slug }) }}" class="fandom-tab {{ selectedArtist and selectedArtist.id == artist.id ? 'active' : '' }}">{{ artist.name }}</a>
+        {% endfor %}
     </div>
 
     <section class="podium-shell">
@@ -623,7 +623,7 @@
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ second ? second.displayName : 'empty-2' }}" class="podium-avatar" alt="{{ second ? second.displayName : 'Empty rank' }}">
                 </div>
                 <p class="podium-name">{{ second ? second.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ second ? second.globalXp : 0 }} XP</span>
+                <span class="podium-xp">{{ second ? second.xp : 0 }} XP</span>
                 <span class="podium-label">Silver Tier</span>
             </article>
 
@@ -634,7 +634,7 @@
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ first ? first.displayName : 'empty-1' }}" class="podium-avatar" alt="{{ first ? first.displayName : 'Empty rank' }}">
                 </div>
                 <p class="podium-name">{{ first ? first.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ first ? first.globalXp : 0 }} XP</span>
+                <span class="podium-xp">{{ first ? first.xp : 0 }} XP</span>
                 <span class="podium-label">Legend</span>
             </article>
 
@@ -644,7 +644,7 @@
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ third ? third.displayName : 'empty-3' }}" class="podium-avatar" alt="{{ third ? third.displayName : 'Empty rank' }}">
                 </div>
                 <p class="podium-name">{{ third ? third.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ third ? third.globalXp : 0 }} XP</span>
+                <span class="podium-xp">{{ third ? third.xp : 0 }} XP</span>
                 <span class="podium-label">Bronze Tier</span>
             </article>
         </div>
@@ -659,18 +659,18 @@
         <div class="rank-list">
             {% for user in others %}
                 {% set position = loop.index + 3 %}
-                <div class="rank-item {{ currentUser and currentUser.id == user.id ? 'is-me' : '' }}">
+                <div class="rank-item {{ currentUser and currentUser.id == user.userId ? 'is-me' : '' }}">
                     <div class="rank-pos">{{ position }}</div>
 
                     <div class="rank-info">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.displayName }}" class="rank-img" alt="{{ user.displayName }}">
                         <div class="rank-user-data">
                             <span class="name">{{ user.displayName }}</span>
-                            <span class="xp">{{ user.globalXp }} XP Â· Level {{ user.globalLevel }}</span>
+                            <span class="xp">{{ user.xp }} XP · Level {{ user.level }}</span>
                         </div>
                     </div>
 
-                    {% if currentUser and currentUser.id == user.id %}
+                    {% if currentUser and currentUser.id == user.userId %}
                         <span class="badge-pill badge-top">You</span>
                     {% else %}
                         <span class="badge-pill badge-s">#{{ position }}</span>
@@ -690,3 +690,4 @@
     </section>
 </div>
 {% endblock %}
+

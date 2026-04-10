@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\StreamingAccount;
 use App\Entity\StreamingPlayHistory;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,5 +41,26 @@ class StreamingPlayHistoryRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return $count > 0;
+    }
+
+    /**
+     * @return StreamingPlayHistory[]
+     */
+    public function findBatchAfterId(?User $user, int $lastId = 0, int $limit = 100): array
+    {
+        $qb = $this->createQueryBuilder('h')
+            ->addSelect('u')
+            ->join('h.user', 'u')
+            ->andWhere('h.id > :lastId')
+            ->setParameter('lastId', $lastId)
+            ->orderBy('h.id', 'ASC')
+            ->setMaxResults($limit);
+
+        if ($user instanceof User) {
+            $qb->andWhere('h.user = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

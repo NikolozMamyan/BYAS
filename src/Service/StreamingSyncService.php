@@ -150,7 +150,7 @@ class StreamingSyncService
 
             $this->entityManager->persist($history);
             $transaction = $this->xpEngine->awardStreamingPlay($history);
-            $xpAwarded += $transaction->getXpAmount();
+            $xpAwarded += $transaction?->getXpAmount() ?? 0;
             $inserted++;
         }
 

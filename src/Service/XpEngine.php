@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\UserBadge;
 use App\Entity\UserFandom;
 use App\Entity\XpTransaction;
+use App\Repository\XpTransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
@@ -36,13 +37,19 @@ class XpEngine
      */
     private array $badgesByCode = [];
 
+    /**
+     * @var array<string, true>
+     */
+    private array $xpSourcesAwarded = [];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly XpTransactionRepository $xpTransactionRepository,
     ) {
         $this->slugger = new AsciiSlugger();
     }
 
-    public function awardStreamingPlay(StreamingPlayHistory $history): XpTransaction
+    public function awardStreamingPlay(StreamingPlayHistory $history): ?XpTransaction
     {
         $user = $history->getUser();
 
@@ -87,9 +94,13 @@ class XpEngine
         \DateTimeImmutable $occurredAt,
         ?Artist $artist = null,
         array $metadata = [],
-    ): XpTransaction {
+    ): ?XpTransaction {
         if ($xpAmount <= 0) {
             throw new \InvalidArgumentException('XP amount must be greater than 0.');
+        }
+
+        if ($this->hasTransactionForSource($sourceType, $sourceReference)) {
+            return null;
         }
 
         $user->setGlobalXp($user->getGlobalXp() + $xpAmount);
@@ -147,7 +158,29 @@ class XpEngine
         $this->entityManager->persist($user);
         $this->entityManager->persist($transaction);
 
+        if ($sourceReference !== null && trim($sourceReference) !== '') {
+            $this->xpSourcesAwarded[$this->xpSourceCacheKey($sourceType, $sourceReference)] = true;
+        }
+
         return $transaction;
+    }
+
+    public function hasTransactionForSource(string $sourceType, ?string $sourceReference): bool
+    {
+        if ($sourceReference !== null && trim($sourceReference) !== '') {
+            $cacheKey = $this->xpSourceCacheKey($sourceType, $sourceReference);
+
+            if (isset($this->xpSourcesAwarded[$cacheKey])) {
+                return true;
+            }
+        }
+
+        return $this->xpTransactionRepository->existsForSource($sourceType, $sourceReference);
+    }
+
+    public function sourceReferenceForStreamingPlay(StreamingPlayHistory $history): string
+    {
+        return $this->buildStreamingReference($history);
     }
 
     public function levelForXp(int $xp): int
@@ -307,6 +340,11 @@ class XpEngine
         $artistKey = $artist->getId() !== null ? (string) $artist->getId() : ($artist->getSlug() ?? spl_object_hash($artist));
 
         return $userKey . ':' . $artistKey;
+    }
+
+    private function xpSourceCacheKey(string $sourceType, string $sourceReference): string
+    {
+        return $sourceType . ':' . $sourceReference;
     }
 
     private function buildStreamingReference(StreamingPlayHistory $history): string

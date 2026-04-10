@@ -6,6 +6,7 @@ use App\Entity\StreamingAccount;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
+use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,7 +70,11 @@ class PassportController extends AbstractController
     }
 
     #[Route('/passport/share', name: 'passport_share', methods: ['GET'])]
-    public function share(UserRepository $userRepository, XpEngine $xpEngine): Response
+    public function share(
+        UserRepository $userRepository,
+        XpEngine $xpEngine,
+        PublicPassportProfileService $publicPassportProfileService,
+    ): Response
     {
         $user = $this->getUser();
 
@@ -77,6 +82,7 @@ class PassportController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in.');
         }
 
+        $profile = $publicPassportProfileService->ensureProfile($user);
         $fandoms = $user->getUserFandoms()->toArray();
         usort($fandoms, static fn ($a, $b): int => $b->getXp() <=> $a->getXp());
 
@@ -88,12 +94,14 @@ class PassportController extends AbstractController
 
         return $this->render('front/passport/share.html.twig', [
             'user' => $user,
-            'profile' => $user->getProfile(),
+            'profile' => $profile,
             'topFandom' => $fandoms[0] ?? null,
             'userBadges' => array_slice($userBadges, 0, 3),
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
-            'shareUrl' => $this->generateUrl('app_front_passport_share', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'shareUrl' => $this->generateUrl('app_public_passport', [
+                'shareSlug' => $profile->getShareSlug(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 }

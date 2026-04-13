@@ -19,6 +19,7 @@ class BadgeAwarder
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly BadgeCatalog $badgeCatalog,
+        private readonly NotificationCenter $notificationCenter,
     ) {
     }
 
@@ -90,6 +91,7 @@ class BadgeAwarder
 
         $user->addUserBadge($userBadge);
         $this->entityManager->persist($userBadge);
+        $this->notificationCenter->notifyBadgeUnlocked($user, $badge);
     }
 
     private function findOrCreateBadge(string $code, string $catalogCode, ?Artist $artist): ?Badge

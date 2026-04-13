@@ -7,6 +7,7 @@ use App\Entity\StreamingPlayHistory;
 use App\Entity\User;
 use App\Repository\StreamingAccountRepository;
 use App\Repository\StreamingPlayHistoryRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StreamingSyncService
@@ -18,11 +19,14 @@ class StreamingSyncService
         private readonly YouTubeDataService $youTubeDataService,
         private readonly XpEngine $xpEngine,
         private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly NotificationCenter $notificationCenter,
     ) {
     }
 
     public function syncUser(User $user): array
     {
+        $previousRank = $this->userRepository->getGlobalRankPosition($user);
         $accounts = $this->accountRepository->findConnectedByUser($user);
 
         $providers = [];
@@ -45,12 +49,23 @@ class StreamingSyncService
             $this->entityManager->flush();
         }
 
+        $currentRank = $this->userRepository->getGlobalRankPosition($user);
+        $this->notificationCenter->notifySyncCompleted($user, $providers, $totalInserted, $totalXpAwarded);
+
+        if ($currentRank < $previousRank) {
+            $this->notificationCenter->notifyRankImproved($user, $previousRank, $currentRank);
+        }
+
+        $this->entityManager->flush();
+
         return [
             'accounts' => count($accounts),
             'totalFetched' => $totalFetched,
             'totalInserted' => $totalInserted,
             'totalSkipped' => $totalSkipped,
             'totalXpAwarded' => $totalXpAwarded,
+            'previousRank' => $previousRank,
+            'currentRank' => $currentRank,
             'providers' => $providers,
         ];
     }

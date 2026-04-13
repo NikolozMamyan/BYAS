@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuthCookieService;
 use App\Service\GoogleOAuthService;
+use App\Service\NotificationCenter;
 use App\Service\SessionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,6 +37,7 @@ class GoogleAuthController extends AbstractController
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
         UserRepository $userRepository,
+        NotificationCenter $notificationCenter,
     ): Response {
         $error = (string) $request->query->get('error', '');
 
@@ -59,7 +61,7 @@ class GoogleAuthController extends AbstractController
             $payload = $result['payload'];
 
             return match ($payload['purpose'] ?? GoogleOAuthService::PURPOSE_LOGIN) {
-                GoogleOAuthService::PURPOSE_CONNECT_YOUTUBE => $this->handleYoutubeConnect($googleOAuthService, $userRepository, $result),
+                GoogleOAuthService::PURPOSE_CONNECT_YOUTUBE => $this->handleYoutubeConnect($googleOAuthService, $userRepository, $notificationCenter, $result),
                 default => $this->handleLogin($request, $googleOAuthService, $sessionManager, $authCookieService, $result),
             };
         } catch (\Throwable $e) {
@@ -93,6 +95,7 @@ class GoogleAuthController extends AbstractController
     private function handleYoutubeConnect(
         GoogleOAuthService $googleOAuthService,
         UserRepository $userRepository,
+        NotificationCenter $notificationCenter,
         array $result
     ): Response {
         $userId = isset($result['payload']['userId']) ? (int) $result['payload']['userId'] : 0;
@@ -107,6 +110,12 @@ class GoogleAuthController extends AbstractController
         }
 
         $account = $googleOAuthService->connectYoutubeForUser($currentUser, $result['profile'], $result['tokenData']);
+        $notificationCenter->notifyProviderConnected(
+            $currentUser,
+            'youtube',
+            $account->getDisplayName() ?? $account->getProviderUserId()
+        );
+        $notificationCenter->flush();
 
         $this->addFlash(
             'success',

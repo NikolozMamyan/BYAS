@@ -13,6 +13,7 @@ class PublicPassportAnalyticsService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly NotificationCenter $notificationCenter,
     ) {
     }
 
@@ -30,6 +31,12 @@ class PublicPassportAnalyticsService
             ->setReferrer($this->trimNullable($request->headers->get('referer'), 255));
 
         $this->entityManager->persist($visit);
+        $owner = $profile->getUser();
+
+        if ($owner instanceof User) {
+            $this->notificationCenter->notifyPublicVisit($owner, $viewer);
+        }
+
         $this->entityManager->flush();
     }
 
@@ -44,6 +51,12 @@ class PublicPassportAnalyticsService
             ->setSender($sender);
 
         $this->entityManager->persist($intent);
+        $owner = $profile->getUser();
+
+        if ($owner instanceof User) {
+            $this->notificationCenter->notifyContactIntent($owner, $sender);
+        }
+
         $this->entityManager->flush();
     }
 

@@ -26,4 +26,18 @@ class PublicPassportContactIntentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @return PublicPassportContactIntent[]
+     */
+    public function findRecentForProfile(UserProfile $profile, int $limit = 10): array
+    {
+        return $this->createQueryBuilder('intent')
+            ->andWhere('intent.profile = :profile')
+            ->setParameter('profile', $profile)
+            ->orderBy('intent.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

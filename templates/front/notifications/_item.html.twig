@@ -1,0 +1,40 @@
+{% set compact = compact|default(false) %}
+{% set icon = 'fa-bell' %}
+{% set color = '#00F2FF' %}
+{% if notification.type == 'contact_intent' %}
+    {% set icon = 'fa-message' %}
+    {% set color = '#FF007A' %}
+{% elseif notification.type == 'badge_unlocked' %}
+    {% set icon = 'fa-medal' %}
+    {% set color = '#FFD700' %}
+{% elseif notification.type == 'sync_completed' %}
+    {% set icon = 'fa-rotate' %}
+    {% set color = '#00F2FF' %}
+{% elseif notification.type == 'provider_connected' %}
+    {% set icon = 'fa-link' %}
+    {% set color = '#7CFF6B' %}
+{% elseif notification.type == 'rank_improved' %}
+    {% set icon = 'fa-arrow-trend-up' %}
+    {% set color = '#9D50BB' %}
+{% elseif notification.type == 'public_visit' %}
+    {% set icon = 'fa-eye' %}
+    {% set color = '#00F2FF' %}
+{% endif %}
+
+<a href="{{ path('app_front_notifications_open', { id: notification.id }) }}"
+   class="feed-item {{ notification.isRead ? '' : 'is-unread' }}">
+    <div class="feed-icon" style="color: {{ color }};">
+        <i class="fas {{ icon }}"></i>
+    </div>
+    <div class="feed-content">
+        <div class="feed-title">{{ notification.title }}</div>
+        <div class="muted">{{ notification.body }}</div>
+        {% if not notification.isRead %}
+            <div class="feed-unread">
+                <i class="fas fa-circle" style="font-size: 0.45rem;"></i>
+                New
+            </div>
+        {% endif %}
+    </div>
+    <div class="feed-time">{{ notification.createdAt|date(compact ? 'H:i' : 'M d, H:i') }}</div>
+</a>

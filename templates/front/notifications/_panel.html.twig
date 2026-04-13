@@ -1,0 +1,22 @@
+{% if notifications is empty %}
+    <div class="notif-panel__empty">
+        <i class="fas fa-bell"></i>
+        <div>No notification yet</div>
+    </div>
+{% else %}
+    <div class="notif-panel__head">
+        <div>
+            <strong>Notifications</strong>
+            <div class="notif-panel__muted">{{ unreadCount }} unread</div>
+        </div>
+        <a href="{{ path('app_front_notifications') }}" class="notif-panel__link">View all</a>
+    </div>
+    <div class="notif-panel__list">
+        {% for notification in notifications %}
+            {% include 'front/notifications/_item.html.twig' with { notification: notification, compact: true } only %}
+        {% endfor %}
+    </div>
+    <div class="notif-panel__footer">
+        <a href="{{ path('app_front_notifications') }}" class="notif-panel__button">Open inbox</a>
+    </div>
+{% endif %}

@@ -3,6 +3,7 @@
 namespace App\Controller\Front;
 
 use App\Entity\User;
+use App\Service\NotificationCenter;
 use App\Service\SpotifyOAuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,7 +27,11 @@ class SpotifyAuthController extends AbstractController
     }
 
     #[Route('/callback', name: 'callback', methods: ['GET'])]
-    public function callback(Request $request, SpotifyOAuthService $spotifyOAuthService): Response
+    public function callback(
+        Request $request,
+        SpotifyOAuthService $spotifyOAuthService,
+        NotificationCenter $notificationCenter,
+    ): Response
     {
         $user = $this->getUser();
 
@@ -52,6 +57,12 @@ class SpotifyAuthController extends AbstractController
 
         try {
             $account = $spotifyOAuthService->handleCallback($user, $code, is_string($state) ? $state : null);
+            $notificationCenter->notifyProviderConnected(
+                $user,
+                'spotify',
+                $account->getDisplayName() ?? $account->getProviderUserId()
+            );
+            $notificationCenter->flush();
 
             $this->addFlash(
                 'success',

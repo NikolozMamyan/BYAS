@@ -1,0 +1,273 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Notifications{% endblock %}
+
+{% block stylesheets %}
+<style>
+    :root {
+        --bg-dark: #0B0E14;
+        --line: rgba(255,255,255,0.08);
+        --text-main: #FFFFFF;
+        --text-dim: #9CA3AF;
+        --neon-pink: #FF007A;
+        --neon-cyan: #00F2FF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        background:
+            radial-gradient(circle at 50% -10%, rgba(0, 242, 255, 0.13) 0%, transparent 40%),
+            radial-gradient(circle at 0% 100%, rgba(255, 0, 122, 0.10) 0%, transparent 35%),
+            linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
+        color: var(--text-main);
+        font-family: 'Outfit', sans-serif;
+        padding-bottom: 120px;
+    }
+
+    .notifications-page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 92px 14px 24px;
+        display: grid;
+        gap: 14px;
+    }
+
+    .hero,
+    .stats,
+    .feed-shell {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.04);
+        box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+    }
+
+    .hero {
+        padding: 18px;
+        background:
+            linear-gradient(135deg, rgba(255,0,122,0.16), transparent 36%),
+            linear-gradient(45deg, rgba(0,242,255,0.12), transparent 42%),
+            rgba(255,255,255,0.04);
+    }
+
+    .hero-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .kicker {
+        color: var(--neon-cyan);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    h1, h2 {
+        margin: 0;
+        letter-spacing: 0;
+    }
+
+    h1 {
+        font-size: 1.9rem;
+        line-height: 1;
+    }
+
+    .muted {
+        color: var(--text-dim);
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .mark-read-btn {
+        min-height: 40px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.05);
+        color: var(--text-main);
+        font-size: 0.78rem;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        overflow: hidden;
+    }
+
+    .stat {
+        padding: 14px;
+        background: rgba(255,255,255,0.02);
+    }
+
+    .stat small {
+        display: block;
+        color: var(--text-dim);
+        font-size: 0.7rem;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        font-weight: 800;
+    }
+
+    .stat strong {
+        font-size: 1rem;
+    }
+
+    .feed-shell {
+        padding: 12px;
+    }
+
+    .feed-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 4px 4px 12px;
+    }
+
+    .feed-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .feed-item {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.03);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .feed-item.is-unread {
+        border-color: rgba(0,242,255,0.22);
+        background: rgba(0,242,255,0.05);
+    }
+
+    .feed-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.06);
+        flex: 0 0 auto;
+    }
+
+    .feed-content {
+        min-width: 0;
+    }
+
+    .feed-title {
+        font-size: 0.92rem;
+        font-weight: 800;
+    }
+
+    .feed-time {
+        font-size: 0.74rem;
+        color: var(--text-dim);
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    .feed-unread {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        color: var(--neon-cyan);
+        font-size: 0.72rem;
+        font-weight: 800;
+    }
+
+    @media (max-width: 640px) {
+        .stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .hero-top,
+        .feed-head {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .feed-item {
+            grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .feed-time {
+            grid-column: 2;
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="notifications-page">
+    <section class="hero">
+        <div class="hero-top">
+            <div>
+                <div class="kicker">Notifications</div>
+                <h1>Inbox</h1>
+            </div>
+            {% if unreadCount > 0 %}
+                <form method="post" action="{{ path('app_front_notifications_mark_all_read') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('mark_all_notifications_read') }}">
+                    <button type="submit" class="mark-read-btn">Mark all as read</button>
+                </form>
+            {% endif %}
+        </div>
+        <p class="muted">Public visits, message intents and new badge milestones are now stored and tracked.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <small>Total</small>
+            <strong>{{ notificationCount }}</strong>
+        </div>
+        <div class="stat">
+            <small>Unread</small>
+            <strong>{{ unreadCount }}</strong>
+        </div>
+        <div class="stat">
+            <small>Read</small>
+            <strong>{{ notificationCount - unreadCount }}</strong>
+        </div>
+    </section>
+
+    <section class="feed-shell">
+        <div class="feed-head">
+            <h2>Recent activity</h2>
+            <span class="muted">{{ notifications|length }} events</span>
+        </div>
+
+        <div class="feed-list">
+            {% for notification in notifications %}
+                {% include 'front/notifications/_item.html.twig' with { notification: notification, compact: false } only %}
+            {% else %}
+                <article class="feed-item">
+                    <div class="feed-icon" style="color: var(--neon-cyan);">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="feed-content">
+                        <div class="feed-title">No notification yet</div>
+                        <div class="muted">Share your Passport or keep syncing your accounts to generate activity.</div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

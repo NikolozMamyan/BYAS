@@ -7,6 +7,7 @@ import ClipboardController from './controllers/clipboard_controller.js';
 import PlayHistoryController from './controllers/play_history_controller.js';
 import BackNavController from './controllers/back_nav_controller.js';
 import NotificationsPanelController from './controllers/notifications_panel_controller.js';
+import MobileHubController from './controllers/mobile_hub_controller.js';
 import './controllers/csrf_protection_controller.js';
 
 const app = startStimulusApp();
@@ -18,3 +19,4 @@ app.register('clipboard', ClipboardController);
 app.register('play-history', PlayHistoryController);
 app.register('back-nav', BackNavController);
 app.register('notifications-panel', NotificationsPanelController);
+app.register('mobile-hub', MobileHubController);

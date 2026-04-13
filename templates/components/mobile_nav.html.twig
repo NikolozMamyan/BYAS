@@ -1,3 +1,9 @@
+{% set hasPublicProfile = app.user.profile and app.user.profile.shareSlug %}
+{% set publicPassportPath = hasPublicProfile
+    ? path('app_public_passport', { shareSlug: app.user.profile.shareSlug })
+    : path('app_front_passport_settings')
+%}
+{% set publicPassportUrl = hasPublicProfile ? absolute_url(publicPassportPath) : '' %}
 
 <style>
         :root {
@@ -10,12 +16,15 @@
             --text-dim: #A0A0A0;
             --manga-radius: 20px;
         }
-        /* --- BOTTOM NAV BAR --- */
-        .bottom-nav {
+        .bottom-nav-wrap {
             position: fixed;
             bottom: 12px;
             left: 12px;
             right: 12px;
+            z-index: 9999;
+        }
+
+        .bottom-nav {
             height: 62px;
             background: rgba(15, 18, 26, 0.94);
             backdrop-filter: blur(20px);
@@ -26,7 +35,6 @@
             padding: 0 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            z-index: 9999;
         }
 
         .nav-link {
@@ -55,36 +63,255 @@
             border: 4px solid var(--bg-deep);
             color: white;
             box-shadow: 0 5px 15px rgba(255, 0, 122, 0.4);
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+            appearance: none;
+            padding: 0;
+        }
+
+        .bottom-nav-wrap.is-open .nav-scan,
+        .nav-scan.active {
+            box-shadow:
+                0 5px 15px rgba(255, 0, 122, 0.4),
+                0 0 0 1px rgba(255,255,255,0.24);
+        }
+
+        .mobile-hub {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 76px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(15, 18, 26, 0.98);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.42);
+            padding: 12px;
+        }
+
+        .mobile-hub__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .mobile-hub__title {
+            color: white;
+            font-size: 0.88rem;
+            font-weight: 800;
+        }
+
+        .mobile-hub__subtitle {
+            color: rgba(255,255,255,0.58);
+            font-size: 0.72rem;
+            margin-top: 3px;
+        }
+
+        .mobile-hub__close {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            cursor: pointer;
+        }
+
+        .mobile-hub__grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .mobile-hub__action {
+            min-height: 84px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: white;
+            text-decoration: none;
+            display: grid;
+            align-content: center;
+            justify-items: start;
+            gap: 7px;
+            padding: 12px;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .mobile-hub__action i {
+            font-size: 1rem;
+            color: var(--neon-cyan);
+        }
+
+        .mobile-hub__action strong {
+            font-size: 0.8rem;
+            line-height: 1.1;
+        }
+
+        .mobile-hub__action span {
+            color: rgba(255,255,255,0.58);
+            font-size: 0.7rem;
+            line-height: 1.25;
+        }
+
+        .mobile-hub__action:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .mobile-hub__status {
+            min-height: 18px;
+            margin-top: 10px;
+            color: var(--neon-cyan);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .mobile-hub__scanner {
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+        }
+
+        .mobile-hub__scanner-frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #05070c;
+            aspect-ratio: 1 / 1;
+            display: grid;
+            place-items: center;
+        }
+
+        .mobile-hub__scanner-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .mobile-hub__scanner-frame::after {
+            content: "";
+            position: absolute;
+            inset: 16% 16%;
+            border: 2px solid rgba(0,242,255,0.75);
+            border-radius: 8px;
+            pointer-events: none;
+            box-shadow: 0 0 0 999px rgba(0,0,0,0.22);
+        }
+
+        .mobile-hub__scanner-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mobile-hub__scanner-text {
+            color: rgba(255,255,255,0.72);
+            font-size: 0.72rem;
+            line-height: 1.35;
         }
 </style>
-<nav class="bottom-nav">
-    <a href="{{ path('app_front_passport') }}"
-       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_passport' ? 'active' : '' }}">
-        <i class="fas fa-id-card"></i>
-        <span>Passport</span>
-    </a>
 
-    <a href="{{ path('app_front_leaderboard') }}"
-       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_leaderboard' ? 'active' : '' }}">
-        <i class="fas fa-chart-line"></i>
-        <span>Leaderboard</span>
-    </a>
+<div
+    class="bottom-nav-wrap"
+    data-controller="mobile-hub"
+    data-mobile-hub-public-url-value="{{ publicPassportUrl }}"
+>
+    <div class="mobile-hub" data-mobile-hub-target="sheet" hidden>
+        <div class="mobile-hub__head">
+            <div>
+                <div class="mobile-hub__title">Passport hub</div>
+                <div class="mobile-hub__subtitle">Share or open your public profile</div>
+            </div>
+            <button type="button" class="mobile-hub__close" data-action="mobile-hub#close" aria-label="Close hub">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
 
-    <div class="nav-scan">
-        <i class="fas fa-qrcode fa-lg"></i>
+        <div class="mobile-hub__grid">
+            <a href="{{ path('app_front_passport_share') }}" class="mobile-hub__action">
+                <i class="fas fa-image"></i>
+                <strong>Share card</strong>
+                <span>Open your Passport card</span>
+            </a>
+
+            <button type="button" class="mobile-hub__action" data-action="mobile-hub#startScanner">
+                <i class="fas fa-qrcode"></i>
+                <strong>Scan QR</strong>
+                <span>Open the camera and scan a code</span>
+            </button>
+
+            <a href="{{ publicPassportPath }}" class="mobile-hub__action">
+                <i class="fas fa-globe"></i>
+                <strong>Public link</strong>
+                <span>{{ hasPublicProfile ? 'Open your public Passport' : 'Finish profile setup' }}</span>
+            </a>
+
+            <button type="button" class="mobile-hub__action" data-mobile-hub-target="copyButton" data-action="mobile-hub#copy" {{ hasPublicProfile ? '' : 'disabled' }}>
+                <i class="fas fa-copy"></i>
+                <strong>Copy link</strong>
+                <span>{{ hasPublicProfile ? 'Copy your public Passport URL' : 'Copy unavailable until setup' }}</span>
+            </button>
+        </div>
+
+        <div class="mobile-hub__scanner" data-mobile-hub-target="scanner" hidden>
+            <div class="mobile-hub__scanner-frame">
+                <video data-mobile-hub-target="scannerVideo" playsinline></video>
+            </div>
+            <div class="mobile-hub__scanner-meta">
+                <div class="mobile-hub__scanner-text" data-mobile-hub-target="scannerStatus">Point the camera at a QR code.</div>
+                <button type="button" class="mobile-hub__close" data-action="mobile-hub#closeScanner" aria-label="Close scanner">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-hub__status" data-mobile-hub-target="status"></div>
     </div>
 
-    <a href="{{ path('app_front_play_history') }}"
-       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_play_history' ? 'active' : '' }}">
-        <i class="fas fa-clock-rotate-left"></i>
-        <span>Play History</span>
-    </a>
+    <nav class="bottom-nav">
+        <a href="{{ path('app_front_passport') }}"
+           class="nav-link {{ app.request.attributes.get('_route') == 'app_front_passport' ? 'active' : '' }}">
+            <i class="fas fa-id-card"></i>
+            <span>Passport</span>
+        </a>
 
-    <a href="#"
-       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}"
-       aria-disabled="true"
-       title="Chat coming soon">
-        <i class="fas fa-comment-dots"></i>
-        <span>Chat</span>
-    </a>
-</nav>
+        <a href="{{ path('app_front_leaderboard') }}"
+           class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_leaderboard' ? 'active' : '' }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Leaderboard</span>
+        </a>
+
+        <button
+            type="button"
+            class="nav-scan {{ app.request.attributes.get('_route') == 'app_front_passport_share' ? 'active' : '' }}"
+            aria-label="Open Passport hub"
+            data-action="mobile-hub#toggle"
+        >
+            <i class="fas fa-qrcode fa-lg"></i>
+        </button>
+
+        <a href="{{ path('app_front_play_history') }}"
+           class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_play_history' ? 'active' : '' }}">
+            <i class="fas fa-clock-rotate-left"></i>
+            <span>Play History</span>
+        </a>
+
+        <a href="#"
+           class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}"
+           aria-disabled="true"
+           title="Chat coming soon">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chat</span>
+        </a>
+    </nav>
+</div>

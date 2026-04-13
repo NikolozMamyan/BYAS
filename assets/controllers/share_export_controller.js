@@ -25,6 +25,8 @@ export default class extends Controller {
         this.setStatus('Rendering your story card...');
 
         try {
+            await this.waitForImages();
+
             const canvas = await window.html2canvas(this.cardTarget, {
                 backgroundColor: '#0B0E14',
                 scale: 3,
@@ -37,11 +39,36 @@ export default class extends Controller {
             link.click();
             this.setStatus('PNG ready for Instagram Stories.');
         } catch (error) {
-            this.setStatus('PNG export failed. Save as PDF is still available.');
+            this.setStatus('PNG export failed. Try again in a moment.');
         } finally {
             this.downloadTarget.disabled = false;
             this.downloadTarget.textContent = 'Download PNG';
         }
+    }
+
+    async waitForImages() {
+        const images = Array.from(this.cardTarget.querySelectorAll('img'));
+
+        if (images.length === 0) {
+            return;
+        }
+
+        await Promise.all(images.map((image) => {
+            if (image.complete && image.naturalWidth > 0) {
+                return Promise.resolve();
+            }
+
+            return new Promise((resolve) => {
+                const done = () => {
+                    image.removeEventListener('load', done);
+                    image.removeEventListener('error', done);
+                    resolve();
+                };
+
+                image.addEventListener('load', done, { once: true });
+                image.addEventListener('error', done, { once: true });
+            });
+        }));
     }
 
     initQr() {

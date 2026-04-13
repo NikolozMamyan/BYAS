@@ -80,9 +80,11 @@
         <span>Play History</span>
     </a>
 
-    <a href="{{ path('app_front_notifications') }}"
-       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_notifications' ? 'active' : '' }}">
-        <i class="fas fa-bell"></i>
-        <span>Inbox</span>
+    <a href="#"
+       class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}"
+       aria-disabled="true"
+       title="Chat coming soon">
+        <i class="fas fa-comment-dots"></i>
+        <span>Chat</span>
     </a>
 </nav>

@@ -129,10 +129,12 @@
         align-items: center;
     }
 
-    .avatar-initials {
+    .avatar-media,
+    .avatar-media.avatar-placeholder {
         width: 78px;
         height: 78px;
         border-radius: 8px;
+        object-fit: cover;
         display: grid;
         place-items: center;
         font-size: 1.65rem;
@@ -356,7 +358,8 @@
             gap: 12px;
         }
 
-        .avatar-initials {
+        .avatar-media,
+        .avatar-media.avatar-placeholder {
             width: 70px;
             height: 70px;
         }
@@ -388,7 +391,11 @@
 
         <div class="hero-zone">
             <div class="identity-row">
-                <div class="avatar-initials">{{ displayName|slice(0, 2)|upper }}</div>
+                {% include 'components/user_avatar.html.twig' with {
+                    avatarUrl: user.avatarUrl,
+                    displayName: displayName,
+                    avatarClass: 'avatar-media'
+                } only %}
                 <div>
                     <h1 class="name">{{ displayName }}</h1>
                     <div class="level">Level {{ user.globalLevel }} &middot; {{ user.globalXp }} XP</div>
@@ -436,10 +443,10 @@
     <div class="share-actions">
         <a href="{{ path('app_front_passport') }}">Back to Passport</a>
         <button type="button" class="primary" id="downloadStory" data-share-export-target="download" data-action="share-export#download">Download PNG</button>
-        <button type="button" data-action="share-export#print">Save as PDF</button>
+        {# <button type="button" data-action="share-export#print">Save as PDF</button> #}
     </div>
 
-    <p class="share-note" id="shareExportStatus" data-share-export-target="status">PNG export uses the story card only, with dark colors preserved.</p>
+    <p class="share-note" id="shareExportStatus" data-share-export-target="status">PNG export uses the story card only, including your uploaded avatar when available.</p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>

@@ -8,6 +8,7 @@ use App\Repository\PublicPassportContactIntentRepository;
 use App\Repository\PublicPassportVisitRepository;
 use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
+use App\Service\AppleMusicService;
 use App\Service\AvatarManager;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;

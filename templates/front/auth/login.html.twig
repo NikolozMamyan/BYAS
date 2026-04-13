@@ -216,10 +216,18 @@
         <span>Fandom Passport</span>
     </div>
 
+    {% for message in app.flashes('error') %}
+        <div class="error-msg">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="error-msg" style="background: rgba(0, 242, 255, 0.08); color: var(--neon-cyan); border-color: rgba(0, 242, 255, 0.2);">{{ message }}</div>
+    {% endfor %}
+
 
 
     <div class="social-auth">
-        <a href="#" class="btn-social btn-google">
+        <a href="{{ path('app_google_start', { next: next|default('/app/passport') }) }}" class="btn-social btn-google">
             <i class="fab fa-google"></i> Continue with Google
         </a>
         <a href="#" class="btn-social btn-spotify">

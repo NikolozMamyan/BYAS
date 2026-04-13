@@ -42,14 +42,19 @@ class PassportController extends AbstractController
 
         $spotifyAccount = null;
         $isSpotifyConnected = false;
+        $youtubeAccount = null;
+        $isYoutubeConnected = false;
 
         foreach ($streamingAccounts as $streamingAccount) {
-            if (
-                $streamingAccount->getProvider() === StreamingAccount::PROVIDER_SPOTIFY
-            ) {
+            if ($streamingAccount->getProvider() === StreamingAccount::PROVIDER_SPOTIFY) {
                 $spotifyAccount = $streamingAccount;
                 $isSpotifyConnected = $streamingAccount->isConnected();
-                break;
+                continue;
+            }
+
+            if ($streamingAccount->getProvider() === StreamingAccount::PROVIDER_YOUTUBE) {
+                $youtubeAccount = $streamingAccount;
+                $isYoutubeConnected = $streamingAccount->isConnected();
             }
         }
 
@@ -70,6 +75,8 @@ class PassportController extends AbstractController
             'streamingAccounts' => $streamingAccounts,
             'spotifyAccount' => $spotifyAccount,
             'isSpotifyConnected' => $isSpotifyConnected,
+            'youtubeAccount' => $youtubeAccount,
+            'isYoutubeConnected' => $isYoutubeConnected,
             'xpTransactions' => $xpTransactionRepository->findRecentForUser($user, 8),
             'items' => $user->getCollectionItems(),
             'userBadges' => $userBadges,

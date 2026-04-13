@@ -15,6 +15,7 @@ class StreamingSyncService
         private readonly StreamingAccountRepository $accountRepository,
         private readonly StreamingPlayHistoryRepository $historyRepository,
         private readonly SpotifyDataService $spotifyDataService,
+        private readonly YouTubeDataService $youTubeDataService,
         private readonly XpEngine $xpEngine,
         private readonly EntityManagerInterface $entityManager,
     ) {
@@ -58,6 +59,7 @@ class StreamingSyncService
     {
         return match ($account->getProvider()) {
             StreamingAccount::PROVIDER_SPOTIFY => $this->syncSpotifyAccount($user, $account),
+            StreamingAccount::PROVIDER_YOUTUBE => $this->syncYoutubeAccount($user, $account),
             StreamingAccount::PROVIDER_APPLE_MUSIC => [
                 'provider' => $account->getProvider(),
                 'status' => 'not_implemented',
@@ -170,6 +172,98 @@ class StreamingSyncService
         ];
     }
 
+    private function syncYoutubeAccount(User $user, StreamingAccount $account): array
+    {
+        $data = $this->youTubeDataService->getLikedVideos($user, 50);
+        $items = $data['items'] ?? [];
+
+        $fetched = 0;
+        $inserted = 0;
+        $skipped = 0;
+        $xpAwarded = 0;
+        $seenPlays = [];
+
+        foreach ($items as $item) {
+            $fetched++;
+
+            if (!is_array($item)) {
+                $skipped++;
+                continue;
+            }
+
+            $snippet = $item['snippet'] ?? null;
+            $contentDetails = $item['contentDetails'] ?? null;
+
+            if (!is_array($snippet) || !is_array($contentDetails)) {
+                $skipped++;
+                continue;
+            }
+
+            $providerItemId = (string) ($contentDetails['videoId'] ?? '');
+            $playedAtRaw = (string) ($snippet['publishedAt'] ?? '');
+
+            if ($providerItemId === '' || $playedAtRaw === '') {
+                $skipped++;
+                continue;
+            }
+
+            try {
+                $playedAt = new \DateTimeImmutable($playedAtRaw);
+            } catch (\Throwable) {
+                $skipped++;
+                continue;
+            }
+
+            if ($this->historyRepository->exists($account, $providerItemId, $playedAt)) {
+                $skipped++;
+                continue;
+            }
+
+            $playKey = sprintf('%s:%s:%s', $account->getId() ?? spl_object_hash($account), $providerItemId, $playedAt->format('U.u'));
+
+            if (isset($seenPlays[$playKey])) {
+                $skipped++;
+                continue;
+            }
+
+            $seenPlays[$playKey] = true;
+
+            $history = new StreamingPlayHistory();
+            $history
+                ->setUser($user)
+                ->setStreamingAccount($account)
+                ->setProvider($account->getProvider())
+                ->setProviderItemId($providerItemId)
+                ->setProviderType('video')
+                ->setItemName((string) ($snippet['title'] ?? 'Unknown video'))
+                ->setArtistName($this->extractYoutubeChannelName($snippet))
+                ->setAlbumName(null)
+                ->setDurationMs(null)
+                ->setPlayedAt($playedAt)
+                ->setRawData($item);
+
+            $this->entityManager->persist($history);
+            $transaction = $this->xpEngine->awardStreamingPlay($history);
+            $xpAwarded += $transaction?->getXpAmount() ?? 0;
+            $inserted++;
+        }
+
+        if ($fetched > 0) {
+            $account->touchLastSync();
+            $this->entityManager->persist($account);
+        }
+
+        return [
+            'provider' => $account->getProvider(),
+            'status' => 'success',
+            'fetched' => $fetched,
+            'inserted' => $inserted,
+            'skipped' => $skipped,
+            'xpAwarded' => $xpAwarded,
+            'message' => 'YouTube sync completed from liked videos.',
+        ];
+    }
+
     private function extractSpotifyArtistName(array $track): ?string
     {
         $artists = $track['artists'] ?? null;
@@ -200,5 +294,12 @@ class StreamingSyncService
         $name = $album['name'] ?? null;
 
         return is_string($name) && trim($name) !== '' ? trim($name) : null;
+    }
+
+    private function extractYoutubeChannelName(array $snippet): ?string
+    {
+        $channelTitle = $snippet['videoOwnerChannelTitle'] ?? $snippet['channelTitle'] ?? null;
+
+        return is_string($channelTitle) && trim($channelTitle) !== '' ? trim($channelTitle) : null;
     }
 }

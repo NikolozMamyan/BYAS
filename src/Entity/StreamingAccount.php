@@ -13,6 +13,7 @@ class StreamingAccount
 {
     public const PROVIDER_SPOTIFY = 'spotify';
     public const PROVIDER_APPLE_MUSIC = 'apple_music';
+    public const PROVIDER_YOUTUBE = 'youtube';
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONNECTED = 'connected';
@@ -23,6 +24,7 @@ class StreamingAccount
     public const ALLOWED_PROVIDERS = [
         self::PROVIDER_SPOTIFY,
         self::PROVIDER_APPLE_MUSIC,
+        self::PROVIDER_YOUTUBE,
     ];
 
     public const ALLOWED_STATUSES = [

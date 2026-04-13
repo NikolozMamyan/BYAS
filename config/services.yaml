@@ -4,6 +4,9 @@ parameters:
     spotify.client_id: '%env(string:SPOTIFY_CLIENT_ID)%'
     spotify.client_secret: '%env(string:SPOTIFY_CLIENT_SECRET)%'
     spotify.redirect_uri: '%env(string:SPOTIFY_REDIRECT_URI)%'
+    google.client_id: '%env(string:GOOGLE_CLIENT_ID)%'
+    google.client_secret: '%env(string:GOOGLE_CLIENT_SECRET)%'
+    google.redirect_uri: '%env(string:GOOGLE_REDIRECT_URI)%'
 
 services:
     # default configuration for services in *this* file
@@ -28,3 +31,9 @@ services:
             $spotifyClientId: '%spotify.client_id%'
             $spotifyClientSecret: '%spotify.client_secret%'
             $spotifyRedirectUri: '%spotify.redirect_uri%'
+
+    App\Service\GoogleOAuthService:
+        arguments:
+            $googleClientId: '%google.client_id%'
+            $googleClientSecret: '%google.client_secret%'
+            $googleRedirectUri: '%google.redirect_uri%'

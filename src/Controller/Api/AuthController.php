@@ -4,11 +4,10 @@ namespace App\Controller\Api;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\DeviceIdentifier;
+use App\Service\AuthCookieService;
 use App\Service\SessionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -23,7 +22,8 @@ final class AuthController extends AbstractController
         UserRepository $userRepository,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $em,
-        SessionManager $sessionManager
+        SessionManager $sessionManager,
+        AuthCookieService $authCookieService,
     ): JsonResponse {
         $data = $this->getRequestData($request);
 
@@ -57,6 +57,7 @@ final class AuthController extends AbstractController
             plainToken: $plainToken,
             deviceId: $deviceId,
             expiresAt: $session->getExpiresAt(),
+            authCookieService: $authCookieService,
             status: 201
         );
     }
@@ -66,7 +67,8 @@ final class AuthController extends AbstractController
         Request $request,
         UserRepository $userRepository,
         UserPasswordHasherInterface $passwordHasher,
-        SessionManager $sessionManager
+        SessionManager $sessionManager,
+        AuthCookieService $authCookieService,
     ): JsonResponse {
         $data = $this->getRequestData($request);
 
@@ -98,7 +100,8 @@ final class AuthController extends AbstractController
             user: $user,
             plainToken: $plainToken,
             deviceId: $finalDeviceId,
-            expiresAt: $session->getExpiresAt()
+            expiresAt: $session->getExpiresAt(),
+            authCookieService: $authCookieService
         );
     }
 
@@ -195,6 +198,7 @@ final class AuthController extends AbstractController
         string $plainToken,
         string $deviceId,
         \DateTimeInterface $expiresAt,
+        AuthCookieService $authCookieService,
         int $status = 200
     ): JsonResponse {
         $response = new JsonResponse([
@@ -205,8 +209,7 @@ final class AuthController extends AbstractController
             ],
         ], $status);
 
-        $response->headers->setCookie($this->buildAuthCookie($request, $plainToken, $expiresAt));
-        $response->headers->setCookie($this->buildDeviceCookie($request, $deviceId));
+        $authCookieService->attachAuthenticationCookies($response, $request, $plainToken, $deviceId, $expiresAt);
 
         return $response;
     }
@@ -216,30 +219,5 @@ final class AuthController extends AbstractController
         return new JsonResponse([
             'error' => $message,
         ], $status);
-    }
-
-    private function buildAuthCookie(
-        Request $request,
-        string $plainToken,
-        \DateTimeInterface $expiresAt
-    ): Cookie {
-        return Cookie::create('AUTH_TOKEN')
-            ->withValue($plainToken)
-            ->withHttpOnly(true)
-            ->withSecure($request->isSecure())
-            ->withSameSite('lax')
-            ->withPath('/')
-            ->withExpires($expiresAt);
-    }
-
-    private function buildDeviceCookie(Request $request, string $deviceId): Cookie
-    {
-        return Cookie::create(DeviceIdentifier::COOKIE_NAME)
-            ->withValue($deviceId)
-            ->withHttpOnly(true)
-            ->withSecure($request->isSecure())
-            ->withSameSite('lax')
-            ->withPath('/')
-            ->withExpires(new \DateTimeImmutable('+5 years'));
     }
 }

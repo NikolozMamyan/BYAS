@@ -931,6 +931,15 @@
             </div>
         {% endfor %}
 
+        {% for message in app.flashes('error') %}
+            <div class="action-item">
+                <div class="action-info">
+                    <i class="fas fa-circle-exclamation" style="color: #ff7a90;"></i>
+                    <span style="font-size: 0.9rem;">{{ message }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
         {% for account in oauthAccounts %}
             <div class="action-item">
                 <div class="action-info">
@@ -962,6 +971,27 @@
                     <span style="font-size: 0.9rem;">Connect Spotify Music</span>
                 </div>
                 <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
+            </a>
+        {% endif %}
+
+        {% if isYoutubeConnected and youtubeAccount %}
+            <form method="post" action="{{ path('app_youtube_disconnect') }}" class="action-item">
+                <div class="action-info">
+                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">YouTube</div>
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ youtubeAccount.displayName|default(youtubeAccount.providerUserId) }}</div>
+                    </div>
+                </div>
+                <button type="submit" class="status-badge" style="cursor: pointer;">Disconnect</button>
+            </form>
+        {% else %}
+            <a href="{{ path('app_youtube_start') }}" class="action-item" style="border: 1px dashed rgba(255, 61, 90, 0.35);">
+                <div class="action-info">
+                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
+                    <span style="font-size: 0.9rem;">Connect YouTube</span>
+                </div>
+                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: #ff3d5a;"></i>
             </a>
         {% endif %}
 

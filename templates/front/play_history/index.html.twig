@@ -718,6 +718,13 @@
                                    title="Open in Spotify">
                                     <i class="fab fa-spotify"></i>
                                 </a>
+                            {% elseif play.provider == 'youtube' and play.providerItemId %}
+                                <a href="https://www.youtube.com/watch?v={{ play.providerItemId }}"
+                                   target="_blank"
+                                   class="action-btn"
+                                   title="Open in YouTube">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
                             {% endif %}
                             
                             <button class="action-btn toggle-details" title="Show details" data-action="play-history#toggleDetails">

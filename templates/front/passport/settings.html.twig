@@ -451,6 +451,24 @@
                 </div>
             {% endif %}
 
+            {# {% if appleMusicAccount and appleMusicAccount.connected %}
+                <div class="action-row">
+                    <div>
+                        <strong>Apple Music</strong>
+                        <div class="muted">{{ appleMusicAccount.displayName|default(appleMusicAccount.providerUserId) }}</div>
+                    </div>
+                    <button type="submit" class="btn" formaction="{{ path('app_apple_music_disconnect') }}" formmethod="post">Disconnect</button>
+                </div>
+            {% else %}
+                <div class="action-row">
+                    <div>
+                        <strong>Apple Music</strong>
+                        <div class="muted">Connect your recent Apple Music listening</div>
+                    </div>
+                    <a class="btn" href="{{ path('app_apple_music_start') }}">Connect Apple Music</a>
+                </div>
+            {% endif %} #}
+
             {% if youtubeAccount and youtubeAccount.connected %}
                 <div class="action-row">
                     <div>

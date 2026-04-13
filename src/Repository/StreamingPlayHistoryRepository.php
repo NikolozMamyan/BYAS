@@ -43,6 +43,20 @@ class StreamingPlayHistoryRepository extends ServiceEntityRepository
         return $count > 0;
     }
 
+    public function existsForAccountAndItemId(StreamingAccount $account, string $providerItemId): bool
+    {
+        $count = (int) $this->createQueryBuilder('h')
+            ->select('COUNT(h.id)')
+            ->andWhere('h.streamingAccount = :account')
+            ->andWhere('h.providerItemId = :itemId')
+            ->setParameter('account', $account)
+            ->setParameter('itemId', $providerItemId)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
+    }
+
     /**
      * @return StreamingPlayHistory[]
      */

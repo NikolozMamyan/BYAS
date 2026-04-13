@@ -17,6 +17,7 @@ class StreamingSyncService
         private readonly StreamingPlayHistoryRepository $historyRepository,
         private readonly SpotifyDataService $spotifyDataService,
         private readonly YouTubeDataService $youTubeDataService,
+        private readonly AppleMusicService $appleMusicService,
         private readonly XpEngine $xpEngine,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
@@ -74,16 +75,8 @@ class StreamingSyncService
     {
         return match ($account->getProvider()) {
             StreamingAccount::PROVIDER_SPOTIFY => $this->syncSpotifyAccount($user, $account),
+            StreamingAccount::PROVIDER_APPLE_MUSIC => $this->syncAppleMusicAccount($user, $account),
             StreamingAccount::PROVIDER_YOUTUBE => $this->syncYoutubeAccount($user, $account),
-            StreamingAccount::PROVIDER_APPLE_MUSIC => [
-                'provider' => $account->getProvider(),
-                'status' => 'not_implemented',
-                'fetched' => 0,
-                'inserted' => 0,
-                'skipped' => 0,
-                'xpAwarded' => 0,
-                'message' => 'Apple Music sync not implemented yet.',
-            ],
             default => [
                 'provider' => $account->getProvider(),
                 'status' => 'unsupported',
@@ -279,6 +272,74 @@ class StreamingSyncService
         ];
     }
 
+    private function syncAppleMusicAccount(User $user, StreamingAccount $account): array
+    {
+        $data = $this->appleMusicService->getRecentlyPlayed($user, 25);
+        $items = $data['data'] ?? [];
+
+        $fetched = 0;
+        $inserted = 0;
+        $skipped = 0;
+        $xpAwarded = 0;
+        $syncTime = new \DateTimeImmutable();
+
+        foreach ($items as $index => $item) {
+            $fetched++;
+
+            if (!is_array($item)) {
+                $skipped++;
+                continue;
+            }
+
+            $providerItemId = (string) ($item['id'] ?? '');
+            $attributes = $item['attributes'] ?? null;
+
+            if ($providerItemId === '' || !is_array($attributes)) {
+                $skipped++;
+                continue;
+            }
+
+            if ($this->historyRepository->existsForAccountAndItemId($account, $providerItemId)) {
+                $skipped++;
+                continue;
+            }
+
+            $history = new StreamingPlayHistory();
+            $history
+                ->setUser($user)
+                ->setStreamingAccount($account)
+                ->setProvider($account->getProvider())
+                ->setProviderItemId($providerItemId)
+                ->setProviderType((string) ($item['type'] ?? 'song'))
+                ->setItemName((string) ($attributes['name'] ?? 'Unknown track'))
+                ->setArtistName($this->nullableString($attributes['artistName'] ?? null))
+                ->setAlbumName($this->nullableString($attributes['albumName'] ?? null))
+                ->setDurationMs(isset($attributes['durationInMillis']) ? (int) $attributes['durationInMillis'] : null)
+                ->setPlayedAt($syncTime->modify(sprintf('-%d seconds', $index)))
+                ->setRawData($item);
+
+            $this->entityManager->persist($history);
+            $transaction = $this->xpEngine->awardStreamingPlay($history);
+            $xpAwarded += $transaction?->getXpAmount() ?? 0;
+            $inserted++;
+        }
+
+        if ($fetched > 0) {
+            $account->touchLastSync();
+            $this->entityManager->persist($account);
+        }
+
+        return [
+            'provider' => $account->getProvider(),
+            'status' => 'success',
+            'fetched' => $fetched,
+            'inserted' => $inserted,
+            'skipped' => $skipped,
+            'xpAwarded' => $xpAwarded,
+            'message' => 'Apple Music sync completed from recent played tracks.',
+        ];
+    }
+
     private function extractSpotifyArtistName(array $track): ?string
     {
         $artists = $track['artists'] ?? null;
@@ -316,5 +377,16 @@ class StreamingSyncService
         $channelTitle = $snippet['videoOwnerChannelTitle'] ?? $snippet['channelTitle'] ?? null;
 
         return is_string($channelTitle) && trim($channelTitle) !== '' ? trim($channelTitle) : null;
+    }
+
+    private function nullableString(mixed $value): ?string
+    {
+        if (!is_string($value)) {
+            return null;
+        }
+
+        $value = trim($value);
+
+        return $value !== '' ? $value : null;
     }
 }

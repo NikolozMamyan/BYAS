@@ -44,6 +44,8 @@ class PassportController extends AbstractController
 
         $spotifyAccount = null;
         $isSpotifyConnected = false;
+        $appleMusicAccount = null;
+        $isAppleMusicConnected = false;
         $youtubeAccount = null;
         $isYoutubeConnected = false;
         $connectedSyncProviders = [];
@@ -52,6 +54,11 @@ class PassportController extends AbstractController
             if ($streamingAccount->getProvider() === StreamingAccount::PROVIDER_SPOTIFY) {
                 $spotifyAccount = $streamingAccount;
                 $isSpotifyConnected = $streamingAccount->isConnected();
+            }
+
+            if ($streamingAccount->getProvider() === StreamingAccount::PROVIDER_APPLE_MUSIC) {
+                $appleMusicAccount = $streamingAccount;
+                $isAppleMusicConnected = $streamingAccount->isConnected();
             }
 
             if ($streamingAccount->getProvider() === StreamingAccount::PROVIDER_YOUTUBE) {
@@ -81,6 +88,8 @@ class PassportController extends AbstractController
             'streamingAccounts' => $streamingAccounts,
             'spotifyAccount' => $spotifyAccount,
             'isSpotifyConnected' => $isSpotifyConnected,
+            'appleMusicAccount' => $appleMusicAccount,
+            'isAppleMusicConnected' => $isAppleMusicConnected,
             'youtubeAccount' => $youtubeAccount,
             'isYoutubeConnected' => $isYoutubeConnected,
             'connectedSyncProviders' => array_values(array_unique($connectedSyncProviders)),
@@ -209,6 +218,7 @@ class PassportController extends AbstractController
             'profile' => $profile,
             'oauthAccounts' => $user->getOauthAccounts(),
             'spotifyAccount' => $user->getStreamingAccountByProvider(StreamingAccount::PROVIDER_SPOTIFY),
+            'appleMusicAccount' => $user->getStreamingAccountByProvider(StreamingAccount::PROVIDER_APPLE_MUSIC),
             'youtubeAccount' => $user->getStreamingAccountByProvider(StreamingAccount::PROVIDER_YOUTUBE),
             'publicUrl' => $this->generateUrl('app_public_passport', [
                 'shareSlug' => $profile->getShareSlug(),

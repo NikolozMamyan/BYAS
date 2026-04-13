@@ -7,6 +7,15 @@ parameters:
     google.client_id: '%env(string:GOOGLE_CLIENT_ID)%'
     google.client_secret: '%env(string:GOOGLE_CLIENT_SECRET)%'
     google.redirect_uri: '%env(string:GOOGLE_REDIRECT_URI)%'
+    apple.music_team_id: '%env(string:APPLE_MUSIC_TEAM_ID)%'
+    apple.music_key_id: '%env(string:APPLE_MUSIC_KEY_ID)%'
+    apple.music_private_key: '%env(string:APPLE_MUSIC_PRIVATE_KEY)%'
+    apple.music_app_name: '%env(string:APPLE_MUSIC_APP_NAME)%'
+    apple.signin_team_id: '%env(string:APPLE_SIGNIN_TEAM_ID)%'
+    apple.signin_key_id: '%env(string:APPLE_SIGNIN_KEY_ID)%'
+    apple.signin_private_key: '%env(string:APPLE_SIGNIN_PRIVATE_KEY)%'
+    apple.signin_client_id: '%env(string:APPLE_SIGNIN_CLIENT_ID)%'
+    apple.signin_redirect_uri: '%env(string:APPLE_SIGNIN_REDIRECT_URI)%'
     avatar.upload_dir: '%kernel.project_dir%/public/uploads/avatars'
 
 services:
@@ -38,6 +47,21 @@ services:
             $googleClientId: '%google.client_id%'
             $googleClientSecret: '%google.client_secret%'
             $googleRedirectUri: '%google.redirect_uri%'
+
+    App\Service\AppleMusicTokenService:
+        arguments:
+            $appleMusicTeamId: '%apple.music_team_id%'
+            $appleMusicKeyId: '%apple.music_key_id%'
+            $appleMusicPrivateKey: '%apple.music_private_key%'
+            $appleMusicAppName: '%apple.music_app_name%'
+
+    App\Service\AppleOAuthService:
+        arguments:
+            $appleSignInTeamId: '%apple.signin_team_id%'
+            $appleSignInKeyId: '%apple.signin_key_id%'
+            $appleSignInPrivateKey: '%apple.signin_private_key%'
+            $appleSignInClientId: '%apple.signin_client_id%'
+            $appleSignInRedirectUri: '%apple.signin_redirect_uri%'
 
     App\Service\AvatarManager:
         arguments:

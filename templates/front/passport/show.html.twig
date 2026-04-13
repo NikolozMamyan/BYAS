@@ -60,6 +60,17 @@
         opacity: 0.65;
     }
 
+    .sync-providers {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 8px;
+    }
+
+    .sync-providers i {
+        font-size: 0.95rem;
+    }
+
     .sync-feedback {
         width: 100%;
         padding: 0 20px;
@@ -726,7 +737,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="app-wrapper" data-controller="passport-sync">
+<div class="app-wrapper" data-controller="passport-sync" data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}">
 
     <section class="passport-hero">
         <div class="passport-shell">
@@ -785,8 +796,26 @@
     <div class="section-label">
         <h2>My Collection</h2>
         <span class="section-meta">{{ items|length }} items</span>
-                        <button id="syncHistoryBtn" class="btn-nav" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync">
-                    Sync <i class="fab fa-spotify" style="color: #1DB954;"></i> <i class="fas fa-rotate"></i>
+                        <button id="syncHistoryBtn" class="btn-nav" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync" {{ connectedSyncProviders is empty ? 'disabled' : '' }}>
+                    Sync
+                    <span class="sync-providers">
+                        {% if connectedSyncProviders is empty %}
+                            <i class="fas fa-link-slash" style="color: var(--text-dim);"></i>
+                        {% else %}
+                            {% for provider in connectedSyncProviders %}
+                                {% if provider == 'spotify' %}
+                                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
+                                {% elseif provider == 'youtube' %}
+                                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
+                                {% elseif provider == 'apple_music' %}
+                                    <i class="fab fa-apple" style="color: #fc3c44;"></i>
+                                {% else %}
+                                    <i class="fas fa-wave-square"></i>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                    <i class="fas fa-rotate"></i>
                 </button>
     </div>
     <div id="syncFeedback" class="sync-feedback" role="status" aria-live="polite" data-passport-sync-target="feedback" hidden>

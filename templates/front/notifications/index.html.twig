@@ -138,13 +138,17 @@
 
     .feed-item {
         display: grid;
-        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-columns: auto minmax(0, 1fr) auto auto;
         gap: 12px;
         align-items: center;
         padding: 12px;
         border-radius: 8px;
         border: 1px solid rgba(255,255,255,0.08);
         background: rgba(255,255,255,0.03);
+    }
+
+    .feed-link {
+        display: contents;
         text-decoration: none;
         color: inherit;
     }
@@ -191,6 +195,23 @@
         font-weight: 800;
     }
 
+    .feed-delete {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 88, 120, 0.34);
+        background: rgba(255, 88, 120, 0.08);
+        color: #ff5878;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .feed-delete:hover {
+        background: rgba(255, 88, 120, 0.14);
+    }
+
     @media (max-width: 640px) {
         .stats {
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -203,7 +224,7 @@
         }
 
         .feed-item {
-            grid-template-columns: auto minmax(0, 1fr);
+            grid-template-columns: auto minmax(0, 1fr) auto;
         }
 
         .feed-time {
@@ -255,7 +276,7 @@
 
         <div class="feed-list">
             {% for notification in notifications %}
-                {% include 'front/notifications/_item.html.twig' with { notification: notification, compact: false } only %}
+                {% include 'front/notifications/_item.html.twig' with { notification: notification, compact: false, allowDelete: true } only %}
             {% else %}
                 <article class="feed-item">
                     <div class="feed-icon" style="color: var(--neon-cyan);">

@@ -97,6 +97,29 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/delete', name: 'app_front_notifications_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function delete(
+        AppNotification $notification,
+        Request $request,
+        AppNotificationRepository $notificationRepository,
+        EntityManagerInterface $entityManager,
+    ): RedirectResponse {
+        $user = $this->getAuthenticatedUser();
+        $this->denyAccessUnlessGrantedToNotification($notification, $user);
+
+        if (!$this->isCsrfTokenValid('delete_notification_'.$notification->getId(), (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $entityManager->remove($notification);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_front_notifications', [
+            'deleted' => 1,
+            'unread' => $notificationRepository->countUnreadForUser($user),
+        ]);
+    }
+
     private function getAuthenticatedUser(): User
     {
         $user = $this->getUser();

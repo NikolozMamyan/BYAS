@@ -1,4 +1,5 @@
 {% set compact = compact|default(false) %}
+{% set allowDelete = allowDelete|default(false) %}
 {% set icon = 'fa-bell' %}
 {% set color = '#00F2FF' %}
 {% if notification.type == 'contact_intent' %}
@@ -21,20 +22,29 @@
     {% set color = '#00F2FF' %}
 {% endif %}
 
-<a href="{{ path('app_front_notifications_open', { id: notification.id }) }}"
-   class="feed-item {{ notification.isRead ? '' : 'is-unread' }}">
-    <div class="feed-icon" style="color: {{ color }};">
-        <i class="fas {{ icon }}"></i>
-    </div>
-    <div class="feed-content">
-        <div class="feed-title">{{ notification.title }}</div>
-        <div class="muted">{{ notification.body }}</div>
-        {% if not notification.isRead %}
-            <div class="feed-unread">
-                <i class="fas fa-circle" style="font-size: 0.45rem;"></i>
-                New
-            </div>
-        {% endif %}
-    </div>
-    <div class="feed-time">{{ notification.createdAt|date(compact ? 'H:i' : 'M d, H:i') }}</div>
-</a>
+<article class="feed-item {{ notification.isRead ? '' : 'is-unread' }}">
+    <a href="{{ path('app_front_notifications_open', { id: notification.id }) }}" class="feed-link">
+        <div class="feed-icon" style="color: {{ color }};">
+            <i class="fas {{ icon }}"></i>
+        </div>
+        <div class="feed-content">
+            <div class="feed-title">{{ notification.title }}</div>
+            <div class="muted">{{ notification.body }}</div>
+            {% if not notification.isRead %}
+                <div class="feed-unread">
+                    <i class="fas fa-circle" style="font-size: 0.45rem;"></i>
+                    New
+                </div>
+            {% endif %}
+        </div>
+        <div class="feed-time">{{ notification.createdAt|date(compact ? 'H:i' : 'M d, H:i') }}</div>
+    </a>
+    {% if allowDelete %}
+        <form method="post" action="{{ path('app_front_notifications_delete', { id: notification.id }) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_notification_' ~ notification.id) }}">
+            <button type="submit" class="feed-delete" aria-label="Delete notification">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </form>
+    {% endif %}
+</article>

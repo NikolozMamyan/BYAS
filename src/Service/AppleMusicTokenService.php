@@ -19,6 +19,13 @@ class AppleMusicTokenService
         return $this->appleMusicAppName !== '' ? $this->appleMusicAppName : 'BYAS';
     }
 
+    public function isConfigured(): bool
+    {
+        return trim($this->appleMusicTeamId) !== ''
+            && trim($this->appleMusicKeyId) !== ''
+            && $this->normalizePrivateKey($this->appleMusicPrivateKey) !== '';
+    }
+
     public function createDeveloperToken(): string
     {
         $teamId = trim($this->appleMusicTeamId);

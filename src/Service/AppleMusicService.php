@@ -30,6 +30,11 @@ class AppleMusicService
         return $this->appleMusicTokenService->getAppName();
     }
 
+    public function isConfigured(): bool
+    {
+        return $this->appleMusicTokenService->isConfigured();
+    }
+
     public function connect(User $user, string $musicUserToken, ?string $storefrontId = null): StreamingAccount
     {
         $musicUserToken = trim($musicUserToken);

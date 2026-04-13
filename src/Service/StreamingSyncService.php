@@ -37,7 +37,19 @@ class StreamingSyncService
         $totalXpAwarded = 0;
 
         foreach ($accounts as $account) {
-            $result = $this->syncAccount($user, $account);
+            try {
+                $result = $this->syncAccount($user, $account);
+            } catch (\Throwable $exception) {
+                $result = [
+                    'provider' => $account->getProvider(),
+                    'status' => 'error',
+                    'fetched' => 0,
+                    'inserted' => 0,
+                    'skipped' => 0,
+                    'xpAwarded' => 0,
+                    'message' => $exception->getMessage(),
+                ];
+            }
 
             $providers[] = $result;
             $totalFetched += $result['fetched'];
@@ -274,6 +286,18 @@ class StreamingSyncService
 
     private function syncAppleMusicAccount(User $user, StreamingAccount $account): array
     {
+        if (!$this->appleMusicService->isConfigured()) {
+            return [
+                'provider' => $account->getProvider(),
+                'status' => 'skipped',
+                'fetched' => 0,
+                'inserted' => 0,
+                'skipped' => 0,
+                'xpAwarded' => 0,
+                'message' => 'Apple Music is not configured in this environment.',
+            ];
+        }
+
         $data = $this->appleMusicService->getRecentlyPlayed($user, 25);
         $items = $data['data'] ?? [];
 

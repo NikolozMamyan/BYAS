@@ -19,6 +19,8 @@ export default class extends Controller {
         this.syncButtonTarget.disabled = true;
         this.syncButtonTarget.innerHTML = `Syncing ${this.renderProviderIcons()} <i class="fas fa-rotate fa-spin"></i>`;
         this.setFeedback(`Synchronisation en cours: ${this.providersLabel()}.`, '');
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 45000);
 
         try {
             const response = await fetch('/api/streaming/sync', {
@@ -26,6 +28,7 @@ export default class extends Controller {
                 headers: {
                     'Accept': 'application/json',
                 },
+                signal: controller.signal,
             });
 
             const payload = await response.json().catch(() => null);
@@ -49,8 +52,13 @@ export default class extends Controller {
                 window.setTimeout(() => window.location.reload(), 900);
             }
         } catch (error) {
-            this.setFeedback(error.message || 'La sync a echoue.', 'error');
+            const message = error?.name === 'AbortError'
+                ? 'La sync a pris trop de temps. Verifie le provider connecte puis relance.'
+                : (error.message || 'La sync a echoue.');
+
+            this.setFeedback(message, 'error');
         } finally {
+            window.clearTimeout(timeoutId);
             this.syncButtonTarget.disabled = false;
             this.renderIdleButton();
         }

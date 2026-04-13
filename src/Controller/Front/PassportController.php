@@ -30,6 +30,7 @@ class PassportController extends AbstractController
         PublicPassportProfileService $publicPassportProfileService,
         PublicPassportVisitRepository $visitRepository,
         PublicPassportContactIntentRepository $contactIntentRepository,
+        AppleMusicService $appleMusicService,
     ): Response
     {
         $user = $this->getUser();
@@ -66,7 +67,13 @@ class PassportController extends AbstractController
                 $isYoutubeConnected = $streamingAccount->isConnected();
             }
 
-            if ($streamingAccount->isConnected()) {
+            if (
+                $streamingAccount->isConnected()
+                && (
+                    $streamingAccount->getProvider() !== StreamingAccount::PROVIDER_APPLE_MUSIC
+                    || $appleMusicService->isConfigured()
+                )
+            ) {
                 $connectedSyncProviders[] = $streamingAccount->getProvider();
             }
         }

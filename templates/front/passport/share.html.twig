@@ -37,6 +37,26 @@
         justify-items: center;
     }
 
+    .share-topbar {
+        width: min(360px, 100%);
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .back-link {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.05);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+    }
+
     .story-card {
         width: min(360px, 100%);
         aspect-ratio: 9 / 16;
@@ -347,6 +367,19 @@
 {% block body %}
 {% set displayName = profile.username|default(user.displayName) %}
 <main class="share-page" data-controller="share-export" data-share-export-url-value="{{ shareUrl }}">
+    <div class="share-topbar">
+        <a
+            href="{{ path('app_front_passport') }}"
+            class="back-link"
+            data-controller="back-nav"
+            data-back-nav-fallback-value="{{ path('app_front_passport') }}"
+            data-action="click->back-nav#go"
+            aria-label="Go back"
+        >
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
     <section class="story-card" id="shareCard" data-share-export-target="card">
         <div class="share-top">
             <div class="brand">BYAS</div>

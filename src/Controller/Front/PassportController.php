@@ -8,9 +8,11 @@ use App\Repository\PublicPassportContactIntentRepository;
 use App\Repository\PublicPassportVisitRepository;
 use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
+use App\Service\AvatarManager;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -135,6 +137,7 @@ class PassportController extends AbstractController
         Request $request,
         PublicPassportProfileService $publicPassportProfileService,
         EntityManagerInterface $entityManager,
+        AvatarManager $avatarManager,
     ): Response {
         $user = $this->getUser();
 
@@ -149,16 +152,54 @@ class PassportController extends AbstractController
                 throw $this->createAccessDeniedException('Invalid CSRF token.');
             }
 
-            $profile
-                ->setIsProfilePublic($request->request->has('isProfilePublic'))
-                ->setShowGlobalRank($request->request->has('showGlobalRank'))
-                ->setShowFandomLevels($request->request->has('showFandomLevels'))
-                ->setShowBadges($request->request->has('showBadges'))
-                ->setShowCollection($request->request->has('showCollection'))
-                ->setUpdatedAt(new \DateTimeImmutable());
+            try {
+                $action = (string) $request->request->get('action', 'save_settings');
 
-            $entityManager->flush();
-            $this->addFlash('success', 'Passport privacy settings updated.');
+                if ($action === 'remove_avatar') {
+                    $avatarManager->deleteCurrentAvatarFile($user);
+                    $user->setAvatarUrl(null);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Avatar removed.');
+
+                    return $this->redirectToRoute('app_front_passport_settings');
+                }
+
+                $firstName = trim((string) $request->request->get('firstName', ''));
+                $lastName = trim((string) $request->request->get('lastName', ''));
+                $displayName = trim((string) $request->request->get('displayName', ''));
+
+                if ($displayName === '') {
+                    $displayName = trim($firstName . ' ' . $lastName);
+                }
+
+                if ($displayName === '') {
+                    $displayName = $user->getDisplayName() ?? 'Fan';
+                }
+
+                $user
+                    ->setFirstName($firstName !== '' ? $firstName : null)
+                    ->setLastName($lastName !== '' ? $lastName : null)
+                    ->setDisplayName($displayName);
+
+                $avatarFile = $request->files->get('avatar');
+
+                if ($avatarFile instanceof UploadedFile && $avatarFile->getError() === UPLOAD_ERR_OK) {
+                    $user->setAvatarUrl($avatarManager->upload($user, $avatarFile));
+                }
+
+                $profile
+                    ->setIsProfilePublic($request->request->has('isProfilePublic'))
+                    ->setShowGlobalRank($request->request->has('showGlobalRank'))
+                    ->setShowFandomLevels($request->request->has('showFandomLevels'))
+                    ->setShowBadges($request->request->has('showBadges'))
+                    ->setShowCollection($request->request->has('showCollection'))
+                    ->setUpdatedAt(new \DateTimeImmutable());
+
+                $entityManager->flush();
+                $this->addFlash('success', 'Account and Passport settings updated.');
+            } catch (\Throwable $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
 
             return $this->redirectToRoute('app_front_passport_settings');
         }
@@ -166,6 +207,9 @@ class PassportController extends AbstractController
         return $this->render('front/passport/settings.html.twig', [
             'user' => $user,
             'profile' => $profile,
+            'oauthAccounts' => $user->getOauthAccounts(),
+            'spotifyAccount' => $user->getStreamingAccountByProvider(StreamingAccount::PROVIDER_SPOTIFY),
+            'youtubeAccount' => $user->getStreamingAccountByProvider(StreamingAccount::PROVIDER_YOUTUBE),
             'publicUrl' => $this->generateUrl('app_public_passport', [
                 'shareSlug' => $profile->getShareSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL),

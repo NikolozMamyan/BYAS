@@ -2,8 +2,10 @@
 
 namespace App\Controller\Front;
 
+use App\Entity\User;
 use App\Entity\UserProfile;
 use App\Repository\UserRepository;
+use App\Service\PublicPassportProfileService;
 use App\Service\PublicPassportAnalyticsService;
 use App\Service\XpEngine;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +17,27 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PublicPassportController extends AbstractController
 {
+    #[Route('/fan/{id}', name: 'app_public_user_profile', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function showByUser(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        PublicPassportAnalyticsService $analytics,
+        PublicPassportProfileService $publicPassportProfileService,
+        XpEngine $xpEngine,
+    ): Response {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user instanceof User) {
+            throw $this->createNotFoundException('User not found.');
+        }
+
+        $profile = $publicPassportProfileService->ensureProfile($user);
+
+        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $profile);
+    }
+
     #[Route('/p/{shareSlug}', name: 'app_public_passport', methods: ['GET'])]
     public function show(
         string $shareSlug,
@@ -30,9 +53,24 @@ class PublicPassportController extends AbstractController
             throw $this->createNotFoundException('Passport not found.');
         }
 
+        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $profile);
+    }
+
+    private function renderPassport(
+        Request $request,
+        UserRepository $userRepository,
+        PublicPassportAnalyticsService $analytics,
+        XpEngine $xpEngine,
+        UserProfile $profile,
+    ): Response {
         $user = $profile->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createNotFoundException('Passport not found.');
+        }
+
         $viewer = $this->getUser();
-        $analytics->recordVisit($profile, $request, $viewer instanceof \App\Entity\User ? $viewer : null);
+        $analytics->recordVisit($profile, $request, $viewer instanceof User ? $viewer : null);
 
         $fandoms = $user->getUserFandoms()->toArray();
         usort($fandoms, static fn ($a, $b): int => $b->getXp() <=> $a->getXp());

@@ -37,6 +37,26 @@
         text-align: right;
     }
 
+    .app-header__actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
+    }
+
+    .app-header__icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.05);
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
     .app-header__label {
         color: #00F2FF;
         font-size: 0.68rem;
@@ -72,6 +92,14 @@
 
 <header class="app-header">
     <a href="{{ path('app_front_passport') }}" class="app-header__brand">BYAS</a>
+    <div class="app-header__actions">
+        <a href="{{ path('app_front_passport') }}" class="app-header__icon" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+        </a>
+        <a href="{{ path('app_front_passport_settings') }}" class="app-header__icon" aria-label="Settings">
+            <i class="fas fa-gear"></i>
+        </a>
+    </div>
     <div class="app-header__meta">
         <span class="app-header__label">Fandom Passport</span>
         <span class="app-header__user">{{ app.user.displayName|default(app.user.userIdentifier) }}</span>

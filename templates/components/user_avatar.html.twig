@@ -1,0 +1,20 @@
+{% set avatarClass = avatarClass|default('') %}
+{% set seed = seed|default(displayName|default('Fan')) %}
+{% set initials = '' %}
+{% for part in seed|trim|split(' ') %}
+    {% if part is not empty and initials|length < 2 %}
+        {% set initials = initials ~ part|slice(0, 1) %}
+    {% endif %}
+{% endfor %}
+{% if initials == '' %}
+    {% set initials = seed|slice(0, 2) %}
+{% endif %}
+{% set initials = initials|upper %}
+
+{% if avatarUrl %}
+    <img src="{{ avatarUrl }}" class="{{ avatarClass }}" alt="{{ displayName|default('User avatar') }}">
+{% else %}
+    <div class="{{ avatarClass }} avatar-placeholder" aria-label="{{ displayName|default('User avatar') }}">
+        {{ initials }}
+    </div>
+{% endif %}

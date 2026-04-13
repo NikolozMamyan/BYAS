@@ -181,6 +181,9 @@
             padding: 3px;
             background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
             box-shadow: 0 0 20px rgba(255, 0, 122, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .avatar-img {
@@ -191,6 +194,20 @@
             object-fit: cover;
             background: #0B0E14;
             border: 3px solid #0F131C;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 0, 122, 0.34), rgba(0, 242, 255, 0.24));
+            border: 3px solid #0F131C;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 900;
         }
 
         .level-badge {
@@ -745,7 +762,11 @@
                 <div class="passport-top">
                     <div class="avatar-wrap">
                         <div class="avatar-ring">
-                            <img src="https://api.dicebear.com/7.x/adventurer-neutral/svg?seed={{ user.displayName }}" class="avatar-img" alt="Avatar">
+                            {% include 'components/user_avatar.html.twig' with {
+                                avatarUrl: user.avatarUrl,
+                                displayName: profile.username|default(user.displayName),
+                                avatarClass: 'avatar-img'
+                            } only %}
                         </div>
                         <div class="level-badge">LVL {{ user.globalLevel }}</div>
                     </div>
@@ -946,100 +967,27 @@
         {% endfor %}
     </div>
 
-    <div class="section-label">
-        <h2>Identity Sources</h2>
-    </div>
-
-    <div class="settings-list">
-        {% for message in app.flashes('success') %}
+    {% for message in app.flashes('success') %}
+        <div class="settings-list">
             <div class="action-item">
                 <div class="action-info">
                     <i class="fas fa-circle-check" style="color: var(--success);"></i>
                     <span style="font-size: 0.9rem;">{{ message }}</span>
                 </div>
             </div>
-        {% endfor %}
+        </div>
+    {% endfor %}
 
-        {% for message in app.flashes('error') %}
+    {% for message in app.flashes('error') %}
+        <div class="settings-list">
             <div class="action-item">
                 <div class="action-info">
                     <i class="fas fa-circle-exclamation" style="color: #ff7a90;"></i>
                     <span style="font-size: 0.9rem;">{{ message }}</span>
                 </div>
             </div>
-        {% endfor %}
-
-        {% for account in oauthAccounts %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fab fa-{{ account.provider|lower }}"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">{{ account.provider|capitalize }}</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ account.email }}</div>
-                    </div>
-                </div>
-                <span class="status-badge">Linked</span>
-            </div>
-        {% endfor %}
-
-        {% if isSpotifyConnected and spotifyAccount %}
-            <form method="post" action="{{ path('app_spotify_disconnect') }}" class="action-item">
-                <div class="action-info">
-                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">Spotify</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ spotifyAccount.displayName|default(spotifyAccount.providerUserId) }}</div>
-                    </div>
-                </div>
-                <button type="submit" class="status-badge" style="cursor: pointer;">Disconnect</button>
-            </form>
-        {% else %}
-            <a href="{{ path('app_spotify_start') }}" class="action-item" style="border: 1px dashed rgba(0, 242, 255, 0.35);">
-                <div class="action-info">
-                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
-                    <span style="font-size: 0.9rem;">Connect Spotify Music</span>
-                </div>
-                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: var(--neon-cyan);"></i>
-            </a>
-        {% endif %}
-
-        {% if isYoutubeConnected and youtubeAccount %}
-            <form method="post" action="{{ path('app_youtube_disconnect') }}" class="action-item">
-                <div class="action-info">
-                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">YouTube</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ youtubeAccount.displayName|default(youtubeAccount.providerUserId) }}</div>
-                    </div>
-                </div>
-                <button type="submit" class="status-badge" style="cursor: pointer;">Disconnect</button>
-            </form>
-        {% else %}
-            <a href="{{ path('app_youtube_start') }}" class="action-item" style="border: 1px dashed rgba(255, 61, 90, 0.35);">
-                <div class="action-info">
-                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
-                    <span style="font-size: 0.9rem;">Connect YouTube</span>
-                </div>
-                <i class="fas fa-chevron-right" style="font-size: 0.8rem; color: #ff3d5a;"></i>
-            </a>
-        {% endif %}
-
-        <a href="{{ path('app_front_passport_share') }}" class="action-item">
-            <div class="action-info">
-                <i class="fas fa-share-alt"></i>
-                <span style="font-size: 0.9rem;">Generate Share Card</span>
-            </div>
-            <i class="fas fa-magic" style="color: var(--neon-pink);"></i>
-        </a>
-
-        <a href="{{ path('app_front_passport_settings') }}" class="action-item">
-            <div class="action-info">
-                <i class="fas fa-sliders"></i>
-                <span style="font-size: 0.9rem;">Public Passport Settings</span>
-            </div>
-            <i class="fas fa-chevron-right" style="color: var(--neon-cyan);"></i>
-        </a>
-    </div>
+        </div>
+    {% endfor %}
 
     <div class="section-label">
         <h2>Public Activity</h2>

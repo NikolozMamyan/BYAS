@@ -118,6 +118,8 @@ class GoogleOAuthService
             $user = (new User())
                 ->setEmail($email ?? sprintf('%s@google.local', $providerUserId))
                 ->setDisplayName($this->resolveDisplayName($profile))
+                ->setFirstName($this->normalizeNullableString($profile['given_name'] ?? null))
+                ->setLastName($this->normalizeNullableString($profile['family_name'] ?? null))
                 ->setRoles(['ROLE_USER'])
                 ->setPassword(null);
 

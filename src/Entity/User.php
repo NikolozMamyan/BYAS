@@ -36,6 +36,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarUrl = null;
 
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $lastName = null;
+
     #[ORM\Column]
     private int $globalXp = 0;
 
@@ -203,6 +209,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarUrl(?string $avatarUrl): self
     {
         $this->avatarUrl = $avatarUrl !== null ? trim($avatarUrl) : null;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): self
+    {
+        $this->firstName = $firstName !== null ? trim($firstName) : null;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): self
+    {
+        $this->lastName = $lastName !== null ? trim($lastName) : null;
 
         return $this;
     }

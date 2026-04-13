@@ -5,6 +5,7 @@ import PassportSyncController from './controllers/passport_sync_controller.js';
 import ShareExportController from './controllers/share_export_controller.js';
 import ClipboardController from './controllers/clipboard_controller.js';
 import PlayHistoryController from './controllers/play_history_controller.js';
+import BackNavController from './controllers/back_nav_controller.js';
 import './controllers/csrf_protection_controller.js';
 
 const app = startStimulusApp();
@@ -14,3 +15,4 @@ app.register('passport-sync', PassportSyncController);
 app.register('share-export', ShareExportController);
 app.register('clipboard', ClipboardController);
 app.register('play-history', PlayHistoryController);
+app.register('back-nav', BackNavController);

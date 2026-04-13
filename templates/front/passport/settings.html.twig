@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Passport Settings{% endblock %}
+{% block title %}BYAS | Settings{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -13,11 +13,10 @@
         --text-main: #FFFFFF;
         --text-dim: rgba(255,255,255,0.66);
         --line: rgba(255,255,255,0.12);
+        --success: #7ce38b;
     }
 
-    * {
-        box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
         margin: 0;
@@ -32,22 +31,21 @@
     }
 
     .settings-page {
-        width: min(760px, 100%);
+        width: min(860px, 100%);
         margin: 0 auto;
         display: grid;
         gap: 14px;
     }
 
-    .settings-hero,
-    .settings-panel,
-    .public-link {
+    .panel {
         border: 1px solid var(--line);
         border-radius: 8px;
         background: rgba(255,255,255,0.045);
         box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+        padding: 16px;
     }
 
-    .settings-hero {
+    .hero {
         padding: 18px;
         background:
             linear-gradient(135deg, rgba(255,0,122,0.16), transparent 36%),
@@ -63,11 +61,19 @@
         margin-bottom: 8px;
     }
 
-    h1 {
+    h1, h2 {
         margin: 0;
+        letter-spacing: 0;
+    }
+
+    h1 {
         font-size: 2rem;
         line-height: 1;
-        letter-spacing: 0;
+    }
+
+    h2 {
+        font-size: 1rem;
+        margin-bottom: 12px;
     }
 
     .muted {
@@ -76,27 +82,110 @@
         line-height: 1.45;
     }
 
-    .settings-panel {
-        padding: 14px;
-        display: grid;
-        gap: 10px;
+    .flash {
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 0.88rem;
+        font-weight: 800;
     }
 
-    .setting-row {
+    .flash-success {
+        border: 1px solid rgba(76, 175, 80, 0.42);
+        background: rgba(76, 175, 80, 0.08);
+        color: var(--success);
+    }
+
+    .flash-error {
+        border: 1px solid rgba(255, 0, 122, 0.42);
+        background: rgba(255, 0, 122, 0.08);
+        color: #ff9bb6;
+    }
+
+    .account-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 12px;
+        grid-template-columns: 180px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+    }
+
+    .avatar-card {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+    }
+
+    .avatar-frame,
+    .avatar-placeholder {
+        width: 132px;
+        height: 132px;
+        border-radius: 8px;
+    }
+
+    .avatar-frame {
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: #111520;
+    }
+
+    .avatar-placeholder {
+        display: flex;
         align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(255,0,122,0.28), rgba(0,242,255,0.22));
+        border: 1px solid rgba(255,255,255,0.14);
+        color: white;
+        font-size: 2rem;
+        font-weight: 900;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 12px;
+    }
+
+    .fields-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .field {
+        display: grid;
+        gap: 6px;
+    }
+
+    .field label {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--text-dim);
+        text-transform: uppercase;
+    }
+
+    .input,
+    .file {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: white;
+        padding: 12px;
+        font: inherit;
+    }
+
+    .file {
+        padding: 10px;
+    }
+
+    .switch-row,
+    .action-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
         padding: 13px;
         border-radius: 8px;
         border: 1px solid rgba(255,255,255,0.08);
         background: rgba(255,255,255,0.04);
-    }
-
-    .setting-row strong {
-        display: block;
-        font-size: 0.94rem;
-        margin-bottom: 4px;
     }
 
     .switch {
@@ -144,12 +233,6 @@
         background: var(--neon-cyan);
     }
 
-    .public-link {
-        padding: 14px;
-        display: grid;
-        gap: 10px;
-    }
-
     .link-box {
         width: 100%;
         border-radius: 8px;
@@ -159,8 +242,6 @@
         padding: 12px;
         font: inherit;
         font-size: 0.82rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .actions {
@@ -168,7 +249,6 @@
         gap: 10px;
         flex-wrap: wrap;
         justify-content: flex-end;
-        margin-top: 4px;
     }
 
     .btn {
@@ -189,23 +269,19 @@
         border-color: var(--neon-cyan);
     }
 
-    .flash {
-        border-radius: 8px;
-        padding: 12px;
-        border: 1px solid rgba(76, 175, 80, 0.42);
-        background: rgba(76, 175, 80, 0.08);
-        color: #7ce38b;
-        font-size: 0.88rem;
-        font-weight: 800;
+    .btn-danger {
+        border-color: rgba(255, 0, 122, 0.28);
+        color: #ff9bb6;
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 640px) {
         h1 {
             font-size: 1.65rem;
         }
 
-        .setting-row {
-            padding: 12px;
+        .account-grid,
+        .fields-2 {
+            grid-template-columns: 1fr;
         }
 
         .actions {
@@ -222,88 +298,182 @@
 
 {% block body %}
 <main class="settings-page">
-    <section class="settings-hero">
-        <div class="kicker">Public Passport</div>
-        <h1>Privacy settings</h1>
-        <p class="muted">Choose what people can see when they scan your story QR code or open your public Passport link.</p>
+    <section class="panel hero">
+        <div class="kicker">Account Settings</div>
+        <h1>Profile and connections</h1>
+        <p class="muted">Update your avatar, your name, your linked services, and what stays visible on your public Passport.</p>
     </section>
 
     {% for message in app.flashes('success') %}
-        <div class="flash">{{ message }}</div>
+        <div class="flash flash-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="flash flash-error">{{ message }}</div>
     {% endfor %}
 
-    <section class="public-link" data-controller="clipboard">
-        <strong>Public link</strong>
-        <input class="link-box" id="publicPassportUrl" value="{{ publicUrl }}" data-clipboard-target="source" readonly>
-        <div class="actions">
-            <a class="btn" href="{{ publicUrl }}" target="_blank" rel="noopener">Preview</a>
-            <button class="btn" type="button" id="copyPublicUrl" data-clipboard-target="button" data-action="clipboard#copy">Copy link</button>
-        </div>
-    </section>
-
-    <form method="post" class="settings-panel">
+    <form method="post" enctype="multipart/form-data" class="panel form-grid">
         <input type="hidden" name="_token" value="{{ csrf_token('passport_settings') }}">
 
-        <label class="setting-row">
-            <span>
-                <strong>Public Passport</strong>
-                <span class="muted">Allow anyone with the link or QR code to view your public Passport.</span>
-            </span>
-            <span class="switch">
-                <input type="checkbox" name="isProfilePublic" {{ profile.isProfilePublic() ? 'checked' : '' }}>
-                <span class="slider"></span>
-            </span>
-        </label>
+        <section class="account-grid">
+            <div class="avatar-card">
+                {% include 'components/user_avatar.html.twig' with {
+                    avatarUrl: user.avatarUrl,
+                    displayName: profile.username|default(user.displayName),
+                    avatarClass: user.avatarUrl ? 'avatar-frame' : 'avatar-frame'
+                } only %}
+                <div class="field" style="width: 100%;">
+                    <label for="avatar">Avatar</label>
+                    <input class="file" id="avatar" type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif">
+                </div>
+                {% if user.avatarUrl %}
+                    <button class="btn btn-danger" type="submit" name="action" value="remove_avatar">Remove avatar</button>
+                {% endif %}
+            </div>
 
-        <label class="setting-row">
-            <span>
-                <strong>Global rank</strong>
-                <span class="muted">Show your global BYAS rank on the public page.</span>
-            </span>
-            <span class="switch">
-                <input type="checkbox" name="showGlobalRank" {{ profile.isShowGlobalRank() ? 'checked' : '' }}>
-                <span class="slider"></span>
-            </span>
-        </label>
+            <div class="form-grid">
+                <h2>Account</h2>
+                <div class="fields-2">
+                    <div class="field">
+                        <label for="firstName">First name</label>
+                        <input class="input" id="firstName" name="firstName" value="{{ user.firstName|default('') }}">
+                    </div>
+                    <div class="field">
+                        <label for="lastName">Last name</label>
+                        <input class="input" id="lastName" name="lastName" value="{{ user.lastName|default('') }}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="displayName">Display name</label>
+                    <input class="input" id="displayName" name="displayName" value="{{ user.displayName }}">
+                </div>
+                <div class="field">
+                    <label>Email</label>
+                    <input class="input" value="{{ user.email }}" disabled>
+                </div>
+            </div>
+        </section>
 
-        <label class="setting-row">
-            <span>
-                <strong>Fandom levels</strong>
-                <span class="muted">Show your top artist fandom levels and XP.</span>
-            </span>
-            <span class="switch">
-                <input type="checkbox" name="showFandomLevels" {{ profile.isShowFandomLevels() ? 'checked' : '' }}>
-                <span class="slider"></span>
-            </span>
-        </label>
+        <section class="form-grid">
+            <h2>Public Passport</h2>
+            <div class="field" data-controller="clipboard">
+                <label for="publicPassportUrl">Public link</label>
+                <input class="link-box" id="publicPassportUrl" value="{{ publicUrl }}" data-clipboard-target="source" readonly>
+                <div class="actions">
+                    <a class="btn" href="{{ publicUrl }}" target="_blank" rel="noopener">Preview</a>
+                    <button class="btn" type="button" data-clipboard-target="button" data-action="clipboard#copy">Copy link</button>
+                    <a class="btn" href="{{ path('app_front_passport_share') }}">Generate Share Card</a>
+                </div>
+            </div>
 
-        <label class="setting-row">
-            <span>
-                <strong>Badges</strong>
-                <span class="muted">Show earned badges on your public Passport.</span>
-            </span>
-            <span class="switch">
-                <input type="checkbox" name="showBadges" {{ profile.isShowBadges() ? 'checked' : '' }}>
-                <span class="slider"></span>
-            </span>
-        </label>
+            <label class="switch-row">
+                <span>
+                    <strong>Public Passport</strong>
+                    <span class="muted">Allow anyone with the link or QR code to view your public Passport.</span>
+                </span>
+                <span class="switch">
+                    <input type="checkbox" name="isProfilePublic" {{ profile.isProfilePublic() ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </label>
 
-        <label class="setting-row">
-            <span>
-                <strong>Collection</strong>
-                <span class="muted">Reserve this for collection previews on the public Passport.</span>
-            </span>
-            <span class="switch">
-                <input type="checkbox" name="showCollection" {{ profile.isShowCollection() ? 'checked' : '' }}>
-                <span class="slider"></span>
-            </span>
-        </label>
+            <label class="switch-row">
+                <span>
+                    <strong>Global rank</strong>
+                    <span class="muted">Show your BYAS rank on the public page.</span>
+                </span>
+                <span class="switch">
+                    <input type="checkbox" name="showGlobalRank" {{ profile.isShowGlobalRank() ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </label>
+
+            <label class="switch-row">
+                <span>
+                    <strong>Fandom levels</strong>
+                    <span class="muted">Show your top artist fandom levels and XP.</span>
+                </span>
+                <span class="switch">
+                    <input type="checkbox" name="showFandomLevels" {{ profile.isShowFandomLevels() ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </label>
+
+            <label class="switch-row">
+                <span>
+                    <strong>Badges</strong>
+                    <span class="muted">Show earned badges on your public Passport.</span>
+                </span>
+                <span class="switch">
+                    <input type="checkbox" name="showBadges" {{ profile.isShowBadges() ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </label>
+
+            <label class="switch-row">
+                <span>
+                    <strong>Collection</strong>
+                    <span class="muted">Show public collection items when available.</span>
+                </span>
+                <span class="switch">
+                    <input type="checkbox" name="showCollection" {{ profile.isShowCollection() ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </label>
+        </section>
+
+        <section class="form-grid">
+            <h2>Identity Sources</h2>
+            {% for account in oauthAccounts %}
+                <div class="action-row">
+                    <div>
+                        <strong>{{ account.provider|capitalize }}</strong>
+                        <div class="muted">{{ account.email }}</div>
+                    </div>
+                    <span class="btn">Linked</span>
+                </div>
+            {% endfor %}
+
+            {% if spotifyAccount and spotifyAccount.connected %}
+                <div class="action-row">
+                    <div>
+                        <strong>Spotify</strong>
+                        <div class="muted">{{ spotifyAccount.displayName|default(spotifyAccount.providerUserId) }}</div>
+                    </div>
+                    <button type="submit" class="btn" formaction="{{ path('app_spotify_disconnect') }}" formmethod="post">Disconnect</button>
+                </div>
+            {% else %}
+                <div class="action-row">
+                    <div>
+                        <strong>Spotify</strong>
+                        <div class="muted">Connect your listening history</div>
+                    </div>
+                    <a class="btn" href="{{ path('app_spotify_start') }}">Connect Spotify Music</a>
+                </div>
+            {% endif %}
+
+            {% if youtubeAccount and youtubeAccount.connected %}
+                <div class="action-row">
+                    <div>
+                        <strong>YouTube</strong>
+                        <div class="muted">{{ youtubeAccount.displayName|default(youtubeAccount.providerUserId) }}</div>
+                    </div>
+                    <button type="submit" class="btn" formaction="{{ path('app_youtube_disconnect') }}" formmethod="post">Disconnect</button>
+                </div>
+            {% else %}
+                <div class="action-row">
+                    <div>
+                        <strong>YouTube</strong>
+                        <div class="muted">Connect your liked videos and channel profile</div>
+                    </div>
+                    <a class="btn" href="{{ path('app_youtube_start') }}">Connect YouTube</a>
+                </div>
+            {% endif %}
+        </section>
 
         <div class="actions">
             <a class="btn" href="{{ path('app_front_passport') }}">Back</a>
-            <button class="btn btn-primary" type="submit">Save settings</button>
+            <button class="btn btn-primary" type="submit" name="action" value="save_settings">Save settings</button>
         </div>
     </form>
 </main>
-
 {% endblock %}

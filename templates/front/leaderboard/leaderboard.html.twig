@@ -313,6 +313,16 @@
         height: 84px;
     }
 
+    .podium-avatar.avatar-placeholder,
+    .rank-img.avatar-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(255,0,122,0.28), rgba(0,242,255,0.22));
+        color: white;
+        font-weight: 900;
+    }
+
     .crown {
         position: absolute;
         top: -20px;
@@ -337,6 +347,13 @@
 
     .first .podium-name {
         font-size: 0.92rem;
+    }
+
+    .profile-link {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        width: 100%;
     }
 
     .podium-xp {
@@ -685,33 +702,66 @@
         <div class="podium-section">
             <article class="podium-card second" style="--border-color: var(--silver)">
                 <div class="podium-rank-chip">#2</div>
-                <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ second ? second.displayName : 'empty-2' }}" class="podium-avatar" alt="{{ second ? second.displayName : 'Empty rank' }}">
-                </div>
-                <p class="podium-name">{{ second ? second.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ second ? second.xp : 0 }} XP</span>
-                <span class="podium-label">Silver Tier</span>
+                {% if second and second.profileUrl %}
+                    <a href="{{ second.profileUrl }}" class="profile-link">
+                        <div class="podium-avatar-wrapper">
+                            {% include 'components/user_avatar.html.twig' with { avatarUrl: second.avatarUrl, displayName: second.displayName, avatarClass: 'podium-avatar' } only %}
+                        </div>
+                        <p class="podium-name">{{ second.displayName }}</p>
+                        <span class="podium-xp">{{ second.xp }} XP</span>
+                        <span class="podium-label">Silver Tier</span>
+                    </a>
+                {% else %}
+                    <div class="podium-avatar-wrapper">
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: second ? second.avatarUrl : null, displayName: second ? second.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                    </div>
+                    <p class="podium-name">{{ second ? second.displayName : 'Open spot' }}</p>
+                    <span class="podium-xp">{{ second ? second.xp : 0 }} XP</span>
+                    <span class="podium-label">Silver Tier</span>
+                {% endif %}
             </article>
 
             <article class="podium-card first" style="--border-color: var(--gold)">
                 <div class="podium-rank-chip">#1</div>
                 <i class="fas fa-crown crown"></i>
-                <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ first ? first.displayName : 'empty-1' }}" class="podium-avatar" alt="{{ first ? first.displayName : 'Empty rank' }}">
-                </div>
-                <p class="podium-name">{{ first ? first.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ first ? first.xp : 0 }} XP</span>
-                <span class="podium-label">Legend</span>
+                {% if first and first.profileUrl %}
+                    <a href="{{ first.profileUrl }}" class="profile-link">
+                        <div class="podium-avatar-wrapper">
+                            {% include 'components/user_avatar.html.twig' with { avatarUrl: first.avatarUrl, displayName: first.displayName, avatarClass: 'podium-avatar' } only %}
+                        </div>
+                        <p class="podium-name">{{ first.displayName }}</p>
+                        <span class="podium-xp">{{ first.xp }} XP</span>
+                        <span class="podium-label">Legend</span>
+                    </a>
+                {% else %}
+                    <div class="podium-avatar-wrapper">
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: first ? first.avatarUrl : null, displayName: first ? first.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                    </div>
+                    <p class="podium-name">{{ first ? first.displayName : 'Open spot' }}</p>
+                    <span class="podium-xp">{{ first ? first.xp : 0 }} XP</span>
+                    <span class="podium-label">Legend</span>
+                {% endif %}
             </article>
 
             <article class="podium-card third" style="--border-color: var(--bronze)">
                 <div class="podium-rank-chip">#3</div>
-                <div class="podium-avatar-wrapper">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ third ? third.displayName : 'empty-3' }}" class="podium-avatar" alt="{{ third ? third.displayName : 'Empty rank' }}">
-                </div>
-                <p class="podium-name">{{ third ? third.displayName : 'Open spot' }}</p>
-                <span class="podium-xp">{{ third ? third.xp : 0 }} XP</span>
-                <span class="podium-label">Bronze Tier</span>
+                {% if third and third.profileUrl %}
+                    <a href="{{ third.profileUrl }}" class="profile-link">
+                        <div class="podium-avatar-wrapper">
+                            {% include 'components/user_avatar.html.twig' with { avatarUrl: third.avatarUrl, displayName: third.displayName, avatarClass: 'podium-avatar' } only %}
+                        </div>
+                        <p class="podium-name">{{ third.displayName }}</p>
+                        <span class="podium-xp">{{ third.xp }} XP</span>
+                        <span class="podium-label">Bronze Tier</span>
+                    </a>
+                {% else %}
+                    <div class="podium-avatar-wrapper">
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: third ? third.avatarUrl : null, displayName: third ? third.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                    </div>
+                    <p class="podium-name">{{ third ? third.displayName : 'Open spot' }}</p>
+                    <span class="podium-xp">{{ third ? third.xp : 0 }} XP</span>
+                    <span class="podium-label">Bronze Tier</span>
+                {% endif %}
             </article>
         </div>
     </section>
@@ -728,13 +778,23 @@
                 <div class="rank-item {{ currentUser and currentUser.id == user.userId ? 'is-me' : '' }}">
                     <div class="rank-pos">{{ position }}</div>
 
-                    <div class="rank-info">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.displayName }}" class="rank-img" alt="{{ user.displayName }}">
-                        <div class="rank-user-data">
-                            <span class="name">{{ user.displayName }}</span>
-                            <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
+                    {% if user.profileUrl %}
+                        <a href="{{ user.profileUrl }}" class="rank-info profile-link">
+                            {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: user.displayName, avatarClass: 'rank-img' } only %}
+                            <div class="rank-user-data">
+                                <span class="name">{{ user.displayName }}</span>
+                                <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
+                            </div>
+                        </a>
+                    {% else %}
+                        <div class="rank-info">
+                            {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: user.displayName, avatarClass: 'rank-img' } only %}
+                            <div class="rank-user-data">
+                                <span class="name">{{ user.displayName }}</span>
+                                <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     {% if currentUser and currentUser.id == user.userId %}
                         <span class="badge-pill badge-top">You</span>

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\UserFandom;
 use App\Repository\UserFandomRepository;
 use App\Repository\UserRepository;
+use App\Service\PublicPassportProfileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,7 @@ class LeaderboardController extends AbstractController
         UserRepository $userRepository,
         UserFandomRepository $userFandomRepository,
         EntityManagerInterface $entityManager,
+        PublicPassportProfileService $publicPassportProfileService,
     ): Response
     {
         $artistSlug = $request->query->get('artist');
@@ -29,12 +31,18 @@ class LeaderboardController extends AbstractController
             : null;
 
         if ($selectedArtist instanceof Artist) {
-            $rankings = array_map([$this, 'normalizeFandomRanking'], $userFandomRepository->findTopByArtist($selectedArtist, 50));
+            $rankings = array_map(
+                fn (UserFandom $fandom): array => $this->normalizeFandomRanking($fandom, $publicPassportProfileService),
+                $userFandomRepository->findTopByArtist($selectedArtist, 50)
+            );
             $playerCount = count($rankings);
             $contextName = $selectedArtist->getName() ?? 'Fandom';
             $mode = 'Fandom';
         } else {
-            $rankings = array_map([$this, 'normalizeGlobalRanking'], $userRepository->findTopByGlobalXp(50));
+            $rankings = array_map(
+                fn (User $user): array => $this->normalizeGlobalRanking($user, $publicPassportProfileService),
+                $userRepository->findTopByGlobalXp(50)
+            );
             $playerCount = $userRepository->countActiveUsers();
             $contextName = 'Global Hall';
             $mode = 'Global';
@@ -69,30 +77,37 @@ class LeaderboardController extends AbstractController
     }
 
     /**
-     * @return array{userId:int|null,displayName:string,xp:int,level:int}
+     * @return array{userId:int|null,displayName:string,xp:int,level:int,profileUrl:string|null,avatarUrl:string|null}
      */
-    private function normalizeGlobalRanking(User $user): array
+    private function normalizeGlobalRanking(User $user, PublicPassportProfileService $publicPassportProfileService): array
     {
+        $profile = $publicPassportProfileService->ensureProfile($user);
+
         return [
             'userId' => $user->getId(),
-            'displayName' => $user->getDisplayName() ?? 'Fan',
+            'displayName' => $profile->getUsername() ?? $user->getDisplayName() ?? 'Fan',
             'xp' => $user->getGlobalXp(),
             'level' => $user->getGlobalLevel(),
+            'profileUrl' => $this->generateUrl('app_public_user_profile', ['id' => $user->getId()]),
+            'avatarUrl' => $user->getAvatarUrl(),
         ];
     }
 
     /**
-     * @return array{userId:int|null,displayName:string,xp:int,level:int}
+     * @return array{userId:int|null,displayName:string,xp:int,level:int,profileUrl:string|null,avatarUrl:string|null}
      */
-    private function normalizeFandomRanking(UserFandom $fandom): array
+    private function normalizeFandomRanking(UserFandom $fandom, PublicPassportProfileService $publicPassportProfileService): array
     {
         $user = $fandom->getUser();
+        $profile = $user instanceof User ? $publicPassportProfileService->ensureProfile($user) : null;
 
         return [
             'userId' => $user?->getId(),
-            'displayName' => $user?->getDisplayName() ?? 'Fan',
+            'displayName' => $profile?->getUsername() ?? $user?->getDisplayName() ?? 'Fan',
             'xp' => $fandom->getXp(),
             'level' => $fandom->getLevel(),
+            'profileUrl' => $user instanceof User ? $this->generateUrl('app_public_user_profile', ['id' => $user->getId()]) : null,
+            'avatarUrl' => $user?->getAvatarUrl(),
         ];
     }
 }

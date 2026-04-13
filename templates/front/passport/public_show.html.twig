@@ -46,6 +46,27 @@
         min-height: 52px;
     }
 
+    .public-top-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .back-link {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.05);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+    }
+
     .brand {
         color: white;
         text-decoration: none;
@@ -101,6 +122,12 @@
         background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
         font-size: 1.6rem;
         font-weight: 900;
+        object-fit: cover;
+        border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .avatar.avatar-placeholder {
+        background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
     }
 
     h1 {
@@ -237,6 +264,14 @@
         place-items: center;
     }
 
+    .private-identity {
+        display: grid;
+        grid-template-columns: 78px minmax(0, 1fr);
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 12px;
+    }
+
     @media (max-width: 560px) {
         .stats {
             grid-template-columns: 1fr;
@@ -262,22 +297,40 @@
 {% set displayName = profile.username|default(user.displayName) %}
 <main class="public-passport">
     <div class="public-top">
-        <a href="{{ path('app_landing') }}" class="brand">BYAS</a>
+        <div class="public-top-left">
+            <a
+                href="{{ path('app_landing') }}"
+                class="back-link"
+                data-controller="back-nav"
+                data-back-nav-fallback-value="{{ path('app_landing') }}"
+                data-action="click->back-nav#go"
+                aria-label="Go back"
+            >
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a href="{{ path('app_landing') }}" class="brand">BYAS</a>
+        </div>
         <span class="public-label">Public Passport</span>
     </div>
 
     {% if isPrivate %}
         <section class="private-box">
             <div class="cta-card">
-                <h1>This Passport is private.</h1>
-                <p class="muted">The fan has chosen not to share public Passport details.</p>
+                <div class="private-identity">
+                    {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: displayName, avatarClass: 'avatar' } only %}
+                    <div>
+                        <h1>{{ displayName }}</h1>
+                        <p class="muted">Account private</p>
+                    </div>
+                </div>
+                <p class="muted">This fan has chosen not to share their public Passport details yet.</p>
                 <a href="{{ path('show_register') }}">Create your BYAS Passport</a>
             </div>
         </section>
     {% else %}
         <section class="passport-card">
             <div class="identity">
-                <div class="avatar">{{ displayName|slice(0, 2)|upper }}</div>
+                {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: displayName, avatarClass: 'avatar' } only %}
                 <div>
                     <h1>{{ displayName }}</h1>
                     <p class="muted">Level {{ user.globalLevel }} fan with {{ user.globalXp }} XP</p>

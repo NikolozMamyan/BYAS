@@ -1,962 +1,289 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Your Fandom Passport{% endblock %}
+{% block title %}BYAS - Your Fan Identity{% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --neon-pink: #FF007A;
-        --neon-cyan: #00F2FF;
-        --bg-dark: #0B0E14;
-        --glass: rgba(255, 255, 255, 0.03);
-        --text-dim: rgba(255, 255, 255, 0.6);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        background: var(--bg-dark);
-        color: white;
-        font-family: 'Outfit', sans-serif;
-        overflow-x: hidden;
-    }
-
-    /* Animation de fond manga */
-    body::before {
-        content: "";
-        position: fixed;
-        width: 200%;
-        height: 200%;
-        background: repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(255, 0, 122, 0.02) 100px, rgba(255, 0, 122, 0.02) 200px);
-        animation: slide 20s linear infinite;
-        z-index: -1;
-    }
-
-    @keyframes slide {
-        from { transform: translate(-50%, -50%); }
-        to { transform: translate(0, 0); }
-    }
-
-    /* NAVBAR */
-    nav {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        padding: 20px 5%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        background: rgba(11, 14, 20, 0.8);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .logo {
-        font-size: 2rem;
-        font-weight: 900;
-        letter-spacing: -1px;
-        background: linear-gradient(to bottom, #fff, var(--neon-pink));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 40px;
-        list-style: none;
-    }
-
-    .nav-links a {
-        color: var(--text-dim);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .nav-links a:hover {
-        color: var(--neon-cyan);
-    }
-
-    .btn-nav {
-        padding: 12px 28px;
-        background: var(--neon-cyan);
-        color: #000;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: 0.3s;
-        position: relative;
-        font-size: 0.85rem;
-    }
-
-    .btn-nav::before {
-        content: "";
-        position: absolute;
-        top: 4px;
-        left: 4px;
-        width: 100%;
-        height: 100%;
-        border: 2px solid var(--neon-pink);
-        z-index: -1;
-        transition: 0.2s;
-    }
-
-    .btn-nav:hover {
-        transform: translate(-2px, -2px);
-        background: #fff;
-    }
-
-    /* HERO SECTION */
-    .hero {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 120px 8% 80px;
-        gap: 60px;
-    }
-
-    .hero-content {
-        flex: 1;
-        max-width: 600px;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 20px;
-        background: rgba(0, 242, 255, 0.1);
-        border: 1px solid var(--neon-cyan);
-        border-radius: 50px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--neon-cyan);
-        margin-bottom: 30px;
-    }
-
-    .hero-badge i {
-        font-size: 0.6rem;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-
-    h1 {
-        font-size: 4.5rem;
-        font-weight: 900;
-        line-height: 1;
-        margin-bottom: 25px;
-        letter-spacing: -3px;
-    }
-
-    .gradient-text {
-        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .hero-description {
-        font-size: 1.2rem;
-        line-height: 1.7;
-        color: var(--text-dim);
-        margin-bottom: 40px;
-    }
-
-    .cta-group {
-        display: flex;
-        gap: 20px;
-        align-items: center;
-    }
-
-    .btn-primary {
-        position: relative;
-        padding: 20px 45px;
-        background: var(--neon-pink);
-        color: white;
-        font-weight: 900;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: 0.2s;
-        z-index: 1;
-    }
-
-    .btn-primary::before {
-        content: "";
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 100%;
-        height: 100%;
-        border: 2px solid var(--neon-cyan);
-        z-index: -1;
-        transition: 0.2s;
-    }
-
-    .btn-primary:hover {
-        transform: translate(-3px, -3px);
-        background: var(--neon-cyan);
-        color: #000;
-    }
-
-    .btn-primary:hover::before {
-        transform: translate(6px, 6px);
-        background: rgba(255, 0, 122, 0.2);
-    }
-
-    .btn-secondary {
-        padding: 18px 40px;
-        background: transparent;
-        color: white;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        cursor: pointer;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .btn-secondary:hover {
-        border-color: var(--neon-cyan);
-        color: var(--neon-cyan);
-        background: rgba(0, 242, 255, 0.05);
-    }
-
-    /* HERO VISUAL */
-    .hero-visual {
-        flex: 1;
-        position: relative;
-        min-height: 500px;
-    }
-
-    .passport-mockup {
-        position: relative;
-        width: 100%;
-        max-width: 450px;
-        margin: 0 auto;
-        perspective: 1000px;
-    }
-
-    .passport-card {
-        background: linear-gradient(135deg, rgba(255, 0, 122, 0.1), rgba(0, 242, 255, 0.1));
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 40px;
-        backdrop-filter: blur(20px);
-        transform: rotateY(-5deg) rotateX(5deg);
-        transition: 0.5s;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-    }
-
-    .passport-card:hover {
-        transform: rotateY(0deg) rotateX(0deg);
-    }
-
-    .passport-header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .passport-title {
-        font-size: 1.5rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        color: var(--neon-cyan);
-    }
-
-    .passport-subtitle {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--text-dim);
-        margin-top: 5px;
-    }
-
-    .passport-stat {
-        margin-bottom: 25px;
-    }
-
-    .stat-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--text-dim);
-        margin-bottom: 8px;
-    }
-
-    .stat-value {
-        font-size: 1.8rem;
-        font-weight: 900;
-        color: white;
-    }
-
-    .level-bar {
-        height: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 8px;
-    }
-
-    .level-progress {
-        height: 100%;
-        background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
-        width: 65%;
-        animation: fillBar 2s ease-out;
-    }
-
-    @keyframes fillBar {
-        from { width: 0; }
-    }
-
-    .badge-showcase {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-        justify-content: center;
-    }
-
-    .mini-badge {
-        width: 45px;
-        height: 45px;
-        background: rgba(255, 0, 122, 0.2);
-        border: 2px solid var(--neon-pink);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-    }
-
-    /* FEATURES SECTION */
-    .features {
-        padding: 120px 8%;
-        background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.02));
-    }
-
-    .section-header {
-        text-align: center;
-        margin-bottom: 80px;
-    }
-
-    .section-tag {
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        color: var(--neon-cyan);
-        font-weight: 700;
-        margin-bottom: 15px;
-    }
-
-    .section-title {
-        font-size: 3rem;
-        font-weight: 900;
-        line-height: 1.2;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-    }
-
-    .feature-card {
-        background: var(--glass);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 40px;
-        transition: 0.3s;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .feature-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
-        transform: scaleX(0);
-        transition: 0.5s;
-    }
-
-    .feature-card:hover::before {
-        transform: scaleX(1);
-    }
-
-    .feature-card:hover {
-        border-color: var(--neon-cyan);
-        background: rgba(0, 242, 255, 0.03);
-        transform: translateY(-5px);
-    }
-
-    .feature-icon {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        margin-bottom: 25px;
-    }
-
-    .feature-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-    }
-
-    .feature-description {
-        color: var(--text-dim);
-        line-height: 1.7;
-        font-size: 0.95rem;
-    }
-
-    /* STATS SECTION */
-    .stats {
-        padding: 100px 8%;
-        text-align: center;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 50px;
-        margin-top: 60px;
-    }
-
-    .stat-item {
-        position: relative;
-    }
-
-    .stat-number {
-        font-size: 4rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        line-height: 1;
-        margin-bottom: 10px;
-    }
-
-    .stat-text {
-        color: var(--text-dim);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    /* HOW IT WORKS */
-    .how-it-works {
-        padding: 120px 8%;
-        background: linear-gradient(180deg, rgba(255, 0, 122, 0.02), transparent);
-    }
-
-    .steps-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 40px;
-        margin-top: 60px;
-    }
-
-    .step-card {
-        text-align: center;
-        position: relative;
-    }
-
-    .step-number {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        font-weight: 900;
-        margin: 0 auto 25px;
-        position: relative;
-    }
-
-    .step-card:not(:last-child) .step-number::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 100%;
-        width: 100px;
-        height: 2px;
-        background: linear-gradient(90deg, var(--neon-cyan), transparent);
-    }
-
-    .step-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 12px;
-    }
-
-    .step-description {
-        color: var(--text-dim);
-        line-height: 1.6;
-        font-size: 0.9rem;
-    }
-
-    /* CTA SECTION */
-    .cta-section {
-        padding: 120px 8%;
-        text-align: center;
-    }
-
-    .cta-box {
-        background: linear-gradient(135deg, rgba(255, 0, 122, 0.1), rgba(0, 242, 255, 0.1));
-        border: 2px solid var(--neon-cyan);
-        border-radius: 30px;
-        padding: 80px 40px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .cta-box::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255, 0, 122, 0.03) 50px, rgba(255, 0, 122, 0.03) 100px);
-        animation: slide 15s linear infinite;
-    }
-
-    .cta-content {
-        position: relative;
-        z-index: 1;
-    }
-
-    .cta-title {
-        font-size: 3.5rem;
-        font-weight: 900;
-        margin-bottom: 20px;
-        line-height: 1.2;
-    }
-
-    .cta-subtitle {
-        font-size: 1.2rem;
-        color: var(--text-dim);
-        margin-bottom: 40px;
-    }
-
-    /* FOOTER */
-    footer {
-        padding: 60px 8% 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 40px;
-        margin-bottom: 40px;
-    }
-
-    .footer-section h4 {
-        font-size: 1rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 20px;
-        color: var(--neon-cyan);
-    }
-
-    .footer-links {
-        list-style: none;
-    }
-
-    .footer-links li {
-        margin-bottom: 12px;
-    }
-
-    .footer-links a {
-        color: var(--text-dim);
-        text-decoration: none;
-        transition: 0.3s;
-        font-size: 0.9rem;
-    }
-
-    .footer-links a:hover {
-        color: white;
-        padding-left: 5px;
-    }
-
-    .footer-bottom {
-        text-align: center;
-        padding-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        color: var(--text-dim);
-        font-size: 0.85rem;
-    }
-
-    .social-links {
-        display: flex;
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .social-links a {
-        width: 40px;
-        height: 40px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .social-links a:hover {
-        border-color: var(--neon-cyan);
-        color: var(--neon-cyan);
-        background: rgba(0, 242, 255, 0.1);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 968px) {
-        .hero {
-            flex-direction: column;
-            text-align: center;
-            padding-top: 150px;
-        }
-
-        h1 {
-            font-size: 3rem;
-        }
-
-        .cta-group {
-            flex-direction: column;
-        }
-
-        .nav-links {
-            display: none;
-        }
-
-        .step-card:not(:last-child) .step-number::after {
-            display: none;
-        }
-
-        .cta-title {
-            font-size: 2.5rem;
-        }
-    }
-</style>
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_styles %}
+    <link rel="stylesheet" href="{{ asset('styles/landing/index.css') }}">
 {% endblock %}
 
 {% block body %}
-<!-- NAVBAR -->
-<nav>
-    <div class="logo">BYAS</div>
-    <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#about">About</a></li>
-    </ul>
-    <a href="{{ path('show_login') }}" class="btn-nav">Get Started</a>
-</nav>
+    <div class="bg-main"></div>
+    <div class="bg-overlay"></div>
 
-<!-- HERO SECTION -->
-<section class="hero">
-    <div class="hero-content">
-        <div class="hero-badge">
-            <i class="fas fa-circle"></i>
-            Beta Now Live
-        </div>
-        <h1>
-            Your <span class="gradient-text">Fandom</span><br>
-            Identity Lives Here
-        </h1>
-        <p class="hero-description">
-            BYAS is your digital passport to the K-pop universe. Level up through streams, unlock exclusive perks, and prove you're the ultimate fan.
-        </p>
-        <div class="cta-group">
-            <a href="{{ path('show_login') }}" class="btn-primary">
-                Create Your Passport
-            </a>
-            <a href="#how-it-works" class="btn-secondary">
-                <i class="fas fa-play"></i> Watch Demo
-            </a>
-        </div>
+    <div class="sidebar">
+        <span class="sidebar-text">BYAS</span>
+        <div class="sidebar-line"></div>
+        <div class="sidebar-dot"></div>
+        <div class="sidebar-line"></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a48eb" stroke-width="1.5" class="sidebar-globe">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"></path>
+        </svg>
     </div>
 
-    <div class="hero-visual">
-        <div class="passport-mockup">
-            <div class="passport-card">
-                <div class="passport-header">
-                    <div class="passport-title">Fandom Passport</div>
-                    <div class="passport-subtitle">Certified Super Fan</div>
-                </div>
-                
-                <div class="passport-stat">
-                    <div class="stat-label">Global Rank</div>
-                    <div class="stat-value">#2,847</div>
-                    <div class="level-bar">
-                        <div class="level-progress"></div>
+    <div class="page">
+        <div class="logo-wrap">
+            <img src="{{ asset('img/logo/BYAS LOGO.png') }}" class="logo-img" alt="BYAS">
+        </div>
+
+        <svg class="divider-asset-img" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+                <linearGradient id="dividerLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="transparent"/>
+                    <stop offset="35%" stop-color="#4a48eb"/>
+                    <stop offset="65%" stop-color="#f83cb0"/>
+                    <stop offset="100%" stop-color="transparent"/>
+                </linearGradient>
+                <linearGradient id="dividerStar" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#4a48eb"/>
+                    <stop offset="100%" stop-color="#f83cb0"/>
+                </linearGradient>
+            </defs>
+            <line x1="0" y1="20" x2="78" y2="20" stroke="url(#dividerLine)" stroke-width="1.2"/>
+            <line x1="142" y1="20" x2="220" y2="20" stroke="url(#dividerLine)" stroke-width="1.2"/>
+            <polygon points="110,8 114,16 122,20 114,24 110,32 106,24 98,20 106,16" fill="url(#dividerStar)"/>
+        </svg>
+
+        <div class="tagline">
+            <h2>Your fan identity.<br>Now <span>measurable.</span></h2>
+        </div>
+
+        <div class="passport-wrap" id="passportWrap">
+            <div class="passport" id="passport">
+                <img src="{{ asset('img/landing/Main_asset 1.png') }}" class="passport-asset-img" alt="">
+
+                <div class="passport-inner">
+                    <div class="p-header">
+                        <span class="p-brand">BYAS</span>
+                        <span class="p-passport-label">
+                            PASSPORT
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="p-divider"></div>
+
+                    <div class="p-profile">
+                        <svg class="world-map" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                            <g fill="rgba(248,60,176,1)">
+                                <circle cx="15" cy="25" r="1.8"/><circle cx="24" cy="20" r="1.8"/><circle cx="33" cy="24" r="1.8"/>
+                                <circle cx="42" cy="18" r="1.8"/><circle cx="51" cy="23" r="1.8"/><circle cx="60" cy="27" r="1.8"/>
+                                <circle cx="69" cy="20" r="1.8"/><circle cx="78" cy="25" r="1.8"/><circle cx="87" cy="22" r="1.8"/>
+                                <circle cx="96" cy="17" r="1.8"/><circle cx="105" cy="24" r="1.8"/><circle cx="114" cy="19" r="1.8"/>
+                                <circle cx="123" cy="26" r="1.8"/><circle cx="132" cy="21" r="1.8"/><circle cx="141" cy="17" r="1.8"/>
+                                <circle cx="150" cy="23" r="1.8"/><circle cx="159" cy="27" r="1.8"/><circle cx="168" cy="20" r="1.8"/>
+                                <circle cx="177" cy="25" r="1.8"/><circle cx="186" cy="18" r="1.8"/>
+                                <circle cx="10" cy="38" r="1.8"/><circle cx="22" cy="35" r="1.8"/><circle cx="34" cy="40" r="1.8"/>
+                                <circle cx="46" cy="34" r="1.8"/><circle cx="58" cy="38" r="1.8"/><circle cx="70" cy="36" r="1.8"/>
+                                <circle cx="82" cy="40" r="1.8"/><circle cx="94" cy="35" r="1.8"/><circle cx="106" cy="39" r="1.8"/>
+                                <circle cx="118" cy="34" r="1.8"/><circle cx="130" cy="40" r="1.8"/><circle cx="142" cy="36" r="1.8"/>
+                                <circle cx="154" cy="38" r="1.8"/><circle cx="166" cy="33" r="1.8"/><circle cx="178" cy="39" r="1.8"/>
+                                <circle cx="190" cy="35" r="1.8"/>
+                            </g>
+                        </svg>
+
+                        <div class="p-avatar-wrap">
+                            <svg class="p-avatar-ring-svg" viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#f83cb0" stop-opacity="1"/>
+                                        <stop offset="50%" stop-color="#6316d0" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#f83cb0" stop-opacity="1"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="50" cy="50" r="46" fill="none" stroke="url(#ringGrad)" stroke-width="2.5" stroke-dasharray="200 89"/>
+                            </svg>
+                            <div class="p-avatar">
+                                <svg width="92" height="92" viewBox="0 0 92 92">
+                                    <defs>
+                                        <radialGradient id="avBg" cx="50%" cy="30%" r="70%">
+                                            <stop offset="0%" stop-color="#3a1060"/>
+                                            <stop offset="100%" stop-color="#0d0425"/>
+                                        </radialGradient>
+                                    </defs>
+                                    <circle cx="46" cy="46" r="46" fill="url(#avBg)"/>
+                                    <circle cx="46" cy="34" r="14" fill="rgba(240,200,220,0.65)"/>
+                                    <ellipse cx="46" cy="75" rx="22" ry="18" fill="rgba(240,200,220,0.4)"/>
+                                </svg>
+                            </div>
+                            <div class="p-level">
+                                <span class="p-level-label">LV.</span>
+                                <span class="p-level-num">23</span>
+                            </div>
+                        </div>
+
+                        <div class="p-info">
+                            <div class="p-fanname">BLINK <span class="p-heart">&hearts;</span></div>
+                            <div class="p-since">Since May 2024</div>
+                            <div class="p-badge">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f83cb0" stroke-width="2">
+                                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                                </svg>
+                                TRUE BLINK
+                            </div>
+                            <div class="p-xp-row">
+                                <span class="p-xp-lvl">23</span>
+                                <div class="p-xp-bar"><div class="p-xp-fill"></div></div>
+                                <span class="p-xp-lvl">24</span>
+                            </div>
+                            <div class="p-xp-amount">4,250 / 5,000 XP</div>
+                        </div>
+                    </div>
+
+                    <div class="p-stats">
+                        <div class="p-stat">
+                            <div class="p-stat-icon">
+                                <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            </div>
+                            <div class="p-stat-label">STREAMS</div>
+                            <div class="p-stat-val" data-target="12600">12.6K</div>
+                        </div>
+                        <div class="p-stat">
+                            <div class="p-stat-icon"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                            <div class="p-stat-label">VIEWS</div>
+                            <div class="p-stat-val" data-target="8700">8.7K</div>
+                        </div>
+                        <div class="p-stat">
+                            <div class="p-stat-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                            <div class="p-stat-label">ARTICLES</div>
+                            <div class="p-stat-val" data-target="156">156</div>
+                        </div>
+                        <div class="p-stat">
+                            <div class="p-stat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><path d="M12 9l1.5 3h3l-2.5 2 1 3-3-2-3 2 1-3-2.5-2H10.5z"/></svg></div>
+                            <div class="p-stat-label">EVENTS</div>
+                            <div class="p-stat-val" data-target="3">3</div>
+                        </div>
+                        <div class="p-stat">
+                            <div class="p-stat-icon"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l2-4.5 1.5 3.5 4-1.5-1.5 4 3.5 2-3.5 1 1.5 4-4-2-1.5 3.5-2-4L3 15l2-3.5L1 10l4.5-1z"/><circle cx="17.5" cy="15.5" r="4.5"/><path d="M17.5 13v2.5l1.5 1"/></svg></div>
+                            <div class="p-stat-label">BADGES</div>
+                            <div class="p-stat-val" data-target="42">42</div>
+                        </div>
+                    </div>
+
+                    <div class="p-footer">
+                        <div style="flex: 1;">
+                            <div class="p-barcode" id="barcode"></div>
+                            <div class="p-official-text">OFFICIAL BYAS PASSPORT</div>
+                        </div>
+                        <div class="p-seal">
+                            <svg width="0" height="0">
+                                <defs>
+                                    <linearGradient id="sealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#4a48eb"/>
+                                        <stop offset="100%" stop-color="#f83cb0"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="p-seal-inner">
+                                <span class="p-seal-top">★ BYAS ★</span>
+                                <svg class="p-seal-globe-icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" stroke="url(#sealGrad)" stroke-width="1.2" fill="none"/>
+                                    <ellipse cx="12" cy="12" rx="4" ry="10" stroke="url(#sealGrad)" stroke-width="1.2" fill="none"/>
+                                    <line x1="2" y1="12" x2="22" y2="12" stroke="url(#sealGrad)" stroke-width="1.2"/>
+                                    <line x1="12" y1="2" x2="12" y2="22" stroke="url(#sealGrad)" stroke-width="1.2"/>
+                                </svg>
+                                <span class="p-seal-bottom">OFFICIAL</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="passport-stat">
-                    <div class="stat-label">Fandom Level</div>
-                    <div class="stat-value">Level 42</div>
-                </div>
-
-                <div class="badge-showcase">
-                    <div class="mini-badge">🏆</div>
-                    <div class="mini-badge">⭐</div>
-                    <div class="mini-badge">💎</div>
-                    <div class="mini-badge">🔥</div>
-                </div>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- FEATURES SECTION -->
-<section class="features" id="features">
-    <div class="section-header">
-        <div class="section-tag">What We Offer</div>
-        <h2 class="section-title">
-            One Passport.<br>
-            Infinite <span class="gradient-text">Possibilities</span>
-        </h2>
-    </div>
-
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-trophy"></i>
-            </div>
-            <h3 class="feature-title">XP & Leveling System</h3>
-            <p class="feature-description">
-                Every stream, every album purchased, every concert attended adds to your experience points. Watch your fandom level grow and climb the global leaderboards.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-crown"></i>
-            </div>
-            <h3 class="feature-title">Exclusive Perks</h3>
-            <p class="feature-description">
-                Unlock early access to tickets, limited merch drops, and special discounts from partner stores. Your loyalty earns real rewards.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <h3 class="feature-title">Fandom Circles</h3>
-            <p class="feature-description">
-                Join communities of fans who share your passion. Connect, organize events, and build friendships with people who get it.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-medal"></i>
-            </div>
-            <h3 class="feature-title">Badge Collection</h3>
-            <p class="feature-description">
-                Earn digital badges for milestones and achievements. Show off your dedication with a collection that tells your fan story.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <h3 class="feature-title">Multi-Fandom Tracking</h3>
-            <p class="feature-description">
-                Stan multiple groups? No problem. Track your level, rank, and stats separately for each of your favorite artists.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-qrcode"></i>
-            </div>
-            <h3 class="feature-title">Verified Identity</h3>
-            <p class="feature-description">
-                Generate QR codes to verify your fan status IRL at concerts, cafés, and pop-up stores. Your passport works everywhere.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- STATS SECTION -->
-<section class="stats">
-    <div class="section-header">
-        <div class="section-tag">Join The Movement</div>
-        <h2 class="section-title">
-            The Fandom <span class="gradient-text">Revolution</span>
-        </h2>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-item">
-            <div class="stat-number">50K+</div>
-            <div class="stat-text">Active Fans</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">120+</div>
-            <div class="stat-text">Artist Groups</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">2M+</div>
-            <div class="stat-text">XP Points Earned</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">500+</div>
-            <div class="stat-text">Partner Perks</div>
-        </div>
-    </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-it-works" id="how-it-works">
-    <div class="section-header">
-        <div class="section-tag">Getting Started</div>
-        <h2 class="section-title">
-            Level Up in <span class="gradient-text">3 Simple Steps</span>
-        </h2>
-    </div>
-
-    <div class="steps-grid">
-        <div class="step-card">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Connect Your Accounts</h3>
-            <p class="step-description">
-                Link your Spotify or Apple Music to automatically track your listening activity and start earning XP.
-            </p>
-        </div>
-
-        <div class="step-card">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Build Your Collection</h3>
-            <p class="step-description">
-                Add your physical albums, lightsticks, and fanclub memberships to boost your fandom score.
-            </p>
-        </div>
-
-        <div class="step-card">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Unlock & Enjoy</h3>
-            <p class="step-description">
-                Redeem exclusive perks, climb leaderboards, and share your achievements with the community.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- CTA SECTION -->
-<section class="cta-section">
-    <div class="cta-box">
-        <div class="cta-content">
-            <h2 class="cta-title">
-                Ready to <span class="gradient-text">Join the Fandom?</span>
-            </h2>
-            <p class="cta-subtitle">
-                Create your passport today and start your journey to becoming a certified super fan.
-            </p>
-            <a href="{{ path('show_login') }}" class="btn-primary">
-                Get Your Passport Now
+        <div class="cta-section">
+            <a class="btn-primary" href="{{ path('show_register') }}">
+                <span>Create Account</span>
+                <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
             </a>
-        </div>
-    </div>
-</section>
 
-<!-- FOOTER -->
-<footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>BYAS</h4>
-            <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.7;">
-                Your digital identity in the K-pop universe. Level up, unlock perks, and connect with fans worldwide.
-            </p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-discord"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
+            <div class="divider-or">
+                <div class="divider-or-line"></div>
+                <span class="divider-or-text">OR</span>
+                <div class="divider-or-line"></div>
             </div>
-        </div>
 
-        <div class="footer-section">
-            <h4>Product</h4>
-            <ul class="footer-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">Partners</a></li>
-            </ul>
-        </div>
+            <a class="btn-secondary" href="{{ path('show_login') }}">
+                <span>Login</span>
+                <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+            </a>
 
-        <div class="footer-section">
-            <h4>Company</h4>
-            <ul class="footer-links">
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Careers</a></li>
-                <li><a href="#">Press Kit</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h4>Support</h4>
-            <ul class="footer-links">
-                <li><a href="#">Help Center</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Service</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
+            <p class="legal">
+                By creating an account, you agree to our<br>
+                <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
         </div>
     </div>
 
-    <div class="footer-bottom">
-        <p>&copy; 2024 BYAS. All rights reserved. Built for fans, by fans.</p>
-    </div>
-</footer>
+    <script>
+        const barcodeEl = document.getElementById('barcode');
+        const bars = [3,1,2,1,3,2,1,1,2,3,1,2,1,3,1,1,2,1,3,2,1,1,2,3,1,2,1,3,2,1,1,2,1,3,1,2,3,1,1,2,1,3,1,2,2,1];
+        bars.forEach((w, i) => {
+            const bar = document.createElement('div');
+            bar.className = 'p-barcode-bar';
+            bar.style.cssText = 'width:' + w + 'px;height:' + (i % 5 === 0 ? 32 : i % 3 === 0 ? 24 : 28) + 'px;';
+            barcodeEl.appendChild(bar);
+        });
+
+        const wrap = document.getElementById('passportWrap');
+        const card = document.getElementById('passport');
+        wrap.addEventListener('mousemove', e => {
+            const r = wrap.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = 'perspective(900px) rotateY(' + (x * 9) + 'deg) rotateX(' + (-y * 7) + 'deg) scale(1.015)';
+            card.style.transition = 'none';
+        });
+        wrap.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.6s cubic-bezier(.22,1,.36,1)';
+        });
+        wrap.addEventListener('touchmove', e => {
+            const t = e.touches[0];
+            const r = wrap.getBoundingClientRect();
+            const x = (t.clientX - r.left) / r.width - 0.5;
+            const y = (t.clientY - r.top) / r.height - 0.5;
+            card.style.transform = 'perspective(900px) rotateY(' + (x * 7) + 'deg) rotateX(' + (-y * 5) + 'deg) scale(1.01)';
+            card.style.transition = 'none';
+        }, { passive: true });
+        wrap.addEventListener('touchend', () => {
+            card.style.transform = '';
+            card.style.transition = 'transform 0.6s cubic-bezier(.22,1,.36,1)';
+        });
+
+        function animateCounter(el, target) {
+            let cur = 0;
+            const dur = 1400;
+            const step = target / (dur / 16);
+            const t = setInterval(() => {
+                cur = Math.min(cur + step, target);
+                if (target >= 1000) {
+                    el.textContent = (cur / 1000).toFixed(1) + 'K';
+                } else {
+                    el.textContent = Math.floor(cur);
+                }
+                if (cur >= target) {
+                    clearInterval(t);
+                }
+            }, 16);
+        }
+
+        const obs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                document.querySelectorAll('.p-stat-val').forEach(el => {
+                    animateCounter(el, +el.dataset.target);
+                });
+                obs.disconnect();
+            }
+        }, { threshold: 0.4 });
+        obs.observe(document.querySelector('.passport'));
+    </script>
 {% endblock %}

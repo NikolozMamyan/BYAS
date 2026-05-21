@@ -16,9 +16,7 @@
 
     {# CSS global (idéalement via importmap/asset mapper). Laisse ton système actuel. #}
     {% block stylesheets %}
-      {# Exemple si tu as un CSS global :
-         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-      #}
+      <link rel="stylesheet" href="{{ asset('styles/global.css') }}">
     {% endblock %}
 
     {# Slot CSS page (évite de mettre des <style> dans le body) #}

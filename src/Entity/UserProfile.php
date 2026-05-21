@@ -43,6 +43,9 @@ class UserProfile
     #[ORM\Column(length: 120, unique: true)]
     private ?string $shareSlug = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $hasCompletedOnboarding = false;
+
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
@@ -85,6 +88,9 @@ class UserProfile
 
     public function getShareSlug(): ?string { return $this->shareSlug; }
     public function setShareSlug(string $shareSlug): self { $this->shareSlug = $shareSlug; return $this; }
+
+    public function hasCompletedOnboarding(): bool { return $this->hasCompletedOnboarding; }
+    public function setHasCompletedOnboarding(bool $hasCompletedOnboarding): self { $this->hasCompletedOnboarding = $hasCompletedOnboarding; return $this; }
 
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): \DateTimeImmutable { return $this->updatedAt; }

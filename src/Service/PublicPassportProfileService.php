@@ -41,6 +41,29 @@ class PublicPassportProfileService
         return $profile;
     }
 
+    public function requiresOnboarding(User $user): bool
+    {
+        return !$this->ensureProfile($user)->hasCompletedOnboarding();
+    }
+
+    public function completeOnboarding(User $user): UserProfile
+    {
+        $profile = $this->ensureProfile($user);
+
+        if ($profile->hasCompletedOnboarding()) {
+            return $profile;
+        }
+
+        $profile
+            ->setHasCompletedOnboarding(true)
+            ->setUpdatedAt(new \DateTimeImmutable());
+
+        $this->entityManager->persist($profile);
+        $this->entityManager->flush();
+
+        return $profile;
+    }
+
     private function uniqueUsername(User $user): string
     {
         return $this->uniqueProfileValue(

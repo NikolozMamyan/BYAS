@@ -18,6 +18,7 @@ export default class extends Controller {
                 body: JSON.stringify({
                     email: this.emailTarget.value,
                     password: this.passwordTarget.value,
+                    next: this.element.dataset.next || null,
                 }),
                 credentials: 'include',
             });
@@ -27,7 +28,8 @@ export default class extends Controller {
                 throw new Error(payload?.message || payload?.error || `Statut de reponse : ${response.status}`);
             }
 
-            window.location.href = this.redirectTo();
+            const payload = await response.json().catch(() => null);
+            window.location.href = payload?.redirectTo || this.redirectTo();
         } catch (error) {
             this.setError(error.message || 'Connexion impossible pour le moment.');
             this.setLoading(false);
@@ -40,7 +42,7 @@ export default class extends Controller {
         }
 
         this.submitTarget.disabled = isLoading;
-        this.submitTarget.textContent = isLoading ? 'Connexion...' : 'Login to Passport';
+        this.submitTarget.textContent = isLoading ? 'Connexion...' : 'Login';
     }
 
     setError(message) {

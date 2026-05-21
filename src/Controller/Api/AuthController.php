@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\AuthCookieService;
+use App\Service\PublicPassportProfileService;
 use App\Service\SessionManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +25,7 @@ final class AuthController extends AbstractController
         EntityManagerInterface $em,
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
     ): JsonResponse {
         $data = $this->getRequestData($request);
 
@@ -58,6 +60,8 @@ final class AuthController extends AbstractController
             deviceId: $deviceId,
             expiresAt: $session->getExpiresAt(),
             authCookieService: $authCookieService,
+            publicPassportProfileService: $publicPassportProfileService,
+            next: is_string($data['next'] ?? null) ? $data['next'] : null,
             status: 201
         );
     }
@@ -69,6 +73,7 @@ final class AuthController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
     ): JsonResponse {
         $data = $this->getRequestData($request);
 
@@ -101,7 +106,9 @@ final class AuthController extends AbstractController
             plainToken: $plainToken,
             deviceId: $finalDeviceId,
             expiresAt: $session->getExpiresAt(),
-            authCookieService: $authCookieService
+            authCookieService: $authCookieService,
+            publicPassportProfileService: $publicPassportProfileService,
+            next: is_string($data['next'] ?? null) ? $data['next'] : null,
         );
     }
 
@@ -199,11 +206,16 @@ final class AuthController extends AbstractController
         string $deviceId,
         \DateTimeInterface $expiresAt,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
+        ?string $next = null,
         int $status = 200
     ): JsonResponse {
+        $redirectTo = $this->resolvePostAuthRedirect($user, $publicPassportProfileService, $next);
+
         $response = new JsonResponse([
             'message' => $message,
             'user' => $this->serializeUser($user),
+            'redirectTo' => $redirectTo,
             'session' => [
                 'expiresAt' => $expiresAt->format(DATE_ATOM),
             ],
@@ -212,6 +224,23 @@ final class AuthController extends AbstractController
         $authCookieService->attachAuthenticationCookies($response, $request, $plainToken, $deviceId, $expiresAt);
 
         return $response;
+    }
+
+    private function resolvePostAuthRedirect(
+        User $user,
+        PublicPassportProfileService $publicPassportProfileService,
+        ?string $next
+    ): string {
+        $fallback = '/app/passport';
+        $safeNext = is_string($next) && str_starts_with($next, '/') && !str_starts_with($next, '//')
+            ? $next
+            : $fallback;
+
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return sprintf('/app/onboarding?next=%s', rawurlencode($safeNext));
+        }
+
+        return $safeNext;
     }
 
     private function jsonError(string $message, int $status): JsonResponse

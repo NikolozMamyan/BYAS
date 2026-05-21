@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Choose Your Fandom{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ asset('styles/auth/onboarding.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="onboarding-page">
+  <div class="onboarding-bg"></div>
+  <div class="onboarding-bg-overlay"></div>
+  <div class="onboarding-planet"></div>
+
+  <main class="onboarding-shell">
+    <a class="onboarding-back" href="{{ path('app_landing') }}" aria-label="Back to landing">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
+
+    <section class="onboarding-brand">
+      <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
+    </section>
+
+    <div class="onboarding-progress" aria-hidden="true">
+      <span class="onboarding-progress-step is-active"></span>
+      <span class="onboarding-progress-step is-active"></span>
+      <span class="onboarding-progress-step"></span>
+      <span class="onboarding-progress-step"></span>
+    </div>
+
+    <section class="onboarding-card">
+      <div class="onboarding-card-border"></div>
+
+      <div class="onboarding-card-inner">
+        <header class="onboarding-copy">
+          <h1>Choose your fandom</h1>
+          <p>This will define your identity <span>✦</span></p>
+        </header>
+
+        <label class="onboarding-search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input id="onboardingSearch" type="text" placeholder="Search your fandom">
+        </label>
+
+        <div class="onboarding-grid" id="onboardingGrid">
+          {% for fandom in fandoms %}
+            <article
+              class="onboarding-fandom onboarding-fandom--{{ fandom.theme }}{{ fandom.selected ? ' is-selected' : '' }}"
+              data-fandom-card
+              data-fandom-slug="{{ fandom.slug }}"
+              data-fandom-name="{{ fandom.name|lower }}"
+              data-fandom-label="{{ fandom.fandom|lower }}"
+              tabindex="0"
+              role="button"
+              aria-pressed="{{ fandom.selected ? 'true' : 'false' }}"
+            >
+              <button type="button" class="onboarding-fandom-toggle" aria-label="Select {{ fandom.name }}">
+                <i class="fa-solid fa-check"></i>
+              </button>
+
+              <div class="onboarding-fandom-cover">
+                <div class="onboarding-fandom-placeholder"></div>
+              </div>
+
+              <div class="onboarding-fandom-name">{{ fandom.name }}</div>
+            </article>
+          {% endfor %}
+        </div>
+    </section>
+            <div class="onboarding-load-trigger" id="onboardingLoadTrigger" aria-hidden="true"></div>
+
+        <div class="onboarding-submit-wrap">
+          <a
+            class="onboarding-submit"
+            id="onboardingContinue"
+            href="{{ path('app_onboarding_ready', { next: continueUrl, fandom: 'blackpink' }) }}"
+          >
+            <span>Continue</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+
+          <div class="onboarding-legal">
+            <div class="onboarding-legal-icon">
+              <i class="fa-regular fa-shield" aria-hidden="true"></i>
+            </div>
+            <p>You can change your fandom anytime in settings.</p>
+          </div>
+        </div>
+      </div>
+  </main>
+</div>
+
+<script>
+  (function () {
+    const cards = Array.from(document.querySelectorAll('[data-fandom-card]'));
+    const continueBtn = document.getElementById('onboardingContinue');
+    const searchInput = document.getElementById('onboardingSearch');
+    const loadTrigger = document.getElementById('onboardingLoadTrigger');
+    const batchSize = 6;
+    let visibleCount = batchSize;
+    let currentQuery = '';
+
+    if (!cards.length || !continueBtn || !searchInput) return;
+
+    const defaultSlug = cards.find(function (card) {
+      return card.classList.contains('is-selected');
+    })?.dataset.fandomSlug || cards[0]?.dataset.fandomSlug || 'blackpink';
+
+    const getSelectedSlug = function () {
+      const selectedCards = cards.filter(function (card) {
+        return card.classList.contains('is-selected') && !card.hidden;
+      });
+
+      if (selectedCards.length > 0) {
+        return selectedCards[0].dataset.fandomSlug;
+      }
+
+      const anySelectedCard = cards.find(function (card) {
+        return card.classList.contains('is-selected');
+      });
+
+      return anySelectedCard?.dataset.fandomSlug || defaultSlug;
+    };
+
+    const updateContinueUrl = function () {
+      const url = new URL(continueBtn.href, window.location.origin);
+      url.searchParams.set('fandom', getSelectedSlug());
+      continueBtn.href = url.pathname + url.search;
+    };
+
+    const toggleCard = function (card) {
+      const isActive = !card.classList.contains('is-selected');
+      card.classList.toggle('is-selected', isActive);
+      card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      updateContinueUrl();
+    };
+
+    const matchesQuery = function (card, query) {
+      if (query === '') return true;
+
+      return card.dataset.fandomName.includes(query) || card.dataset.fandomLabel.includes(query);
+    };
+
+    const applyVisibility = function () {
+      const filteredCards = cards.filter(function (card) {
+        return matchesQuery(card, currentQuery);
+      });
+
+      cards.forEach(function (card) {
+        card.hidden = true;
+      });
+
+      if (currentQuery !== '') {
+        filteredCards.forEach(function (card) {
+          card.hidden = false;
+        });
+
+        if (loadTrigger) {
+          loadTrigger.hidden = true;
+        }
+
+        updateContinueUrl();
+        return;
+      }
+
+      filteredCards.slice(0, visibleCount).forEach(function (card) {
+        card.hidden = false;
+      });
+
+      if (loadTrigger) {
+        loadTrigger.hidden = visibleCount >= filteredCards.length;
+      }
+
+      updateContinueUrl();
+    };
+
+    const loadMore = function () {
+      if (currentQuery !== '') return;
+      visibleCount += batchSize;
+      applyVisibility();
+    };
+
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        toggleCard(card);
+      });
+
+      card.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleCard(card);
+        }
+      });
+    });
+
+    searchInput.addEventListener('input', function () {
+      currentQuery = searchInput.value.trim().toLowerCase();
+      visibleCount = batchSize;
+      applyVisibility();
+    });
+
+    if (loadTrigger && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            loadMore();
+          }
+        });
+      }, {
+        rootMargin: '180px 0px 180px 0px',
+      });
+
+      observer.observe(loadTrigger);
+    }
+
+    applyVisibility();
+  })();
+</script>
+{% endblock %}

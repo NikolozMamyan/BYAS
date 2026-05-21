@@ -19,6 +19,7 @@ export default class extends Controller {
                     displayName: this.displayNameTarget.value,
                     email: this.emailTarget.value,
                     password: this.passwordTarget.value,
+                    next: this.element.dataset.next || null,
                 }),
                 credentials: 'include',
             });
@@ -28,7 +29,8 @@ export default class extends Controller {
                 throw new Error(payload?.message || payload?.error || `Statut de reponse : ${response.status}`);
             }
 
-            window.location.href = this.redirectTo();
+            const payload = await response.json().catch(() => null);
+            window.location.href = payload?.redirectTo || this.redirectTo();
         } catch (error) {
             this.setError(error.message || 'Creation de compte impossible pour le moment.');
             this.setLoading(false);
@@ -39,10 +41,10 @@ export default class extends Controller {
         const next = this.element.dataset.next;
 
         if (next && next.startsWith('/') && !next.startsWith('//')) {
-            return next;
+            return `/app/onboarding?next=${encodeURIComponent(next)}`;
         }
 
-        return '/app/passport';
+        return '/app/onboarding';
     }
 
     setLoading(isLoading) {

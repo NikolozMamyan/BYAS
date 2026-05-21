@@ -2,302 +2,202 @@
 
 {% block title %}BYAS | Create Account{% endblock %}
 
+{% set has_prefill = (old is defined and (old.displayName is defined or old.email is defined)) or (error is defined and error) %}
+
 {% block stylesheets %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-    :root {
-        --neon-pink: #FF007A;
-        --neon-cyan: #00F2FF;
-        --bg-dark: #0B0E14;
-        --glass: rgba(255, 255, 255, 0.03);
-    }
+  {{ parent() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
 
-    body {
-        background: var(--bg-dark);
-        color: white;
-        font-family: 'Outfit', sans-serif;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow-x: hidden;
-        position: relative;
-    }
-
-    body::before {
-        content: "";
-        position: fixed;
-        width: 200%;
-        height: 200%;
-        background: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 100px,
-            rgba(255, 0, 122, 0.02) 100px,
-            rgba(255, 0, 122, 0.02) 200px
-        );
-        animation: slide 20s linear infinite;
-        z-index: -1;
-    }
-
-    @keyframes slide {
-        from { transform: translate(-50%, -50%); }
-        to { transform: translate(0, 0); }
-    }
-
-    .register-container {
-        width: 100%;
-        max-width: 420px;
-        padding: 40px 25px;
-        text-align: center;
-    }
-
-    .logo-area {
-        margin-bottom: 35px;
-    }
-
-    .logo-area h1 {
-        font-size: 3rem;
-        font-weight: 900;
-        letter-spacing: -2px;
-        margin: 0;
-        background: linear-gradient(to bottom, #fff, var(--neon-pink));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-    }
-
-    .logo-area span {
-        font-size: 0.8rem;
-        letter-spacing: 4px;
-        color: var(--neon-cyan);
-        text-transform: uppercase;
-    }
-
-    .form-card {
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 20px;
-        padding: 28px 22px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-    }
-
-    .form-title {
-        font-size: 1.1rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 25px;
-        color: #fff;
-    }
-
-    .input-group {
-        position: relative;
-        margin-bottom: 18px;
-        text-align: left;
-    }
-
-    .input-group i {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--neon-pink);
-        font-size: 0.9rem;
-    }
-
-    .input-group input {
-        width: 100%;
-        background: var(--glass);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 15px 15px 15px 45px;
-        border-radius: 12px;
-        color: white;
-        box-sizing: border-box;
-        transition: 0.3s;
-        font-size: 0.95rem;
-    }
-
-    .input-group input::placeholder {
-        color: rgba(255,255,255,0.45);
-    }
-
-    .input-group input:focus {
-        outline: none;
-        border-color: var(--neon-cyan);
-        background: rgba(255,255,255,0.05);
-        box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
-    }
-
-    .btn-register {
-        position: relative;
-        width: 100%;
-        padding: 18px;
-        background: var(--neon-cyan);
-        color: #000;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 900;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        border: none;
-        cursor: pointer;
-        transition: 0.2s;
-        z-index: 1;
-        margin-top: 10px;
-    }
-
-    .btn-register::before {
-        content: "";
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 100%;
-        height: 100%;
-        border: 2px solid var(--neon-pink);
-        z-index: -1;
-        transition: 0.2s;
-    }
-
-    .btn-register:hover {
-        transform: translate(-3px, -3px);
-        background: #fff;
-    }
-
-    .btn-register:hover::before {
-        transform: translate(6px, 6px);
-        background: rgba(255, 0, 122, 0.2);
-    }
-
-    .btn-register:active {
-        transform: translate(2px, 2px);
-    }
-
-    .btn-register:active::before {
-        transform: translate(-2px, -2px);
-    }
-
-    .error-msg {
-        background: rgba(255, 0, 0, 0.1);
-        color: #ff6b6b;
-        padding: 12px;
-        border-radius: 10px;
-        font-size: 0.85rem;
-        margin-bottom: 18px;
-        border: 1px solid rgba(255, 0, 0, 0.2);
-        text-align: left;
-    }
-
-    .success-msg {
-        background: rgba(0, 242, 255, 0.08);
-        color: var(--neon-cyan);
-        padding: 12px;
-        border-radius: 10px;
-        font-size: 0.85rem;
-        margin-bottom: 18px;
-        border: 1px solid rgba(0, 242, 255, 0.2);
-        text-align: left;
-    }
-
-    .footer-link {
-        margin-top: 28px;
-        font-size: 0.85rem;
-        color: #8b8f98;
-    }
-
-    .footer-link a {
-        color: var(--neon-cyan);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .footer-link a:hover {
-        text-decoration: underline;
-    }
-</style>
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ asset('styles/auth/register.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="register-container">
-    <div class="logo-area">
-        <h1>BYAS</h1>
-        <span>Fandom Passport</span>
-    </div>
+<div class="register-page">
+  <div class="register-bg"></div>
+  <div class="register-bg-overlay"></div>
+  <div class="register-planet"></div>
 
-    <div class="form-card">
-        <div class="form-title">Create your account</div>
+  <main class="register-shell">
+    <a class="register-back" href="{{ path('app_landing') }}" aria-label="Back to landing">
+      <i class="fa-solid fa-arrow-left"></i>
+    </a>
 
-        <div style="display: grid; gap: 10px; margin-bottom: 20px;">
-            <a href="{{ path('app_google_start', { next: next|default('/app/passport') }) }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:12px;text-decoration:none;font-weight:700;background:#fff;color:#000;border:1px solid rgba(255,255,255,0.1);">
-                <i class="fab fa-google"></i> Continue with Google
-            </a>
-            {# <a href="{{ path('app_apple_start', { next: next|default('/app/passport') }) }}" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;border-radius:12px;text-decoration:none;font-weight:700;background:#000;color:#fff;border:1px solid rgba(255,255,255,0.14);">
-                <i class="fab fa-apple"></i> Continue with Apple
-            </a> #}
+    <section class="register-brand">
+      <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
+    </section>
+
+    <section class="register-card">
+      <div class="register-card-border"></div>
+
+      <div class="register-card-inner">
+        <div class="register-divider" aria-hidden="true">
+          <span class="register-divider-line"></span>
+          <span class="register-divider-star">✦</span>
+          <span class="register-divider-line"></span>
         </div>
 
-        {% for message in app.flashes('success') %}
-            <div class="success-msg">
-                <i class="fas fa-circle-check"></i> {{ message }}
+        <header class="register-copy">
+          <h1>Create your passport</h1>
+          <p>Start your fan journey</p>
+        </header>
+
+        <div class="register-actions">
+          <a class="register-social register-social-google" href="{{ path('app_google_start', { next: next|default('/app/passport') }) }}">
+            <span class="register-google-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="img" aria-hidden="true">
+                <path fill="#FFC107" d="M43.61 20.08H42V20H24v8h11.3C33.65 32.66 29.19 36 24 36c-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4 12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20c0-1.34-.14-2.65-.39-3.92Z"/>
+                <path fill="#FF3D00" d="M6.31 14.69l6.57 4.82C14.66 15.1 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4c-7.68 0-14.41 4.34-17.69 10.69Z"/>
+                <path fill="#4CAF50" d="M24 44c5.17 0 9.86-1.98 13.41-5.2l-6.19-5.24C29.14 35.14 26.69 36 24 36c-5.17 0-9.62-3.32-11.28-7.92l-6.52 5.02C9.44 39.56 16.04 44 24 44Z"/>
+                <path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.25-2.23 4.2-4.09 5.56l.01-.01 6.19 5.24C37 39.09 44 34 44 24c0-1.34-.14-2.65-.39-3.92Z"/>
+              </svg>
+            </span>
+            <span>Continue with Google</span>
+          </a>
+
+          <a class="register-social register-social-apple" href="{{ path('app_apple_start', { next: next|default('/app/passport') }) }}">
+            <i class="fab fa-apple" aria-hidden="true"></i>
+            <span>Continue with Apple</span>
+          </a>
+        </div>
+
+        <div class="register-or">
+          <span class="register-or-line"></span>
+          <span class="register-or-text">OR</span>
+          <span class="register-or-line"></span>
+        </div>
+
+        <div class="register-email-block">
+          <button
+            type="button"
+            class="register-email-trigger"
+            id="registerEmailTrigger"
+            aria-controls="registerEmailPanel"
+            aria-expanded="{{ has_prefill ? 'true' : 'false' }}"
+          >
+            <span class="register-email-icon"><i class="fa-regular fa-envelope" aria-hidden="true"></i></span>
+            <span>Continue with Email</span>
+          </button>
+
+          {% for message in app.flashes('success') %}
+            <div class="register-feedback register-feedback-success">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              <span>{{ message }}</span>
             </div>
-        {% endfor %}
+          {% endfor %}
 
-        {% if error is defined and error %}
-            <div class="error-msg">
-                <i class="fas fa-exclamation-circle"></i> {{ error }}
+          {% if error is defined and error %}
+            <div class="register-feedback register-feedback-error">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              <span>{{ error }}</span>
             </div>
-        {% endif %}
+          {% endif %}
 
-        <form method="post" action="{{ path('api_register') }}" data-controller="register" data-action="submit->register#submit" data-next="{{ next|default('') }}">
-            <input type="hidden" name="_token" value="{{ csrf_token('register_form') }}">
-            <div class="error-msg" data-register-target="error" hidden></div>
+          <div
+            class="register-email-panel{{ has_prefill ? ' is-open' : '' }}"
+            id="registerEmailPanel"
+            {% if not has_prefill %}hidden{% endif %}
+          >
+            <form
+              method="post"
+              action="{{ path('api_register') }}"
+              class="register-form"
+              data-controller="register"
+              data-action="submit->register#submit"
+              data-next="{{ next|default('') }}"
+            >
+              <input type="hidden" name="_token" value="{{ csrf_token('register_form') }}">
+              <div class="register-feedback register-feedback-error" data-register-target="error" hidden></div>
 
-            <div class="input-group">
-                <i class="fas fa-user"></i>
+              <label class="register-field">
+                <span class="register-field-icon"><i class="fa-regular fa-user" aria-hidden="true"></i></span>
                 <input
-                    type="text"
-                    name="displayName"
-                    placeholder="Display Name"
-                    value="{{ old.displayName|default('') }}"
-                    data-register-target="displayName"
-                    required
+                  type="text"
+                  name="displayName"
+                  placeholder="Display name"
+                  value="{{ old.displayName|default('') }}"
+                  data-register-target="displayName"
+                  required
                 >
-            </div>
+              </label>
 
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
+              <label class="register-field">
+                <span class="register-field-icon"><i class="fa-regular fa-envelope" aria-hidden="true"></i></span>
                 <input
-                    type="email"
-                    name="email"
-                    placeholder="Email Address"
-                    value="{{ old.email|default('') }}"
-                    data-register-target="email"
-                    required
+                  type="email"
+                  name="email"
+                  placeholder="Email address"
+                  value="{{ old.email|default('') }}"
+                  data-register-target="email"
+                  required
                 >
-            </div>
+              </label>
 
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
+              <label class="register-field">
+                <span class="register-field-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
                 <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    data-register-target="password"
-                    required
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  data-register-target="password"
+                  required
                 >
-            </div>
+              </label>
 
-            <button type="submit" class="btn-register" data-register-target="submit">
-                Join the Passport
-            </button>
-        </form>
-    </div>
+              <button type="submit" class="register-submit" data-register-target="submit">
+                Create with Email
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
 
-    <p class="footer-link">
-        Already in the fandom?
-        <a href="{{ path('show_login', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false">Login here</a>
-    </p>
+        <div class="register-legal">
+          <div class="register-legal-icon">
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          </div>
+          <p>
+            By continuing, you agree to our
+            <a href="#">Terms of Service</a>
+            and
+            <a href="#">Privacy Policy</a>.
+          </p>
+        </div>
+
+        <p class="register-login-link">
+          Already in the fandom?
+          <a href="{{ path('show_login', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false">
+            Login
+          </a>
+        </p>
+      </div>
+    </section>
+  </main>
 </div>
+
+<script>
+  (function () {
+    const trigger = document.getElementById('registerEmailTrigger');
+    const panel = document.getElementById('registerEmailPanel');
+
+    if (!trigger || !panel) return;
+
+    trigger.addEventListener('click', function () {
+      const isOpen = panel.classList.contains('is-open');
+
+      if (isOpen) {
+        panel.classList.remove('is-open');
+        panel.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      } else {
+        panel.hidden = false;
+        panel.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  })();
+</script>
 {% endblock %}

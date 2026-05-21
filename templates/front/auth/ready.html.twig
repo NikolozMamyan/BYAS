@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BYAS | Passport Ready{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ asset('styles/auth/ready.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="ready-page">
+  <div class="ready-bg"></div>
+  <div class="ready-bg-overlay"></div>
+
+  <main class="ready-shell">
+    <section class="ready-brand">
+      <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
+    </section>
+
+    <a class="ready-share" href="{{ continueUrl }}" aria-label="Continue to BYAS">
+      <i class="fa-solid fa-arrow-up-from-bracket"></i>
+    </a>
+
+    <header class="ready-copy">
+      <h1>Your passport <span>is ready</span></h1>
+      <p>Welcome to your fandom identity</p>
+    </header>
+
+    <section class="ready-passport-wrap" aria-hidden="true">
+      <div class="ready-orbit"></div>
+      <img src="{{ asset('img/landing/Main_asset 1.png') }}" alt="" class="ready-passport">
+    </section>
+
+    <section class="ready-fandom">
+      <div class="ready-fandom-line">
+        <span class="ready-fandom-star">✦</span>
+        <p>You are now a</p>
+        <span class="ready-fandom-star">✦</span>
+      </div>
+      <div class="ready-fandom-name">♥ {{ selectedFandom }} ♥</div>
+      <div class="ready-fandom-artist">{{ selectedArtist }}</div>
+    </section>
+
+    <a class="ready-submit" href="{{ continueUrl }}">
+      <span>Enter BYAS</span>
+      <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+    </a>
+
+    <div class="ready-footnote">
+      <i class="fa-solid fa-bolt"></i>
+      <span>Start earning XP now</span>
+    </div>
+  </main>
+</div>
+{% endblock %}

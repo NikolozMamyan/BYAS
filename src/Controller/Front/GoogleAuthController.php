@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Service\AuthCookieService;
 use App\Service\GoogleOAuthService;
 use App\Service\NotificationCenter;
+use App\Service\PublicPassportProfileService;
 use App\Service\SessionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,6 +37,7 @@ class GoogleAuthController extends AbstractController
         GoogleOAuthService $googleOAuthService,
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
         UserRepository $userRepository,
         NotificationCenter $notificationCenter,
     ): Response {
@@ -62,7 +64,7 @@ class GoogleAuthController extends AbstractController
 
             return match ($payload['purpose'] ?? GoogleOAuthService::PURPOSE_LOGIN) {
                 GoogleOAuthService::PURPOSE_CONNECT_YOUTUBE => $this->handleYoutubeConnect($googleOAuthService, $userRepository, $notificationCenter, $result),
-                default => $this->handleLogin($request, $googleOAuthService, $sessionManager, $authCookieService, $result),
+                default => $this->handleLogin($request, $googleOAuthService, $sessionManager, $authCookieService, $publicPassportProfileService, $result),
             };
         } catch (\Throwable $e) {
             $this->addFlash('error', $e->getMessage());
@@ -76,15 +78,17 @@ class GoogleAuthController extends AbstractController
         GoogleOAuthService $googleOAuthService,
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
         array $result
     ): Response {
         $user = $googleOAuthService->findOrCreateUserFromGoogle($result['profile'], $result['tokenData']);
         [$session, $plainToken, $deviceId] = $sessionManager->createSession($user, 'Google OAuth');
 
-        $next = $result['payload']['next'] ?? '/app/passport';
-        $next = is_string($next) && str_starts_with($next, '/') && !str_starts_with($next, '//')
-            ? $next
-            : '/app/passport';
+        $next = $this->resolvePostAuthRedirect(
+            $user,
+            $publicPassportProfileService,
+            is_string($result['payload']['next'] ?? null) ? $result['payload']['next'] : null,
+        );
 
         $response = new RedirectResponse($next);
         $authCookieService->attachAuthenticationCookies($response, $request, $plainToken, $deviceId, $session->getExpiresAt());
@@ -123,5 +127,22 @@ class GoogleAuthController extends AbstractController
         );
 
         return $this->redirectToRoute('app_front_passport');
+    }
+
+    private function resolvePostAuthRedirect(
+        User $user,
+        PublicPassportProfileService $publicPassportProfileService,
+        ?string $next
+    ): string {
+        $fallback = '/app/passport';
+        $safeNext = is_string($next) && str_starts_with($next, '/') && !str_starts_with($next, '//')
+            ? $next
+            : $fallback;
+
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return sprintf('/app/onboarding?next=%s', rawurlencode($safeNext));
+        }
+
+        return $safeNext;
     }
 }

@@ -1,0 +1,232 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: #04030d;
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.ready-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ready-bg,
+.ready-bg-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.ready-bg {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(74, 72, 235, 0.26), transparent 26%),
+    radial-gradient(circle at 82% 22%, rgba(99, 22, 208, 0.34), transparent 24%),
+    radial-gradient(circle at 78% 56%, rgba(248, 60, 176, 0.18), transparent 22%),
+    url('../../img/landing/Main_background.png') center top / cover no-repeat,
+    #04030d;
+  transform: scale(1.03);
+}
+
+.ready-bg-overlay {
+  background:
+    linear-gradient(180deg, rgba(2, 2, 10, 0.24) 0%, rgba(2, 2, 10, 0.48) 54%, rgba(2, 2, 10, 0.74) 100%),
+    radial-gradient(circle at 50% 78%, rgba(20, 26, 96, 0.52), transparent 34%);
+}
+
+.ready-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.4px) 0 0 / 44px 44px,
+    radial-gradient(circle, rgba(74, 72, 235, 0.8) 0 1px, transparent 1.4px) 12px 18px / 58px 58px,
+    radial-gradient(circle, rgba(248, 60, 176, 0.68) 0 1px, transparent 1.3px) 18px 6px / 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.15) 78%, transparent);
+  opacity: 0.78;
+  z-index: 0;
+}
+
+.ready-shell {
+  position: relative;
+  z-index: 1;
+  width: min(680px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 28px 0 84px;
+  text-align: center;
+}
+
+.ready-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ready-brand img {
+  width: min(220px, 50vw);
+  display: block;
+  filter: drop-shadow(0 0 18px rgba(74, 72, 235, 0.34)) drop-shadow(0 0 22px rgba(248, 60, 176, 0.16));
+}
+
+.ready-share {
+  position: absolute;
+  top: 26px;
+  right: 4px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f4efff;
+  text-decoration: none;
+  font-size: 18px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 22, 208, 0.48), rgba(8, 8, 28, 0.92) 72%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 28px rgba(6, 7, 30, 0.42), 0 0 24px rgba(99, 22, 208, 0.24);
+}
+
+.ready-copy h1 {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+
+.ready-copy h1 span {
+  background: linear-gradient(180deg, #d3abff 0%, #8f7aff 42%, #f26df0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ready-copy p {
+  margin: 12px 0 0;
+  font-size: clamp(18px, 3vw, 24px);
+  color: rgba(223, 214, 243, 0.84);
+}
+
+.ready-passport-wrap {
+  position: relative;
+  margin: 24px auto 20px;
+  width: min(520px, 82vw);
+}
+
+.ready-orbit {
+  position: absolute;
+  inset: 8% -4%;
+  border-radius: 50%;
+  border: 2px solid rgba(248, 60, 176, 0.58);
+  box-shadow: 0 0 22px rgba(248, 60, 176, 0.34), inset 0 0 18px rgba(74, 72, 235, 0.16);
+  filter: blur(0.2px);
+}
+
+.ready-orbit::before,
+.ready-orbit::after {
+  content: '';
+  position: absolute;
+  inset: -6% 6%;
+  border-radius: 50%;
+  border: 1px solid rgba(179, 102, 255, 0.32);
+}
+
+.ready-orbit::after {
+  inset: 6% -2%;
+  border-color: rgba(74, 72, 235, 0.22);
+}
+
+.ready-passport {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: block;
+  filter:
+    drop-shadow(0 0 28px rgba(248, 60, 176, 0.24))
+    drop-shadow(0 0 38px rgba(99, 22, 208, 0.24));
+}
+
+.ready-fandom {
+  margin: 10px 0 24px;
+}
+
+.ready-fandom-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: rgba(223, 214, 243, 0.84);
+  font-size: 18px;
+}
+
+.ready-fandom-line p {
+  margin: 0;
+}
+
+.ready-fandom-star {
+  font-size: 18px;
+  color: #d99bff;
+}
+
+.ready-fandom-name {
+  margin-top: 8px;
+  font-size: clamp(38px, 6vw, 60px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #f7b4ff;
+  text-shadow: 0 0 18px rgba(248, 60, 176, 0.22);
+}
+
+.ready-fandom-artist {
+  margin-top: 4px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.08em;
+  color: rgba(185, 193, 255, 0.84);
+}
+
+.ready-submit {
+  min-height: 82px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #fff;
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 700;
+  background: linear-gradient(90deg, #f83cb0 0%, #c837ff 42%, #4a48eb 100%);
+  box-shadow: 0 0 28px rgba(248, 60, 176, 0.28), 0 0 34px rgba(74, 72, 235, 0.22);
+}
+
+.ready-footnote {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(223, 214, 243, 0.72);
+  font-size: 15px;
+}
+
+.ready-footnote i {
+  color: #b58cff;
+}
+
+@media (max-width: 640px) {
+  .ready-shell {
+    width: min(100% - 18px, 520px);
+    padding-bottom: 56px;
+  }
+
+  .ready-share {
+    top: 18px;
+    right: 0;
+  }
+
+  .ready-submit {
+    min-height: 70px;
+    font-size: 22px;
+  }
+}

@@ -4,6 +4,7 @@ namespace App\Controller\Front;
 
 use App\Service\AppleOAuthService;
 use App\Service\AuthCookieService;
+use App\Service\PublicPassportProfileService;
 use App\Service\SessionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -30,6 +31,7 @@ class AppleAuthController extends AbstractController
         AppleOAuthService $appleOAuthService,
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
+        PublicPassportProfileService $publicPassportProfileService,
     ): Response {
         $error = (string) $request->request->get('error', '');
 
@@ -60,10 +62,11 @@ class AppleAuthController extends AbstractController
             $user = $result['user'];
             [$session, $plainToken, $deviceId] = $sessionManager->createSession($user, 'Apple OAuth');
 
-            $next = $result['next'] ?? '/app/passport';
-            $next = is_string($next) && str_starts_with($next, '/') && !str_starts_with($next, '//')
-                ? $next
-                : '/app/passport';
+            $next = $this->resolvePostAuthRedirect(
+                $user,
+                $publicPassportProfileService,
+                is_string($result['next'] ?? null) ? $result['next'] : null,
+            );
 
             $response = new RedirectResponse($next);
             $authCookieService->attachAuthenticationCookies($response, $request, $plainToken, $deviceId, $session->getExpiresAt());
@@ -74,5 +77,22 @@ class AppleAuthController extends AbstractController
 
             return $this->redirectToRoute('show_login');
         }
+    }
+
+    private function resolvePostAuthRedirect(
+        \App\Entity\User $user,
+        PublicPassportProfileService $publicPassportProfileService,
+        ?string $next
+    ): string {
+        $fallback = '/app/passport';
+        $safeNext = is_string($next) && str_starts_with($next, '/') && !str_starts_with($next, '//')
+            ? $next
+            : $fallback;
+
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return sprintf('/app/onboarding?next=%s', rawurlencode($safeNext));
+        }
+
+        return $safeNext;
     }
 }

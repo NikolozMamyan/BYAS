@@ -40,6 +40,12 @@ class PassportController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in.');
         }
 
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return $this->redirectToRoute('app_onboarding', [
+                'next' => $this->generateUrl('app_front_passport'),
+            ]);
+        }
+
         $profile = $publicPassportProfileService->ensureProfile($user);
 
         $streamingAccounts = $user->getStreamingAccounts();
@@ -126,6 +132,12 @@ class PassportController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in.');
         }
 
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return $this->redirectToRoute('app_onboarding', [
+                'next' => $this->generateUrl('app_front_passport_share'),
+            ]);
+        }
+
         $profile = $publicPassportProfileService->ensureProfile($user);
         $fandoms = $user->getUserFandoms()->toArray();
         usort($fandoms, static fn ($a, $b): int => $b->getXp() <=> $a->getXp());
@@ -160,6 +172,12 @@ class PassportController extends AbstractController
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('You must be logged in.');
+        }
+
+        if ($publicPassportProfileService->requiresOnboarding($user)) {
+            return $this->redirectToRoute('app_onboarding', [
+                'next' => $this->generateUrl('app_front_passport_settings'),
+            ]);
         }
 
         $profile = $publicPassportProfileService->ensureProfile($user);

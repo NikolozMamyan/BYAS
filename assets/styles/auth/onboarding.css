@@ -1,0 +1,423 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: #04030d;
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.onboarding-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.onboarding-bg,
+.onboarding-bg-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.onboarding-bg {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(74, 72, 235, 0.26), transparent 26%),
+    radial-gradient(circle at 82% 22%, rgba(99, 22, 208, 0.34), transparent 24%),
+    radial-gradient(circle at 78% 56%, rgba(248, 60, 176, 0.18), transparent 22%),
+    url('../../img/landing/Main_background.png') center top / cover no-repeat,
+    #04030d;
+  transform: scale(1.03);
+}
+
+.onboarding-bg-overlay {
+  background:
+    linear-gradient(180deg, rgba(2, 2, 10, 0.24) 0%, rgba(2, 2, 10, 0.48) 54%, rgba(2, 2, 10, 0.74) 100%),
+    radial-gradient(circle at 50% 75%, rgba(20, 26, 96, 0.42), transparent 30%);
+  z-index: 0;
+}
+
+.onboarding-page::before,
+.onboarding-page::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.78;
+  z-index: 0;
+}
+
+.onboarding-page::before {
+  inset: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.4px) 0 0 / 44px 44px,
+    radial-gradient(circle, rgba(74, 72, 235, 0.8) 0 1px, transparent 1.4px) 12px 18px / 58px 58px,
+    radial-gradient(circle, rgba(248, 60, 176, 0.68) 0 1px, transparent 1.3px) 18px 6px / 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.15) 78%, transparent);
+}
+
+.onboarding-page::after {
+  width: 320px;
+  height: 320px;
+  right: -110px;
+  top: 140px;
+  background:
+    radial-gradient(circle at center, rgba(248, 60, 176, 0.12), transparent 62%),
+    linear-gradient(180deg, transparent, rgba(99, 22, 208, 0.4), transparent);
+  filter: blur(10px);
+  transform: rotate(16deg);
+}
+
+.onboarding-planet {
+  position: absolute;
+  left: 50%;
+  bottom: -240px;
+  width: min(1100px, 130vw);
+  height: 420px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(112, 132, 255, 0.36), transparent 36%),
+    radial-gradient(circle at 24% 12%, rgba(248, 60, 176, 0.34), transparent 34%),
+    radial-gradient(circle at 78% 10%, rgba(74, 72, 235, 0.34), transparent 34%),
+    linear-gradient(180deg, rgba(10, 12, 38, 0.1), rgba(2, 3, 12, 0.98) 58%);
+  box-shadow:
+    0 -6px 0 rgba(255, 255, 255, 0.55),
+    0 -14px 40px rgba(74, 72, 235, 0.34),
+    0 -18px 60px rgba(248, 60, 176, 0.28);
+  z-index: 0;
+}
+
+.onboarding-shell {
+  position: relative;
+  z-index: 1;
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 220px;
+}
+
+.onboarding-back {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f4efff;
+  text-decoration: none;
+  font-size: 24px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 22, 208, 0.48), rgba(8, 8, 28, 0.92) 72%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 28px rgba(6, 7, 30, 0.42), 0 0 24px rgba(99, 22, 208, 0.24);
+}
+
+.onboarding-brand {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  margin-bottom: 18px;
+}
+
+.onboarding-brand img {
+  width: min(220px, 52vw);
+  display: block;
+  filter: drop-shadow(0 0 18px rgba(74, 72, 235, 0.34)) drop-shadow(0 0 22px rgba(248, 60, 176, 0.16));
+}
+
+.onboarding-progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.onboarding-progress-step {
+  width: 56px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.onboarding-progress-step.is-active {
+  background: linear-gradient(90deg, #f83cb0, #9f47ff);
+  box-shadow: 0 0 12px rgba(248, 60, 176, 0.3);
+}
+
+.onboarding-card {
+  position: relative;
+  width: min(680px, 100%);
+  margin: 0 auto;
+  border-radius: 36px;
+}
+
+.onboarding-card-border {
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(108, 158, 255, 0.95), rgba(196, 120, 255, 0.6) 45%, rgba(255, 125, 223, 0.95));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  box-shadow: 0 0 32px rgba(100, 116, 255, 0.32), 0 0 50px rgba(248, 60, 176, 0.18);
+  pointer-events: none;
+}
+
+.onboarding-card-inner {
+  position: relative;
+  border-radius: inherit;
+  padding: 34px 24px 170px;
+  background:
+    linear-gradient(180deg, rgba(7, 10, 32, 0.88), rgba(4, 6, 24, 0.94)),
+    radial-gradient(circle at 22% 28%, rgba(74, 72, 235, 0.12), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(248, 60, 176, 0.11), transparent 26%);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+.onboarding-copy {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.onboarding-copy h1 {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f6f3ff;
+}
+
+.onboarding-copy p {
+  margin: 0;
+  font-size: clamp(16px, 2.8vw, 22px);
+  color: rgba(226, 210, 255, 0.82);
+}
+
+.onboarding-copy span {
+  color: #ff6fdd;
+}
+
+.onboarding-search {
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.onboarding-search i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(221, 204, 248, 0.65);
+}
+
+.onboarding-search input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px 0 44px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  border: 1px solid rgba(219, 194, 255, 0.16);
+  background: rgba(7, 10, 30, 0.82);
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.onboarding-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding-bottom: 12px;
+}
+
+.onboarding-fandom[hidden] {
+  display: none !important;
+}
+
+.onboarding-fandom {
+  position: relative;
+  border-radius: 20px;
+  padding: 10px;
+  min-height: 212px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 10, 28, 0.86);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.onboarding-fandom:hover {
+  transform: translateY(-2px);
+}
+
+.onboarding-fandom:focus-visible {
+  outline: 2px solid rgba(255, 126, 221, 0.8);
+  outline-offset: 3px;
+}
+
+.onboarding-fandom.is-selected {
+  border-color: rgba(255, 98, 212, 0.92);
+  box-shadow: 0 0 22px rgba(248, 60, 176, 0.28);
+}
+
+.onboarding-fandom--pink .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(248, 60, 176, 0.35), rgba(37, 18, 52, 0.95)); }
+.onboarding-fandom--violet .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(99, 22, 208, 0.38), rgba(18, 13, 46, 0.95)); }
+.onboarding-fandom--blue .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(74, 72, 235, 0.32), rgba(18, 24, 56, 0.95)); }
+.onboarding-fandom--red .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(142, 34, 63, 0.38), rgba(20, 10, 18, 0.95)); }
+.onboarding-fandom--indigo .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(92, 69, 230, 0.34), rgba(17, 14, 44, 0.95)); }
+.onboarding-fandom--purple .onboarding-fandom-cover { background: linear-gradient(135deg, rgba(167, 75, 255, 0.34), rgba(28, 12, 40, 0.95)); }
+
+.onboarding-fandom-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.74);
+  background: rgba(7, 10, 30, 0.84);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.onboarding-fandom.is-selected .onboarding-fandom-toggle {
+  background: linear-gradient(180deg, #ff69d9, #ff4db8);
+  border-color: transparent;
+}
+
+.onboarding-fandom-toggle i {
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.onboarding-fandom.is-selected .onboarding-fandom-toggle i {
+  opacity: 1;
+}
+
+.onboarding-fandom-cover {
+  height: 166px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.onboarding-fandom-placeholder {
+  width: calc(100% - 18px);
+  height: calc(100% - 18px);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 28%);
+}
+
+.onboarding-fandom-name {
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.onboarding-load-trigger {
+  width: 100%;
+  height: 1px;
+}
+
+.onboarding-submit-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 12px 16px calc(env(safe-area-inset-bottom) + 12px);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 6, 24, 0) 0%,
+      rgba(4, 6, 24, 0.88) 22%,
+      rgba(4, 6, 24, 0.96) 100%
+    );
+
+  backdrop-filter: blur(10px);
+}
+
+.onboarding-submit {
+  min-height: 78px;
+    width: 100%;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #f83cb0 0%, #c837ff 42%, #4a48eb 100%);
+  box-shadow: 0 0 28px rgba(248, 60, 176, 0.28), 0 0 34px rgba(74, 72, 235, 0.22);
+}
+
+.onboarding-legal {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(223, 214, 243, 0.72);
+  font-size: 14px;
+}
+
+.onboarding-legal-icon {
+  color: rgba(206, 180, 255, 0.92);
+}
+
+@media (max-width: 640px) {
+  .onboarding-shell {
+    width: min(100% - 18px, 520px);
+    padding-bottom: 190px;
+  }
+
+  .onboarding-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .onboarding-fandom {
+    min-height: 188px;
+  }
+
+  .onboarding-fandom-cover {
+    height: 144px;
+  }
+
+  .onboarding-fandom-name {
+    font-size: 20px;
+  }
+
+  .onboarding-submit {
+    min-height: 68px;
+    font-size: 22px;
+  }
+
+  .onboarding-submit-wrap {
+    width: min(520px, calc(100vw - 18px));
+    bottom: 12px;
+    padding-inline: 4px;
+  }
+}

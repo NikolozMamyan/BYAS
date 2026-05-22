@@ -1,30 +1,30 @@
 {% set compact = compact|default(false) %}
 {% set allowDelete = allowDelete|default(false) %}
 {% set icon = 'fa-bell' %}
-{% set color = '#00F2FF' %}
+{% set iconClass = 'feed-icon--default' %}
 {% if notification.type == 'contact_intent' %}
     {% set icon = 'fa-message' %}
-    {% set color = '#FF007A' %}
+    {% set iconClass = 'feed-icon--contact-intent' %}
 {% elseif notification.type == 'badge_unlocked' %}
     {% set icon = 'fa-medal' %}
-    {% set color = '#FFD700' %}
+    {% set iconClass = 'feed-icon--badge-unlocked' %}
 {% elseif notification.type == 'sync_completed' %}
     {% set icon = 'fa-rotate' %}
-    {% set color = '#00F2FF' %}
+    {% set iconClass = 'feed-icon--sync-completed' %}
 {% elseif notification.type == 'provider_connected' %}
     {% set icon = 'fa-link' %}
-    {% set color = '#7CFF6B' %}
+    {% set iconClass = 'feed-icon--provider-connected' %}
 {% elseif notification.type == 'rank_improved' %}
     {% set icon = 'fa-arrow-trend-up' %}
-    {% set color = '#9D50BB' %}
+    {% set iconClass = 'feed-icon--rank-improved' %}
 {% elseif notification.type == 'public_visit' %}
     {% set icon = 'fa-eye' %}
-    {% set color = '#00F2FF' %}
+    {% set iconClass = 'feed-icon--public-visit' %}
 {% endif %}
 
 <article class="feed-item {{ notification.isRead ? '' : 'is-unread' }}">
     <a href="{{ path('app_front_notifications_open', { id: notification.id }) }}" class="feed-link">
-        <div class="feed-icon" style="color: {{ color }};">
+        <div class="feed-icon {{ iconClass }}">
             <i class="fas {{ icon }}"></i>
         </div>
         <div class="feed-content">
@@ -32,7 +32,7 @@
             <div class="muted">{{ notification.body }}</div>
             {% if not notification.isRead %}
                 <div class="feed-unread">
-                    <i class="fas fa-circle" style="font-size: 0.45rem;"></i>
+                    <i class="fas fa-circle feed-unread__dot"></i>
                     {{ 'notifications.new'|trans }}
                 </div>
             {% endif %}

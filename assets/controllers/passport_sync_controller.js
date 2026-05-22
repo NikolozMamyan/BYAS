@@ -128,20 +128,20 @@ export default class extends Controller {
 
     renderProviderIcons() {
         if (this.providersValue.length === 0) {
-            return '<span class="sync-providers"><i class="fas fa-link-slash" style="color: #9CA3AF;"></i></span>';
+            return '<span class="sync-providers"><i class="fas fa-link-slash sync-provider-icon sync-provider-icon--empty"></i></span>';
         }
 
         const icons = this.providersValue.map((provider) => {
             if (provider === 'spotify') {
-                return '<i class="fab fa-spotify" style="color: #1DB954;"></i>';
+                return '<i class="fab fa-spotify sync-provider-icon sync-provider-icon--spotify"></i>';
             }
 
             if (provider === 'youtube') {
-                return '<i class="fab fa-youtube" style="color: #ff3d5a;"></i>';
+                return '<i class="fab fa-youtube sync-provider-icon sync-provider-icon--youtube"></i>';
             }
 
             if (provider === 'apple_music') {
-                return '<i class="fab fa-apple" style="color: #fc3c44;"></i>';
+                return '<i class="fab fa-apple sync-provider-icon sync-provider-icon--apple"></i>';
             }
 
             return '<i class="fas fa-wave-square"></i>';

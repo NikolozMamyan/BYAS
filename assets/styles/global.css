@@ -1,3 +1,6 @@
+@import url('components/app-header.css');
+@import url('components/mobile-nav.css');
+
 :root {
     --cyan: #4a48eb;
     --pink: #f83cb0;
@@ -5,6 +8,24 @@
     --bg: #060412;
     --card-bg: rgba(14, 5, 35, 0.88);
     --border-glow: rgba(99, 22, 208, 0.45);
+    --bg-dark: #0B0E14;
+    --bg-soft: #111520;
+    --bg-deep: #0B0E14;
+    --glass: rgba(255, 255, 255, 0.035);
+    --glass-strong: rgba(255, 255, 255, 0.06);
+    --line: rgba(255, 255, 255, 0.08);
+    --gold: #FFD700;
+    --silver: #D9DEE7;
+    --bronze: #FF8C42;
+    --neon-pink: #FF007A;
+    --neon-cyan: #00F2FF;
+    --soft-purple: #9D50BB;
+    --text-main: #FFFFFF;
+    --text-dim: #9CA3AF;
+    --text-fade: #6B7280;
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+    --radius-md: 14px;
 }
 
 * {

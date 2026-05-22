@@ -1,0 +1,196 @@
+:root {
+        --shelf-wood: #1E1E2E; /* Bois sombre moderne */
+        --shelf-edge: #2A2A3D;
+    }
+
+    body {
+        background: #0B0E14;
+        color: white;
+        font-family: 'Outfit', sans-serif;
+        padding-bottom: 100px;
+    }
+
+    .collection-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 92px 20px 20px;
+    }
+
+    .collection-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding-top: 20px;
+    }
+
+    .collection-header h1 {
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        background: linear-gradient(to right, var(--neon-pink), var(--neon-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 5px;
+    }
+
+    .collection-summary {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+    }
+
+    .collection-empty {
+        text-align: center;
+        padding: 50px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 20px;
+    }
+
+    .collection-empty__icon {
+        color: var(--text-dim);
+        font-size: 3rem;
+        margin-bottom: 15px;
+    }
+
+    /* --- L'ÉTAGÈRE (Shelf Design) --- */
+    .shelf-block {
+        margin-bottom: 60px;
+    }
+
+    .shelf-title {
+        font-size: 1.1rem;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .shelf-title::after {
+        content: '';
+        flex-grow: 1;
+        height: 1px;
+        background: linear-gradient(to right, rgba(0, 242, 255, 0.3), transparent);
+    }
+
+    .shelf-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 30px 15px;
+        perspective: 1000px; /* Crucial pour l'effet 3D */
+        padding: 20px 10px 40px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 8px;
+        position: relative;
+    }
+
+    @media (max-width: 560px) {
+        .collection-page {
+            padding: 82px 14px 20px;
+        }
+
+        .collection-header {
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .collection-header h1 {
+            font-size: 1.7rem;
+        }
+
+        .shelf-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px 12px;
+            padding: 16px 8px 32px;
+        }
+    }
+
+    /* Le socle de l'étagère */
+    .shelf-grid::after {
+        content: "";
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        height: 12px;
+        background: var(--shelf-wood);
+        border-bottom: 4px solid var(--shelf-edge);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        border-radius: 2px;
+        z-index: 0;
+    }
+
+    /* --- L'ALBUM (Card Design) --- */
+    .collection-card {
+        position: relative;
+        z-index: 1;
+        background: #1A1A26;
+        border-radius: 8px;
+        aspect-ratio: 1/1.2; /* Format album */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+        cursor: pointer;
+    }
+
+    /* Effet Hover : Sortie de l'étagère */
+    .collection-card:hover {
+        transform: translateZ(30px) translateY(-15px) rotateY(-5deg);
+        box-shadow: 15px 20px 30px rgba(0,0,0,0.6), 0 0 15px rgba(255, 0, 122, 0.3);
+        border-color: var(--neon-pink);
+    }
+
+    .album-cover-placeholder {
+        flex-grow: 1;
+        background: linear-gradient(135deg, #252535 0%, #12121A 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .album-cover-placeholder i {
+        font-size: 2.5rem;
+        opacity: 0.2;
+        color: var(--neon-pink);
+    }
+
+    .album-info {
+        padding: 10px;
+        background: #1A1A26;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .collection-type {
+        font-size: 0.6rem;
+        font-weight: bold;
+        color: var(--neon-pink);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .collection-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .collection-artist {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+    }
+
+    .qty-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(0,0,0,0.7);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        backdrop-filter: blur(5px);
+    }

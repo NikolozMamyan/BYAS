@@ -161,7 +161,7 @@ export default class extends Controller {
             if (qrCode?.rawValue) {
                 this.setScannerStatus(this.qrDetectedMessageValue);
                 this.stopScanner();
-                window.location.href = qrCode.rawValue;
+                this.visit(qrCode.rawValue);
                 return;
             }
         } catch (error) {
@@ -169,6 +169,15 @@ export default class extends Controller {
         }
 
         this.scanFrame = window.requestAnimationFrame(() => this.scanLoop());
+    }
+
+    visit(url) {
+        if (window.BYASPageTransition) {
+            window.BYASPageTransition.leave(url);
+            return;
+        }
+
+        window.location.href = url;
     }
 
     handleDocumentClick(event) {

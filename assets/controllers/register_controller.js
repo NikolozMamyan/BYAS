@@ -30,7 +30,7 @@ export default class extends Controller {
             }
 
             const payload = await response.json().catch(() => null);
-            window.location.href = payload?.redirectTo || this.redirectTo();
+            this.visit(payload?.redirectTo || this.redirectTo());
         } catch (error) {
             this.setError(error.message || 'Creation de compte impossible pour le moment.');
             this.setLoading(false);
@@ -45,6 +45,15 @@ export default class extends Controller {
         }
 
         return '/app/onboarding';
+    }
+
+    visit(url) {
+        if (window.BYASPageTransition) {
+            window.BYASPageTransition.leave(url);
+            return;
+        }
+
+        window.location.href = url;
     }
 
     setLoading(isLoading) {

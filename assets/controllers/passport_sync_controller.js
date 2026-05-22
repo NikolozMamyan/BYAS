@@ -97,7 +97,7 @@ export default class extends Controller {
             }
 
             await response.json();
-            window.location.href = '/?t=' + Date.now();
+            this.visit('/?t=' + Date.now());
         } catch (error) {
             this.setFeedback(error.message || this.logoutFailedMessageValue, 'error');
 
@@ -120,6 +120,15 @@ export default class extends Controller {
         }
 
         this.feedbackTextTarget.textContent = message;
+    }
+
+    visit(url) {
+        if (window.BYASPageTransition) {
+            window.BYASPageTransition.leave(url);
+            return;
+        }
+
+        window.location.href = url;
     }
 
     renderIdleButton() {

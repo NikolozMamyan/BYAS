@@ -66,11 +66,20 @@ export default class extends Controller {
                 throw new Error(payload?.message || `${this.responseStatusPrefixValue} ${response.status}`);
             }
 
-            window.location.href = payload?.redirectTo || '/app/passport/settings';
+            this.visit(payload?.redirectTo || '/app/passport/settings');
         } catch (error) {
             this.setStatus(error.message || this.connectionFailedMessageValue);
             this.setLoading(false);
         }
+    }
+
+    visit(url) {
+        if (window.BYASPageTransition) {
+            window.BYASPageTransition.leave(url);
+            return;
+        }
+
+        window.location.href = url;
     }
 
     async waitForMusicKit() {

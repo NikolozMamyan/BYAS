@@ -14,7 +14,16 @@ export default class extends Controller {
         }
 
         if (this.fallbackValue) {
-            window.location.href = this.fallbackValue;
+            this.visit(this.fallbackValue);
         }
+    }
+
+    visit(url) {
+        if (window.BYASPageTransition) {
+            window.BYASPageTransition.leave(url);
+            return;
+        }
+
+        window.location.href = url;
     }
 }

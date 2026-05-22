@@ -146,19 +146,10 @@
 
                     <article class="stat-card stat-card--accent">
                         <div class="stat-card__label">
-                            <i class="fas fa-eye"></i>
-                            {{ 'passport.public_views'|trans }}
-                        </div>
-                        <div class="stat-card__value">{{ publicVisitCount }}</div>
-                        <div class="stat-card__meta">{{ 'passport.views_7d'|trans({ '%count%': publicVisitCount7d }) }}</div>
-                    </article>
-
-                    <article class="stat-card">
-                        <div class="stat-card__label">
                             <i class="fas fa-heart"></i>
-                            {{ 'passport.message_intents'|trans }}
+                            {{ 'passport.fandom_rank'|trans({ '%name%': topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : ('passport.byas_fan'|trans) }) }}
                         </div>
-                        <div class="stat-card__value">{{ contactIntentCount }}</div>
+                        <div class="stat-card__value">{{ topFandoms|length and topFandoms[0].rankPosition ? '#' ~ topFandoms[0].rankPosition : '--' }}</div>
                         <div class="stat-card__meta">{{ 'passport.badges_unlocked'|trans({ '%count%': userBadges|length }) }}</div>
                     </article>
                 </div>

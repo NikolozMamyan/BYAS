@@ -398,7 +398,7 @@
                 } only %}
                 <div>
                     <h1 class="name">{{ displayName }}</h1>
-                    <div class="level">Level {{ user.globalLevel }} &middot; {{ user.globalXp }} XP</div>
+                    <div class="level">{{ globalLevelBadge.fullTitle }} &middot; Level {{ user.globalLevel }} &middot; {{ user.globalXp }} XP</div>
                 </div>
             </div>
 
@@ -420,7 +420,7 @@
                     </div>
                     <div class="share-stat">
                         <small>Fandom Level</small>
-                        <strong>{{ topFandom ? 'Level ' ~ topFandom.level : '-' }}</strong>
+                        <strong>{{ topFandomLevelBadge ? topFandomLevelBadge.fullTitle ~ ' · Lv ' ~ topFandom.level : '-' }}</strong>
                     </div>
                 </div>
 

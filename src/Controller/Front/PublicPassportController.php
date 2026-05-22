@@ -5,6 +5,7 @@ namespace App\Controller\Front;
 use App\Entity\User;
 use App\Entity\UserProfile;
 use App\Repository\UserRepository;
+use App\Service\LevelBadgeCatalog;
 use App\Service\PublicPassportProfileService;
 use App\Service\PublicPassportAnalyticsService;
 use App\Service\XpEngine;
@@ -26,6 +27,7 @@ class PublicPassportController extends AbstractController
         PublicPassportAnalyticsService $analytics,
         PublicPassportProfileService $publicPassportProfileService,
         XpEngine $xpEngine,
+        LevelBadgeCatalog $levelBadgeCatalog,
     ): Response {
         $user = $entityManager->getRepository(User::class)->find($id);
 
@@ -35,7 +37,7 @@ class PublicPassportController extends AbstractController
 
         $profile = $publicPassportProfileService->ensureProfile($user);
 
-        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $profile);
+        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $levelBadgeCatalog, $profile);
     }
 
     #[Route('/p/{shareSlug}', name: 'app_public_passport', methods: ['GET'])]
@@ -46,6 +48,7 @@ class PublicPassportController extends AbstractController
         UserRepository $userRepository,
         PublicPassportAnalyticsService $analytics,
         XpEngine $xpEngine,
+        LevelBadgeCatalog $levelBadgeCatalog,
     ): Response {
         $profile = $entityManager->getRepository(UserProfile::class)->findOneBy(['shareSlug' => $shareSlug]);
 
@@ -53,7 +56,7 @@ class PublicPassportController extends AbstractController
             throw $this->createNotFoundException('Passport not found.');
         }
 
-        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $profile);
+        return $this->renderPassport($request, $userRepository, $analytics, $xpEngine, $levelBadgeCatalog, $profile);
     }
 
     private function renderPassport(
@@ -61,6 +64,7 @@ class PublicPassportController extends AbstractController
         UserRepository $userRepository,
         PublicPassportAnalyticsService $analytics,
         XpEngine $xpEngine,
+        LevelBadgeCatalog $levelBadgeCatalog,
         UserProfile $profile,
     ): Response {
         $user = $profile->getUser();
@@ -90,10 +94,12 @@ class PublicPassportController extends AbstractController
             'user' => $user,
             'profile' => $profile,
             'fandoms' => $profile->isProfilePublic() && $profile->isShowFandomLevels() ? array_slice($fandoms, 0, 6) : [],
+            'fandomLevelBadges' => $this->buildFandomLevelBadges($fandoms, $levelBadgeCatalog),
             'userBadges' => $profile->isProfilePublic() && $profile->isShowBadges() ? array_slice($userBadges, 0, 6) : [],
             'collectionItems' => $profile->isProfilePublic() && $profile->isShowCollection() ? array_slice($collectionItems, 0, 6) : [],
             'globalRank' => $profile->isShowGlobalRank() ? $userRepository->getGlobalRankPosition($user) : null,
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+            'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             'isPrivate' => !$profile->isProfilePublic(),
             'isOwner' => $viewer === $user,
         ]);
@@ -125,5 +131,25 @@ class PublicPassportController extends AbstractController
         $this->addFlash('success', sprintf('Message intent saved for %s. Messaging will unlock in the social layer.', $profile->getUsername() ?? $profile->getUser()->getDisplayName()));
 
         return $this->redirectToRoute('app_front_passport');
+    }
+
+    /**
+     * @param array<int, mixed> $fandoms
+     *
+     * @return array<int, array{level:int,mainTitle:string,subLevelTitle:?string,fullTitle:string}>
+     */
+    private function buildFandomLevelBadges(array $fandoms, LevelBadgeCatalog $levelBadgeCatalog): array
+    {
+        $badges = [];
+
+        foreach ($fandoms as $fandom) {
+            if (!$fandom instanceof \App\Entity\UserFandom || $fandom->getId() === null) {
+                continue;
+            }
+
+            $badges[$fandom->getId()] = $levelBadgeCatalog->forLevel($fandom->getLevel());
+        }
+
+        return $badges;
     }
 }

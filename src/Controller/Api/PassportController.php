@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\UserFandom;
 use App\Entity\UserBadge;
 use App\Entity\CollectionItem;
+use App\Service\LevelBadgeCatalog;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,7 +16,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class PassportController extends AbstractController
 {
     #[Route('', name: 'show', methods: ['GET'])]
-    public function show(#[CurrentUser] ?User $user): JsonResponse
+    public function show(
+        #[CurrentUser] ?User $user,
+        LevelBadgeCatalog $levelBadgeCatalog,
+    ): JsonResponse
     {
         if (!$user instanceof User) {
             return $this->json([
@@ -41,6 +45,7 @@ class PassportController extends AbstractController
                 ] : null,
                 'xp' => $userFandom->getXp(),
                 'level' => $userFandom->getLevel(),
+                'levelBadge' => $levelBadgeCatalog->forLevel($userFandom->getLevel()),
                 'rankPosition' => $userFandom->getRankPosition(),
                 'rankPercentile' => $userFandom->getRankPercentile(),
                 'progressPercent' => $userFandom->getProgressPercent(),
@@ -97,6 +102,7 @@ class PassportController extends AbstractController
                 'avatarUrl' => $user->getAvatarUrl(),
                 'globalXp' => $user->getGlobalXp(),
                 'globalLevel' => $user->getGlobalLevel(),
+                'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             ],
             'profile' => $user->getProfile() ? [
                 'username' => $user->getProfile()->getUsername(),

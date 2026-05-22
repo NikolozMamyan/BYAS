@@ -333,7 +333,7 @@
                 {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: displayName, avatarClass: 'avatar' } only %}
                 <div>
                     <h1>{{ displayName }}</h1>
-                    <p class="muted">Level {{ user.globalLevel }} fan with {{ user.globalXp }} XP</p>
+                    <p class="muted">{{ globalLevelBadge.fullTitle }} · Level {{ user.globalLevel }} · {{ user.globalXp }} XP</p>
                 </div>
             </div>
 
@@ -370,7 +370,7 @@
                                 <strong>{{ fandom.artist ? fandom.artist.name : 'Artist' }}</strong>
                                 <span class="muted">{{ fandom.xp }} XP</span>
                             </div>
-                            <span class="pill">Level {{ fandom.level }}</span>
+                            <span class="pill">{{ attribute(fandomLevelBadges, fandom.id).fullTitle }} · Lv {{ fandom.level }}</span>
                         </div>
                     {% else %}
                         <div class="row">

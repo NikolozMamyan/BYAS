@@ -14,6 +14,33 @@
 {% endblock %}
 
 {% block body %}
+    <div class="pwa-install" data-controller="pwa-install">
+        <div class="pwa-install__backdrop" data-pwa-install-target="dialog" hidden>
+            <div class="pwa-install__modal" role="dialog" aria-modal="true" aria-labelledby="pwaInstallTitle">
+                <div class="pwa-install__eyebrow">Install BYAS</div>
+                <h3 class="pwa-install__title" id="pwaInstallTitle">Get the hybrid-app BYAS experience on Android</h3>
+                <p class="pwa-install__text">
+                    Install BYAS for a smoother hybrid-app interface, faster access from your home screen,
+                    and a more native-feeling experience for your passport, rankings and fandom activity.
+                </p>
+                <div class="pwa-install__chips">
+                    <span>Home screen access</span>
+                    <span>Full-screen UI</span>
+                    <span>Faster reopen</span>
+                </div>
+                <div class="pwa-install__actions">
+                    <button type="button" class="pwa-install__button pwa-install__button--primary" data-pwa-install-target="installButton" data-action="pwa-install#install">
+                        Install
+                    </button>
+                    <button type="button" class="pwa-install__button pwa-install__button--ghost" data-action="pwa-install#later">
+                        Later
+                    </button>
+                </div>
+                <div class="pwa-install__status" data-pwa-install-target="status" aria-live="polite"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="bg-main"></div>
     <div class="bg-overlay"></div>
 

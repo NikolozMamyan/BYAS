@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Repository\XpTransactionRepository;
 use App\Service\AppleMusicService;
 use App\Service\AvatarManager;
+use App\Service\LevelBadgeCatalog;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,7 @@ class PassportController extends AbstractController
         PublicPassportVisitRepository $visitRepository,
         PublicPassportContactIntentRepository $contactIntentRepository,
         AppleMusicService $appleMusicService,
+        LevelBadgeCatalog $levelBadgeCatalog,
     ): Response
     {
         $user = $this->getUser();
@@ -98,6 +100,7 @@ class PassportController extends AbstractController
             'user' => $user,
             'profile' => $profile,
             'fandoms' => $fandoms,
+            'topFandoms' => array_slice($fandoms, 0, 3),
             'oauthAccounts' => $user->getOauthAccounts(),
             'streamingAccounts' => $streamingAccounts,
             'spotifyAccount' => $spotifyAccount,
@@ -109,13 +112,20 @@ class PassportController extends AbstractController
             'connectedSyncProviders' => array_values(array_unique($connectedSyncProviders)),
             'xpTransactions' => $xpTransactionRepository->findRecentForUser($user, 8),
             'items' => $user->getCollectionItems(),
+            'collectionHighlights' => $this->buildCollectionHighlights($user->getCollectionItems()->toArray()),
             'userBadges' => $userBadges,
+            'featuredBadges' => array_slice($userBadges, 0, 3),
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+            'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
+            'fandomLevelBadges' => $this->buildFandomLevelBadges($fandoms, $levelBadgeCatalog),
             'publicVisitCount' => $visitRepository->countForProfile($profile),
             'publicVisitCount7d' => $visitRepository->countForProfileSince($profile, new \DateTimeImmutable('-7 days')),
             'recentPublicVisits' => $visitRepository->findRecentForProfile($profile, 5),
             'contactIntentCount' => $contactIntentRepository->countForProfile($profile),
+            'publicPassportUrl' => $this->generateUrl('app_public_passport', [
+                'shareSlug' => $profile->getShareSlug(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 
@@ -124,6 +134,7 @@ class PassportController extends AbstractController
         UserRepository $userRepository,
         XpEngine $xpEngine,
         PublicPassportProfileService $publicPassportProfileService,
+        LevelBadgeCatalog $levelBadgeCatalog,
     ): Response
     {
         $user = $this->getUser();
@@ -152,9 +163,11 @@ class PassportController extends AbstractController
             'user' => $user,
             'profile' => $profile,
             'topFandom' => $fandoms[0] ?? null,
+            'topFandomLevelBadge' => isset($fandoms[0]) ? $levelBadgeCatalog->forLevel($fandoms[0]->getLevel()) : null,
             'userBadges' => array_slice($userBadges, 0, 3),
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
+            'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             'shareUrl' => $this->generateUrl('app_public_passport', [
                 'shareSlug' => $profile->getShareSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL),
@@ -250,5 +263,70 @@ class PassportController extends AbstractController
                 'shareSlug' => $profile->getShareSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
+    }
+
+    /**
+     * @param array<int, mixed> $fandoms
+     *
+     * @return array<int, array{level:int,mainTitle:string,subLevelTitle:?string,fullTitle:string}>
+     */
+    private function buildFandomLevelBadges(array $fandoms, LevelBadgeCatalog $levelBadgeCatalog): array
+    {
+        $badges = [];
+
+        foreach ($fandoms as $fandom) {
+            if (!$fandom instanceof \App\Entity\UserFandom || $fandom->getId() === null) {
+                continue;
+            }
+
+            $badges[$fandom->getId()] = $levelBadgeCatalog->forLevel($fandom->getLevel());
+        }
+
+        return $badges;
+    }
+
+    /**
+     * @param array<int, mixed> $items
+     *
+     * @return array<int, array{label:string,count:int,icon:string}>
+     */
+    private function buildCollectionHighlights(array $items): array
+    {
+        $groups = [];
+
+        foreach ($items as $item) {
+            if (!$item instanceof \App\Entity\CollectionItem) {
+                continue;
+            }
+
+            $label = trim((string) $item->getType()?->getLabel());
+            $key = $label !== '' ? mb_strtolower($label) : 'collection';
+
+            if (!isset($groups[$key])) {
+                $groups[$key] = [
+                    'label' => $label !== '' ? $label : 'Collection',
+                    'count' => 0,
+                    'icon' => $this->iconForCollectionType($label),
+                ];
+            }
+
+            $groups[$key]['count'] += max(1, $item->getQuantity());
+        }
+
+        uasort($groups, static fn (array $left, array $right): int => $right['count'] <=> $left['count']);
+
+        return array_slice(array_values($groups), 0, 3);
+    }
+
+    private function iconForCollectionType(?string $label): string
+    {
+        $normalized = mb_strtolower(trim((string) $label));
+
+        return match (true) {
+            str_contains($normalized, 'light') => 'fa-lightbulb',
+            str_contains($normalized, 'photo'), str_contains($normalized, 'card') => 'fa-id-badge',
+            str_contains($normalized, 'vinyl'), str_contains($normalized, 'album'), str_contains($normalized, 'cd') => 'fa-compact-disc',
+            default => 'fa-record-vinyl',
+        };
     }
 }

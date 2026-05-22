@@ -783,7 +783,7 @@
                             {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: user.displayName, avatarClass: 'rank-img' } only %}
                             <div class="rank-user-data">
                                 <span class="name">{{ user.displayName }}</span>
-                                <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
+                                <span class="xp">{{ user.xp }} XP &middot; {{ user.levelBadge.fullTitle }} &middot; Level {{ user.level }}</span>
                             </div>
                         </a>
                     {% else %}
@@ -791,7 +791,7 @@
                             {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: user.displayName, avatarClass: 'rank-img' } only %}
                             <div class="rank-user-data">
                                 <span class="name">{{ user.displayName }}</span>
-                                <span class="xp">{{ user.xp }} XP &middot; Level {{ user.level }}</span>
+                                <span class="xp">{{ user.xp }} XP &middot; {{ user.levelBadge.fullTitle }} &middot; Level {{ user.level }}</span>
                             </div>
                         </div>
                     {% endif %}

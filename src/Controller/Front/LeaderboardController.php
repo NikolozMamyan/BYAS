@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\UserFandom;
 use App\Repository\UserFandomRepository;
 use App\Repository\UserRepository;
+use App\Service\LevelBadgeCatalog;
 use App\Service\PublicPassportProfileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,7 @@ class LeaderboardController extends AbstractController
         UserFandomRepository $userFandomRepository,
         EntityManagerInterface $entityManager,
         PublicPassportProfileService $publicPassportProfileService,
+        LevelBadgeCatalog $levelBadgeCatalog,
     ): Response
     {
         $artistSlug = $request->query->get('artist');
@@ -32,7 +34,7 @@ class LeaderboardController extends AbstractController
 
         if ($selectedArtist instanceof Artist) {
             $rankings = array_map(
-                fn (UserFandom $fandom): array => $this->normalizeFandomRanking($fandom, $publicPassportProfileService),
+                fn (UserFandom $fandom): array => $this->normalizeFandomRanking($fandom, $publicPassportProfileService, $levelBadgeCatalog),
                 $userFandomRepository->findTopByArtist($selectedArtist, 50)
             );
             $playerCount = count($rankings);
@@ -40,7 +42,7 @@ class LeaderboardController extends AbstractController
             $mode = 'Fandom';
         } else {
             $rankings = array_map(
-                fn (User $user): array => $this->normalizeGlobalRanking($user, $publicPassportProfileService),
+                fn (User $user): array => $this->normalizeGlobalRanking($user, $publicPassportProfileService, $levelBadgeCatalog),
                 $userRepository->findTopByGlobalXp(50)
             );
             $playerCount = $userRepository->countActiveUsers();
@@ -77,9 +79,13 @@ class LeaderboardController extends AbstractController
     }
 
     /**
-     * @return array{userId:int|null,displayName:string,xp:int,level:int,profileUrl:string|null,avatarUrl:string|null}
+     * @return array{userId:int|null,displayName:string,xp:int,level:int,levelBadge:array{level:int,mainTitle:string,subLevelTitle:?string,fullTitle:string},profileUrl:string|null,avatarUrl:string|null}
      */
-    private function normalizeGlobalRanking(User $user, PublicPassportProfileService $publicPassportProfileService): array
+    private function normalizeGlobalRanking(
+        User $user,
+        PublicPassportProfileService $publicPassportProfileService,
+        LevelBadgeCatalog $levelBadgeCatalog,
+    ): array
     {
         $profile = $publicPassportProfileService->ensureProfile($user);
 
@@ -88,15 +94,20 @@ class LeaderboardController extends AbstractController
             'displayName' => $profile->getUsername() ?? $user->getDisplayName() ?? 'Fan',
             'xp' => $user->getGlobalXp(),
             'level' => $user->getGlobalLevel(),
+            'levelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             'profileUrl' => $this->generateUrl('app_public_user_profile', ['id' => $user->getId()]),
             'avatarUrl' => $user->getAvatarUrl(),
         ];
     }
 
     /**
-     * @return array{userId:int|null,displayName:string,xp:int,level:int,profileUrl:string|null,avatarUrl:string|null}
+     * @return array{userId:int|null,displayName:string,xp:int,level:int,levelBadge:array{level:int,mainTitle:string,subLevelTitle:?string,fullTitle:string},profileUrl:string|null,avatarUrl:string|null}
      */
-    private function normalizeFandomRanking(UserFandom $fandom, PublicPassportProfileService $publicPassportProfileService): array
+    private function normalizeFandomRanking(
+        UserFandom $fandom,
+        PublicPassportProfileService $publicPassportProfileService,
+        LevelBadgeCatalog $levelBadgeCatalog,
+    ): array
     {
         $user = $fandom->getUser();
         $profile = $user instanceof User ? $publicPassportProfileService->ensureProfile($user) : null;
@@ -106,6 +117,7 @@ class LeaderboardController extends AbstractController
             'displayName' => $profile?->getUsername() ?? $user?->getDisplayName() ?? 'Fan',
             'xp' => $fandom->getXp(),
             'level' => $fandom->getLevel(),
+            'levelBadge' => $levelBadgeCatalog->forLevel($fandom->getLevel()),
             'profileUrl' => $user instanceof User ? $this->generateUrl('app_public_user_profile', ['id' => $user->getId()]) : null,
             'avatarUrl' => $user?->getAvatarUrl(),
         ];

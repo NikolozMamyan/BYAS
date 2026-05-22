@@ -8,6 +8,111 @@
     background-repeat: no-repeat;
 }
 
+.pwa-install__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: grid;
+    place-items: end center;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(4, 2, 12, 0.18) 0%, rgba(4, 2, 12, 0.72) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.pwa-install__modal {
+    width: min(420px, 100%);
+    border-radius: 28px;
+    padding: 22px 20px 18px;
+    background:
+        radial-gradient(circle at top right, rgba(248, 60, 176, 0.18), transparent 26%),
+        radial-gradient(circle at left center, rgba(74, 72, 235, 0.18), transparent 28%),
+        linear-gradient(180deg, rgba(16, 9, 39, 0.96) 0%, rgba(7, 5, 20, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+}
+
+.pwa-install__eyebrow {
+    color: var(--cyan);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.pwa-install__title {
+    margin-top: 8px;
+    font-size: 28px;
+    line-height: 1.05;
+}
+
+.pwa-install__text {
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.pwa-install__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.pwa-install__chips span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 22, 208, 0.28);
+    color: rgba(255, 255, 255, 0.82);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pwa-install__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.pwa-install__button {
+    min-height: 50px;
+    border-radius: 16px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pwa-install__button--primary {
+    border: 0;
+    color: white;
+    background: linear-gradient(90deg, var(--pink) 0%, var(--purple) 52%, var(--cyan) 100%);
+    box-shadow: 0 12px 28px rgba(99, 22, 208, 0.34);
+}
+
+.pwa-install__button--ghost {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: white;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pwa-install__status {
+    min-height: 18px;
+    margin-top: 12px;
+    color: rgba(255, 255, 255, 0.62);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .bg-overlay {
     position: fixed;
     inset: 0;
@@ -250,5 +355,18 @@
 
     .logo-img {
         width: 220px;
+    }
+
+    .pwa-install__backdrop {
+        padding: 14px;
+    }
+
+    .pwa-install__modal {
+        border-radius: 24px;
+        padding: 18px 16px 16px;
+    }
+
+    .pwa-install__title {
+        font-size: 24px;
     }
 }

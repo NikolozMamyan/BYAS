@@ -1,0 +1,51 @@
+{
+  "name": "BYAS",
+  "short_name": "BYAS",
+  "description": "BYAS fan passport, rankings, fandom levels and collection in an installable app.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060412",
+  "theme_color": "#060412",
+  "categories": ["music", "social", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/pwa-home-narrow.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "BYAS home screen and install-first fan passport experience"
+    },
+    {
+      "src": "/screenshots/pwa-passport-wide.png",
+      "sizes": "1600x900",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "BYAS passport overview with fandoms, badges and collection"
+    }
+  ]
+}

@@ -3,1045 +3,980 @@
 {% block title %}BYAS | Digital Passport{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {{ parent() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_styles %}
     <style>
-        :root {
-            --bg-deep: #0B0E14;
-            --bg-soft: #111520;
-            --card-glass: rgba(25, 28, 36, 0.72);
-            --card-line: rgba(255, 255, 255, 0.08);
-            --neon-pink: #FF007A;
-            --neon-cyan: #00F2FF;
-            --soft-purple: #9D50BB;
-            --text-main: #FFFFFF;
-            --text-dim: #9CA3AF;
-            --text-fade: #6B7280;
-            --success: #4CAF50;
-            --manga-radius: 22px;
-            --section-gap: 26px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             background:
-                radial-gradient(circle at 15% 15%, rgba(255, 0, 122, 0.07) 0%, transparent 24%),
-                radial-gradient(circle at 85% 20%, rgba(0, 242, 255, 0.07) 0%, transparent 22%),
-                linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
-            color: var(--text-main);
-            font-family: 'Outfit', 'Inter', sans-serif;
-            margin: 0;
-            padding-bottom: 100px;
-            overflow-x: hidden;
+                radial-gradient(circle at 18% 12%, rgba(74, 72, 235, 0.28), transparent 26%),
+                radial-gradient(circle at 78% 14%, rgba(248, 60, 176, 0.18), transparent 24%),
+                radial-gradient(circle at 50% 80%, rgba(99, 22, 208, 0.22), transparent 30%),
+                var(--bg);
         }
 
-        .app-wrapper {
-            width: 100%;
-        }
-            .btn-nav {
-        padding: 12px 28px;
-        background: var(--neon-cyan);
-        color: #000;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: 0.3s;
-        position: relative;
-        font-size: 0.85rem;
-    }
-
-    .btn-nav:disabled {
-        cursor: wait;
-        opacity: 0.65;
-    }
-
-    .sync-providers {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-left: 8px;
-    }
-
-    .sync-providers i {
-        font-size: 0.95rem;
-    }
-
-    .sync-feedback {
-        width: 100%;
-        padding: 0 20px;
-        margin: 8px 0 0;
-        font-size: 0.78rem;
-        color: var(--text-dim);
-    }
-
-    .sync-feedback span {
-        display: block;
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 10px 12px;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 8px;
-        background: rgba(255,255,255,0.035);
-    }
-
-    .sync-feedback.is-success span {
-        color: var(--success);
-        border-color: rgba(76, 175, 80, 0.45);
-        background: rgba(76, 175, 80, 0.08);
-    }
-
-    .sync-feedback.is-error span {
-        color: #ff7a90;
-        border-color: rgba(255, 0, 122, 0.45);
-        background: rgba(255, 0, 122, 0.08);
-    }
-
-        /* ===== PASSPORT HERO ===== */
-        .passport-hero {
-            padding: 20px 20px 8px;
-        }
-
-        .passport-shell {
+        .passport-page {
             position: relative;
-            overflow: hidden;
-            border-radius: 26px;
-            padding: 1px;
-            background: linear-gradient(135deg,
-                rgba(255, 0, 122, 0.45),
-                rgba(157, 80, 187, 0.28),
-                rgba(0, 242, 255, 0.38));
-            box-shadow:
-                0 16px 40px rgba(0,0,0,0.35),
-                0 0 0 1px rgba(255,255,255,0.03);
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 92px 14px 108px;
         }
 
-        .passport-shell::before {
+        .passport-page::before {
             content: "";
             position: absolute;
-            inset: 0;
+            inset: 0 auto auto 50%;
+            width: min(560px, 90vw);
+            height: 560px;
+            transform: translateX(-50%);
             background:
-                radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 28%),
-                radial-gradient(circle at bottom left, rgba(255,0,122,0.10), transparent 26%);
+                radial-gradient(circle, rgba(99, 22, 208, 0.28) 0%, rgba(99, 22, 208, 0) 65%);
+            filter: blur(18px);
             pointer-events: none;
             z-index: 0;
         }
 
-        .user-main-card {
+        .passport-stack {
             position: relative;
             z-index: 1;
-            background:
-                linear-gradient(180deg, rgba(20, 24, 34, 0.96) 0%, rgba(14, 18, 26, 0.96) 100%);
-            backdrop-filter: blur(18px);
-            border-radius: 25px;
-            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .passport-panel {
+            position: relative;
             overflow: hidden;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(74, 72, 235, 0.82), rgba(99, 22, 208, 0.45), rgba(248, 60, 176, 0.7));
+            box-shadow: 0 22px 52px rgba(2, 0, 12, 0.62);
         }
 
-        .user-main-card::before {
-            content: "DIGITAL PASSPORT";
-            position: absolute;
-            top: 14px;
-            right: 16px;
-            font-size: 0.62rem;
-            letter-spacing: 0.22em;
-            color: rgba(255,255,255,0.14);
-            font-weight: 700;
-        }
-
-        .user-main-card::after {
+        .passport-panel::before {
             content: "";
             position: absolute;
-            inset: auto -30px -30px auto;
-            width: 140px;
-            height: 140px;
-            background: radial-gradient(circle, rgba(0,242,255,0.12), transparent 65%);
+            inset: 0;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.16), transparent 14%),
+                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.08), transparent 18%),
+                radial-gradient(circle at 82% 80%, rgba(248, 60, 176, 0.18), transparent 20%);
+            opacity: 0.75;
             pointer-events: none;
         }
 
-        .passport-top {
-            display: flex;
-            align-items: center;
+        .passport-panel__inner {
+            position: relative;
+            z-index: 1;
+            border-radius: 19px;
+            padding: 16px;
+            background:
+                linear-gradient(180deg, rgba(10, 7, 24, 0.96) 0%, rgba(7, 5, 20, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .hero-grid {
+            display: grid;
             gap: 16px;
         }
 
-        .avatar-wrap {
-            position: relative;
-            flex-shrink: 0;
+        .hero-main {
+            display: grid;
+            grid-template-columns: 112px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
         }
 
-        .avatar-ring {
-            width: 88px;
-            height: 88px;
+        .hero-avatar-wrap {
+            position: relative;
+        }
+
+        .hero-avatar-ring {
+            width: 112px;
+            height: 112px;
             border-radius: 50%;
             padding: 3px;
-            background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
-            box-shadow: 0 0 20px rgba(255, 0, 122, 0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, #7f84ff 0%, var(--pink) 100%);
+            box-shadow:
+                0 0 0 3px rgba(125, 83, 255, 0.2),
+                0 0 30px rgba(116, 81, 255, 0.42);
         }
 
-        .avatar-img {
+        .hero-avatar,
+        .hero-avatar.avatar-placeholder {
             width: 100%;
             height: 100%;
-            display: block;
             border-radius: 50%;
             object-fit: cover;
-            background: #0B0E14;
-            border: 3px solid #0F131C;
+            border: 3px solid rgba(10, 7, 24, 0.95);
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(248, 60, 176, 0.2), rgba(74, 72, 235, 0.28));
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
         }
 
-        .avatar-placeholder {
-            width: 100%;
-            height: 100%;
+        .hero-avatar-edit {
+            position: absolute;
+            right: 2px;
+            bottom: 4px;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 50%;
+            background: rgba(10, 7, 24, 0.92);
+            display: grid;
+            place-items: center;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.38);
+        }
+
+        .hero-copy {
+            min-width: 0;
+        }
+
+        .hero-name-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(255, 0, 122, 0.34), rgba(0, 242, 255, 0.24));
-            border: 3px solid #0F131C;
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 900;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .level-badge {
-            position: absolute;
-            left: 50%;
-            bottom: -7px;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple));
-            color: white;
-            font-size: 0.66rem;
-            font-weight: 800;
-            padding: 5px 10px;
-            border-radius: 999px;
-            white-space: nowrap;
-            box-shadow: 0 8px 20px rgba(255, 0, 122, 0.25);
-            border: 1px solid rgba(255,255,255,0.12);
+        .hero-name {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 2.55rem);
+            line-height: 0.92;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
         }
 
-        .user-meta {
-            min-width: 0;
-            flex: 1;
+        .hero-verified {
+            color: #a88cff;
+            font-size: 0.95rem;
         }
 
-        .passport-kicker {
+        .hero-handle {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.67rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(248, 60, 176, 0.12);
+            border: 1px solid rgba(248, 60, 176, 0.24);
+            color: #ff76c8;
+            font: 700 0.82rem/1 'Rajdhani', sans-serif;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: var(--neon-cyan);
-            margin-bottom: 8px;
         }
 
-        .user-meta h1 {
-            margin: 0;
-            font-size: 1.45rem;
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            word-break: break-word;
+        .hero-caption {
+            margin-top: 14px;
+            color: rgba(255, 255, 255, 0.62);
+            font: 600 0.72rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
         }
 
-        .user-location {
-            margin: 7px 0 0;
-            color: var(--text-dim);
-            font-size: 0.82rem;
-            display: flex;
+        .hero-level {
+            margin-top: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 2.9rem);
+            font-weight: 800;
+            line-height: 1;
+            color: #d9dbff;
+            text-shadow: 0 0 24px rgba(120, 106, 255, 0.25);
+        }
+
+        .hero-level span {
+            color: #7fb1ff;
+        }
+
+        .hero-tier {
+            display: inline-flex;
             align-items: center;
-            gap: 7px;
-        }
-
-        .passport-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 18px;
-        }
-
-        .passport-stat {
-            background: rgba(255,255,255,0.035);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px;
-            padding: 10px 10px 9px;
-            min-width: 0;
-        }
-
-        .passport-stat-label {
-            font-size: 0.62rem;
-            color: var(--text-fade);
+            gap: 8px;
+            margin-top: 10px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(99, 22, 208, 0.16);
+            border: 1px solid rgba(99, 22, 208, 0.38);
+            color: #f1d7ff;
+            font: 700 0.84rem/1 'Rajdhani', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 5px;
         }
 
-        .passport-stat-value {
-            font-size: 0.95rem;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .hero-tier i {
+            color: #96a5ff;
         }
 
-        .xp-block {
+        .hero-progress {
             margin-top: 16px;
-            padding: 12px 13px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
         }
 
-        .xp-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 0.72rem;
-            margin-bottom: 8px;
-        }
-
-        .xp-head span:first-child {
-            color: var(--text-dim);
-        }
-
-        .xp-head span:last-child {
-            font-weight: 700;
-            color: white;
-        }
-
-        .xp-bar-bg {
-            height: 8px;
-            background: rgba(255,255,255,0.06);
+        .hero-progress__bar {
+            height: 10px;
             border-radius: 999px;
             overflow: hidden;
-            position: relative;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(248, 60, 176, 0.2);
         }
 
-        .xp-bar-fill {
+        .hero-progress__fill {
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, var(--neon-pink), var(--soft-purple), var(--neon-cyan));
-            box-shadow: 0 0 18px rgba(255, 0, 122, 0.25);
+            background: linear-gradient(90deg, #4aa0ff 0%, #744dff 44%, #f83cb0 100%);
+            box-shadow: 0 0 22px rgba(116, 77, 255, 0.46);
         }
 
-        /* ===== SECTION TITLES ===== */
-        .section-label {
-            padding: 0 20px;
+        .hero-progress__meta {
             display: flex;
             justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.76);
+            font: 700 0.88rem/1 'Rajdhani', sans-serif;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .hero-btn {
+            display: inline-flex;
             align-items: center;
-            margin-top: var(--section-gap);
-            margin-bottom: 14px;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: white;
+            text-decoration: none;
+            font: 700 0.85rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+        }
+
+        .hero-btn--primary {
+            background: linear-gradient(90deg, rgba(74, 72, 235, 0.32), rgba(248, 60, 176, 0.24));
+            border-color: rgba(132, 102, 255, 0.34);
+            box-shadow: 0 12px 28px rgba(74, 72, 235, 0.2);
+        }
+
+        .stats-grid,
+        .fandom-grid,
+        .collection-grid,
+        .badge-grid,
+        .activity-grid,
+        .flash-grid {
+            display: grid;
             gap: 12px;
         }
 
-        .section-label h2 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        .stats-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
-        .section-meta {
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            white-space: nowrap;
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        /* ===== MINI COLLECTION PREVIEW ===== */
-        .vault-preview-container {
-            padding: 0 20px;
+        .section-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font: 700 1rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
-        .preview-grid {
+        .section-link {
+            color: rgba(255, 255, 255, 0.76);
+            text-decoration: none;
+            font: 700 0.86rem/1 'Rajdhani', sans-serif;
+        }
+
+        .stat-card,
+        .fandom-card,
+        .collection-card,
+        .badge-card,
+        .activity-card,
+        .flash-card,
+        .share-card {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, rgba(12, 8, 28, 0.92) 0%, rgba(8, 6, 22, 0.94) 100%);
+        }
+
+        .stat-card {
+            padding: 16px;
+            min-width: 0;
+        }
+
+        .stat-card__label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.72);
+            font: 700 0.82rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .stat-card__value {
+            margin-top: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.15rem);
+            color: #8fd2ff;
+        }
+
+        .stat-card__meta {
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.55);
+            font: 600 0.74rem/1.35 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .stat-card--accent .stat-card__value {
+            color: #ff61c5;
+        }
+
+        .fandom-grid,
+        .collection-grid,
+        .badge-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .fandom-card,
+        .badge-card {
+            padding: 14px;
+        }
+
+        .fandom-rank {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 14px;
+            place-items: center;
+            background: linear-gradient(135deg, var(--pink), #ff77cb);
+            color: white;
+            font: 800 0.82rem/1 'Orbitron', sans-serif;
+            box-shadow: 0 0 18px rgba(248, 60, 176, 0.32);
         }
 
-        .preview-card {
-            min-width: 0;
+        .fandom-rank--secondary {
+            background: linear-gradient(135deg, var(--cyan), #8e8cff);
+            box-shadow: 0 0 18px rgba(74, 72, 235, 0.32);
+        }
+
+        .fandom-rank--tertiary {
+            background: linear-gradient(135deg, #9d55ff, #6d4eff);
+            box-shadow: 0 0 18px rgba(109, 78, 255, 0.28);
+        }
+
+        .fandom-head {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 11px;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.035);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.22);
-            transition: 0.22s ease;
-            overflow: hidden;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
         }
 
-        .preview-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 0, 122, 0.28);
-            box-shadow: 0 12px 22px rgba(0,0,0,0.28);
-        }
-
-        .preview-thumb {
-            width: 42px;
-            height: 42px;
-            border-radius: 11px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(255, 0, 122, 0.14), rgba(0, 242, 255, 0.10));
-            border: 1px solid rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.72);
-            overflow: hidden;
-        }
-
-        .preview-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .preview-thumb i {
-            font-size: 1rem;
-        }
-
-        .preview-content {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .preview-title {
-            font-size: 0.78rem;
+        .fandom-artist {
+            margin-top: 16px;
             font-weight: 700;
-            line-height: 1.25;
-            color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
+            text-transform: uppercase;
         }
 
-        .preview-subline {
+        .fandom-title {
             margin-top: 4px;
+            color: rgba(255, 255, 255, 0.62);
+            font: 600 0.82rem/1.35 'Rajdhani', sans-serif;
+        }
+
+        .fandom-meta {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             gap: 8px;
-            min-width: 0;
+            margin-top: 16px;
+            color: #ff61c5;
+            font: 700 0.84rem/1 'Rajdhani', sans-serif;
         }
 
-        .preview-type {
-            font-size: 0.62rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .fandom-meta span:last-child {
+            color: #af88ff;
         }
 
-        .preview-qty {
-            font-size: 0.62rem;
-            font-weight: 700;
-            color: var(--neon-cyan);
-            flex-shrink: 0;
+        .fandom-line {
+            height: 4px;
+            border-radius: 999px;
+            margin-top: 12px;
+            background: linear-gradient(90deg, #f83cb0, #7e67ff);
+            opacity: 0.95;
         }
 
-        .preview-empty {
-            opacity: 0.52;
-        }
-
-        .btn-all-vault {
-            width: 100%;
-            padding: 11px 14px;
-            border-radius: 14px;
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid rgba(0, 242, 255, 0.18);
-            color: var(--neon-cyan);
-            text-align: center;
-            text-decoration: none;
-            font-size: 0.76rem;
-            font-weight: 700;
-            display: block;
-            transition: 0.22s ease;
-        }
-
-        .btn-all-vault:hover {
-            background: rgba(0, 242, 255, 0.09);
-            border-color: rgba(0, 242, 255, 0.30);
-            transform: translateY(-1px);
-        }
-
-        /* ===== FANDOM ===== */
-        .fandom-scroll {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 0 20px 8px 20px;
-            scrollbar-width: none;
-        }
-
-        .fandom-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .fandom-card {
-            min-width: 138px;
-            background: var(--card-glass);
-            border-radius: 18px;
-            padding: 14px 12px;
-            border: 1px solid rgba(255,255,255,0.06);
-            text-align: center;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
-        }
-
-        .fandom-icon {
-            font-size: 1.35rem;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff 20%, var(--text-dim));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .fandom-name {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .fandom-lvl {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            margin-top: 4px;
-        }
-
-        /* ===== SETTINGS / ACTIONS ===== */
-        .settings-list {
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .action-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 8px 18px rgba(0,0,0,0.16);
-            transition: 0.2s ease;
-        }
-
-        .action-item:hover {
-            transform: translateY(-1px);
-            border-color: rgba(255,255,255,0.12);
-        }
-
-        .action-info {
+        .collection-card {
+            padding: 18px 16px;
             display: flex;
             align-items: center;
             gap: 14px;
             min-width: 0;
         }
 
-        .action-info > i {
-            font-size: 1rem;
-            width: 18px;
+        .collection-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(180deg, rgba(248, 60, 176, 0.18), rgba(74, 72, 235, 0.16));
+            color: #ff5ec2;
+            box-shadow: inset 0 0 0 1px rgba(248, 60, 176, 0.18), 0 0 18px rgba(99, 22, 208, 0.18);
+            flex: 0 0 auto;
+        }
+
+        .collection-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .collection-label {
+            margin-top: 6px;
+            color: rgba(255, 255, 255, 0.74);
+            font: 700 0.78rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .badge-card {
             text-align: center;
-            flex-shrink: 0;
         }
 
-        .action-info > div {
-            min-width: 0;
+        .badge-crest {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 12px;
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.18), transparent 24%),
+                linear-gradient(180deg, rgba(126, 93, 255, 0.26) 0%, rgba(248, 60, 176, 0.18) 100%);
+            border: 1px solid rgba(165, 145, 255, 0.26);
+            box-shadow:
+                inset 0 0 18px rgba(255, 255, 255, 0.08),
+                0 0 24px rgba(116, 77, 255, 0.24);
+            color: #f3d3ff;
+            font-size: 2rem;
         }
 
-        .action-info > div > div:last-child {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .badge-card:nth-child(3n) .badge-crest {
+            background:
+                radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.2), transparent 24%),
+                linear-gradient(180deg, rgba(255, 191, 92, 0.22) 0%, rgba(255, 133, 56, 0.14) 100%);
+            border-color: rgba(255, 176, 86, 0.28);
+            box-shadow:
+                inset 0 0 18px rgba(255, 255, 255, 0.08),
+                0 0 24px rgba(255, 150, 78, 0.2);
+            color: #ffd28d;
         }
 
-        .status-badge {
-            font-size: 0.68rem;
-            color: var(--success);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-            padding: 4px 8px;
-            border-radius: 999px;
-            flex-shrink: 0;
-            font-weight: 700;
-            background: rgba(76, 175, 80, 0.08);
-        }
-
-        .logout-wrap {
-            text-align: center;
-            margin-top: 30px;
-            opacity: 0.46;
-        }
-
-        .logout-wrap a {
-            color: white;
-            font-size: 0.8rem;
-            text-decoration: none;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (min-width: 768px) {
-            .passport-hero,
-            .section-label,
-            .vault-preview-container,
-            .fandom-scroll,
-            .settings-list {
-                max-width: 980px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .preview-grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-
-            .passport-top {
-                gap: 20px;
-            }
-
-            .avatar-ring {
-                width: 96px;
-                height: 96px;
-            }
-        }
-
-        @media (max-width: 560px) {
-            .passport-stats {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 8px;
-            }
-
-            .passport-stat {
-                padding: 9px 8px;
-            }
-
-            .passport-stat-value {
-                font-size: 0.86rem;
-            }
-
-            .user-meta h1 {
-                font-size: 1.25rem;
-            }
-        }
-
-        .app-wrapper {
-            padding-top: 74px;
-        }
-
-        .passport-shell,
-        .user-main-card,
-        .xp-block,
-        .passport-stat,
-        .preview-card,
-        .preview-thumb,
-        .btn-all-vault,
-        .fandom-card,
-        .action-item {
-            border-radius: 8px;
-        }
-
-        .section-label {
+        .badge-name {
+            display: inline-flex;
             align-items: center;
-            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 32px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(248, 60, 176, 0.18);
+            color: #ff7fcf;
+            font: 700 0.78rem/1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
         }
 
-        .section-label h2 {
-            letter-spacing: 0;
+        .badge-meta {
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.68);
+            font: 600 0.8rem/1.35 'Rajdhani', sans-serif;
         }
 
-        .btn-nav {
-            border-radius: 8px;
-            margin-left: auto;
+        .share-card {
+            display: grid;
+            grid-template-columns: 92px minmax(0, 1fr) 120px;
+            gap: 14px;
+            padding: 16px;
+            align-items: center;
         }
 
-        .fandom-card {
-            min-width: 168px;
-            text-align: left;
+        .share-qr {
+            width: 92px;
+            height: 92px;
+            border-radius: 14px;
+            padding: 8px;
+            background: white;
+            display: grid;
+            place-items: center;
+            color: #05050a;
+            font-size: 2rem;
         }
 
-        .fandom-icon {
-            display: inline-block;
+        .share-title {
+            font: 800 1.05rem/1.1 'Rajdhani', sans-serif;
+            text-transform: uppercase;
         }
 
-        .settings-list {
+        .share-text {
+            margin-top: 6px;
+            color: rgba(255, 255, 255, 0.68);
+            font: 600 0.84rem/1.4 'Rajdhani', sans-serif;
+        }
+
+        .share-link-row {
+            display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
         }
 
-        .action-item {
-            min-height: 64px;
+        .share-mini {
+            display: grid;
+            place-items: center;
+            min-height: 92px;
+            border-radius: 16px;
+            background:
+                linear-gradient(160deg, rgba(15, 11, 36, 0.96), rgba(28, 13, 58, 0.96));
+            border: 1px solid rgba(138, 104, 255, 0.28);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+            transform: rotate(-10deg);
+            color: #89d6ff;
+            font: 800 1.55rem/1 'Orbitron', sans-serif;
+            text-transform: uppercase;
         }
 
-        .status-badge {
-            border-radius: 8px;
+        .activity-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        @media (min-width: 768px) {
-            .app-wrapper {
-                padding-top: 92px;
-            }
+        .activity-card {
+            padding: 14px;
         }
 
-        @media (max-width: 560px) {
-            body {
-                padding-bottom: 96px;
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .activity-item:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .activity-item:first-child {
+            padding-top: 0;
+        }
+
+        .activity-item__title {
+            font-weight: 700;
+        }
+
+        .activity-item__meta {
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            font: 600 0.78rem/1.35 'Rajdhani', sans-serif;
+        }
+
+        .activity-item__pill {
+            flex: 0 0 auto;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(74, 72, 235, 0.16);
+            border: 1px solid rgba(74, 72, 235, 0.26);
+            color: #a6b6ff;
+            font: 700 0.78rem/1 'Rajdhani', sans-serif;
+        }
+
+        .flash-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .flash-card {
+            padding: 14px 16px;
+            color: white;
+        }
+
+        .flash-card--success {
+            border-color: rgba(86, 226, 175, 0.2);
+            background: linear-gradient(180deg, rgba(14, 46, 39, 0.68), rgba(8, 23, 21, 0.82));
+        }
+
+        .flash-card--error {
+            border-color: rgba(255, 110, 158, 0.22);
+            background: linear-gradient(180deg, rgba(61, 17, 33, 0.7), rgba(28, 10, 18, 0.84));
+        }
+
+        .empty-state {
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            font: 600 0.84rem/1.4 'Rajdhani', sans-serif;
+        }
+
+        @media (max-width: 767px) {
+            .passport-page {
+                padding-top: 84px;
             }
 
-            .passport-hero {
-                padding: 14px 14px 6px;
+            .hero-main {
+                grid-template-columns: 1fr;
+                text-align: center;
             }
 
-            .section-label,
-            .vault-preview-container,
-            .settings-list {
-                padding-left: 14px;
-                padding-right: 14px;
+            .hero-avatar-wrap {
+                margin: 0 auto;
             }
 
-            .fandom-scroll {
-                padding-left: 14px;
-                padding-right: 14px;
+            .hero-name-row,
+            .hero-handle,
+            .hero-tier,
+            .hero-actions {
+                justify-content: center;
             }
 
-            .section-label {
-                margin-top: 22px;
-                margin-bottom: 10px;
-            }
-
-            .btn-nav {
-                width: 100%;
-                margin-top: 8px;
-                padding: 12px 14px;
-            }
-
-            .preview-grid {
+            .stats-grid,
+            .fandom-grid,
+            .collection-grid,
+            .badge-grid,
+            .activity-grid,
+            .share-card {
                 grid-template-columns: 1fr;
             }
 
-            .preview-card,
-            .action-item {
-                padding: 12px;
+            .share-card {
+                justify-items: start;
             }
 
-            .action-item {
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .action-info {
-                gap: 10px;
+            .share-mini {
+                width: 100%;
+                min-height: 82px;
+                transform: none;
             }
         }
     </style>
 {% endblock %}
 
 {% block body %}
-<div class="app-wrapper" data-controller="passport-sync" data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}">
-
-    <section class="passport-hero">
-        <div class="passport-shell">
-            <div class="user-main-card">
-                <div class="passport-top">
-                    <div class="avatar-wrap">
-                        <div class="avatar-ring">
-                            {% include 'components/user_avatar.html.twig' with {
-                                avatarUrl: user.avatarUrl,
-                                displayName: profile.username|default(user.displayName),
-                                avatarClass: 'avatar-img'
-                            } only %}
-                        </div>
-                        <div class="level-badge">LVL {{ user.globalLevel }}</div>
-                    </div>
-
-                    <div class="user-meta">
-                        <div class="passport-kicker">
-                            <i class="fas fa-id-card"></i>
-                            Fan Identity
+{% set successFlashes = app.flashes('success') %}
+{% set errorFlashes = app.flashes('error') %}
+<main class="passport-page" data-controller="passport-sync" data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}">
+    <div class="passport-stack">
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="hero-grid">
+                    <div class="hero-main">
+                        <div class="hero-avatar-wrap">
+                            <div class="hero-avatar-ring">
+                                {% include 'components/user_avatar.html.twig' with {
+                                    avatarUrl: user.avatarUrl,
+                                    displayName: profile.username|default(user.displayName),
+                                    avatarClass: 'hero-avatar'
+                                } only %}
+                            </div>
+                            <a href="{{ path('app_front_passport_settings') }}" class="hero-avatar-edit" aria-label="Edit passport">
+                                <i class="fas fa-pen"></i>
+                            </a>
                         </div>
 
-                        <h1>{{ profile.username|default(user.displayName) }}</h1>
+                        <div class="hero-copy">
+                            <div class="hero-name-row">
+                                <h1 class="hero-name">{{ profile.username|default(user.displayName) }}</h1>
+                                <i class="fas fa-badge-check hero-verified"></i>
+                            </div>
+                            <div class="hero-handle">
+                                <i class="fas fa-heart"></i>
+                                {{ topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : 'BYAS Fan' }}
+                            </div>
+                            <div class="hero-caption">Base level</div>
+                            <div class="hero-level">Level <span>{{ user.globalLevel }}</span></div>
+                            <div class="hero-tier">
+                                <i class="fas fa-sparkles"></i>
+                                {{ globalLevelBadge.fullTitle }}
+                            </div>
 
-                        <p class="user-location">
-                            <i class="fas fa-location-dot"></i>
-                            {{ profile.countryCode|default('Global Fan') }}
-                        </p>
-                    </div>
-                </div>
+                            <div class="hero-progress">
+                                <div class="hero-progress__bar">
+                                    <div class="hero-progress__fill" style="width: {{ globalProgress.percent }}%;"></div>
+                                </div>
+                                <div class="hero-progress__meta">
+                                    <span>{{ user.globalXp }} XP</span>
+                                    <span>{{ globalProgress.next }} XP target</span>
+                                </div>
+                            </div>
 
-                <div class="passport-stats">
-                    <div class="passport-stat">
-                        <div class="passport-stat-label">Collection</div>
-                        <div class="passport-stat-value">{{ items|length }}</div>
-                    </div>
-                    <div class="passport-stat">
-                        <div class="passport-stat-label">Fandoms</div>
-                        <div class="passport-stat-value">{{ fandoms|length }}</div>
-                    </div>
-                    <div class="passport-stat">
-                        <div class="passport-stat-label">Rank</div>
-                        <div class="passport-stat-value">#{{ globalRank }}</div>
-                    </div>
-                </div>
-
-                <div class="xp-block">
-                    <div class="xp-head">
-                        <span>Global Progress</span>
-                        <span>{{ user.globalXp }} / {{ globalProgress.next }} XP</span>
-                    </div>
-                    <div class="xp-bar-bg">
-                        <div class="xp-bar-fill" style="width: {{ globalProgress.percent }}%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="section-label">
-        <h2>My Collection</h2>
-        <span class="section-meta">{{ items|length }} items</span>
-                        <button id="syncHistoryBtn" class="btn-nav" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync" {{ connectedSyncProviders is empty ? 'disabled' : '' }}>
-                    Sync
-                    <span class="sync-providers">
-                        {% if connectedSyncProviders is empty %}
-                            <i class="fas fa-link-slash" style="color: var(--text-dim);"></i>
-                        {% else %}
-                            {% for provider in connectedSyncProviders %}
-                                {% if provider == 'spotify' %}
-                                    <i class="fab fa-spotify" style="color: #1DB954;"></i>
-                                {% elseif provider == 'youtube' %}
-                                    <i class="fab fa-youtube" style="color: #ff3d5a;"></i>
-                                {% elseif provider == 'apple_music' %}
-                                    <i class="fab fa-apple" style="color: #fc3c44;"></i>
-                                {% else %}
-                                    <i class="fas fa-wave-square"></i>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </span>
-                    <i class="fas fa-rotate"></i>
-                </button>
-    </div>
-    <div id="syncFeedback" class="sync-feedback" role="status" aria-live="polite" data-passport-sync-target="feedback" hidden>
-        <span data-passport-sync-target="feedbackText"></span>
-    </div>
-                
-
-
-    <div class="vault-preview-container">
-        <div class="preview-grid">
-            {% for userItem in items|slice(0, 4) %}
-                {% set itemData = userItem.item is defined ? userItem.item : userItem %}
-                <article class="preview-card">
-                    <div class="preview-thumb">
-                        {# {% if itemData.imageName is defined and itemData.imageName %}
-                            <img src="{{ asset('uploads/items/' ~ itemData.imageName) }}" alt="{{ itemData.title|default('Album') }}">
-                        {% else %} #}
-                            <i class="fas fa-record-vinyl"></i>
-                        {# {% endif %} #}
-                    </div>
-
-                    <div class="preview-content">
-                        <p class="preview-title">{{ itemData.title|default('Untitled album') }}</p>
-                        <div class="preview-subline">
-                            <span class="preview-type">{{ itemData.type.label|default('Album') }}</span>
-                            {% if userItem.quantity is defined %}
-                                <span class="preview-qty">x{{ userItem.quantity }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </article>
-            {% else %}
-                {% for i in 1..4 %}
-                    <article class="preview-card preview-empty">
-                        <div class="preview-thumb">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="preview-content">
-                            <p class="preview-title">Empty slot</p>
-                            <div class="preview-subline">
-                                <span class="preview-type">Collection</span>
+                            <div class="hero-actions">
+                                <button id="syncHistoryBtn" class="hero-btn hero-btn--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync" {{ connectedSyncProviders is empty ? 'disabled' : '' }}>
+                                    <i class="fas fa-rotate"></i>
+                                    Sync
+                                </button>
+                                <a href="{{ path('app_front_passport_share') }}" class="hero-btn">
+                                    <i class="fas fa-share-nodes"></i>
+                                    Share
+                                </a>
+                                <a href="{{ path('app_front_collection_index') }}" class="hero-btn">
+                                    <i class="fas fa-layer-group"></i>
+                                    Collection
+                                </a>
                             </div>
                         </div>
-                    </article>
-                {% endfor %}
-            {% endfor %}
-        </div>
+                    </div>
 
-        <a href="{{ path('app_front_collection_index') }}" class="btn-all-vault">
-            <i class="fas fa-th-large" style="margin-right: 5px;"></i> View All Vault
-        </a>
-    </div>
-
-    <div class="section-label">
-        <h2>Active Fandoms</h2>
-    </div>
-
-    <div class="fandom-scroll">
-        {% for fandom in fandoms|slice(0, 8) %}
-            <div class="fandom-card">
-                <i class="fas fa-bolt fandom-icon"></i>
-                <span class="fandom-name">{{ fandom.artist ? fandom.artist.name : 'Idol' }}</span>
-                <span class="fandom-lvl">Level {{ fandom.level }} &middot; {{ fandom.xp }} XP</span>
-                {% if fandom.progressPercent is not null %}
-                    <span class="fandom-lvl">{{ fandom.progressPercent|round }}% to next</span>
-                {% endif %}
-            </div>
-        {% else %}
-            <div class="fandom-card" style="min-width: 240px;">
-                <p style="font-size: 0.8rem; color: var(--text-dim); margin: 0;">No Fandom linked yet.</p>
-            </div>
-        {% endfor %}
-    </div>
-
-    <div class="section-label">
-        <h2>Recent XP</h2>
-        <span class="section-meta">{{ xpTransactions|length }} events</span>
-    </div>
-
-    <div class="settings-list">
-        {% for transaction in xpTransactions %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-plus" style="color: var(--neon-cyan);"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">{{ transaction.reason }}</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">
-                            {{ transaction.artist ? transaction.artist.name ~ ' - ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}
+                    <div id="syncFeedback" class="flash-grid" role="status" aria-live="polite" data-passport-sync-target="feedback" hidden>
+                        <div class="flash-card">
+                            <span data-passport-sync-target="feedbackText"></span>
                         </div>
                     </div>
                 </div>
-                <span class="status-badge">+{{ transaction.xpAmount }} XP</span>
             </div>
-        {% else %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-clock"></i>
-                    <span style="font-size: 0.9rem;">No XP event yet</span>
+        </section>
+
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <div class="stat-card__label">
+                            <i class="fas fa-globe"></i>
+                            Global rank
+                        </div>
+                        <div class="stat-card__value">{{ globalRank ? '#' ~ globalRank : '--' }}</div>
+                        <div class="stat-card__meta">{{ fandoms|length }} active fandoms</div>
+                    </article>
+
+                    <article class="stat-card stat-card--accent">
+                        <div class="stat-card__label">
+                            <i class="fas fa-eye"></i>
+                            Public views
+                        </div>
+                        <div class="stat-card__value">{{ publicVisitCount }}</div>
+                        <div class="stat-card__meta">{{ publicVisitCount7d }} views over 7 days</div>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-card__label">
+                            <i class="fas fa-heart"></i>
+                            Message intents
+                        </div>
+                        <div class="stat-card__value">{{ contactIntentCount }}</div>
+                        <div class="stat-card__meta">{{ userBadges|length }} badge{{ userBadges|length > 1 ? 's' : '' }} unlocked</div>
+                    </article>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </section>
 
-    <div class="section-label">
-        <h2>Badges</h2>
-        <span class="section-meta">{{ userBadges|length }} earned</span>
-    </div>
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="section-head">
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        My Top 3 Fandoms
+                    </div>
+                    <a href="{{ path('app_public_passport', { shareSlug: profile.shareSlug }) }}" class="section-link">View all</a>
+                </div>
 
-    <div class="settings-list">
-        {% for userBadge in userBadges|slice(0, 5) %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-medal" style="color: var(--neon-cyan);"></i>
+                {% if topFandoms is not empty %}
+                    <div class="fandom-grid">
+                        {% for fandom in topFandoms %}
+                            {% set fandomBadge = attribute(fandomLevelBadges, fandom.id) %}
+                            <article class="fandom-card">
+                                <div class="fandom-head">
+                                    <div class="fandom-rank{% if loop.index == 2 %} fandom-rank--secondary{% elseif loop.index == 3 %} fandom-rank--tertiary{% endif %}">
+                                        {{ loop.index }}
+                                    </div>
+                                    <i class="fas fa-heart" style="color: #9f80ff;"></i>
+                                </div>
+                                <div class="fandom-artist">{{ fandom.artist ? fandom.artist.name : 'Artist' }}</div>
+                                <div class="fandom-title">{{ fandomBadge.fullTitle }}</div>
+                                <div class="fandom-meta">
+                                    <span>Level {{ fandom.level }}</span>
+                                    <span>{{ fandom.rankPosition ? '#' ~ fandom.rankPosition : user.globalXp ~ ' XP' }}</span>
+                                </div>
+                                <div class="fandom-line"></div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">No fandom linked yet. Start syncing your listening history to build your ranking.</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="section-head">
+                    <div class="section-title">
+                        <i class="fas fa-layer-group"></i>
+                        My Collection
+                    </div>
+                    <a href="{{ path('app_front_collection_index') }}" class="section-link">View all</a>
+                </div>
+
+                {% if collectionHighlights is not empty %}
+                    <div class="collection-grid">
+                        {% for highlight in collectionHighlights %}
+                            <article class="collection-card">
+                                <div class="collection-icon">
+                                    <i class="fas {{ highlight.icon }}"></i>
+                                </div>
+                                <div>
+                                    <div class="collection-value">{{ highlight.count }}</div>
+                                    <div class="collection-label">{{ highlight.label }}</div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">Your collection is still empty.</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="section-head">
+                    <div class="section-title">
+                        <i class="fas fa-shield-star"></i>
+                        My Rarest Badges
+                    </div>
+                    <span class="section-link">{{ userBadges|length }} total</span>
+                </div>
+
+                {% if featuredBadges is not empty %}
+                    <div class="badge-grid">
+                        {% for userBadge in featuredBadges %}
+                            <article class="badge-card">
+                                <div class="badge-crest">
+                                    <i class="fas {% if loop.index == 1 %}fa-crown{% elseif loop.index == 2 %}fa-gem{% else %}fa-star{% endif %}"></i>
+                                </div>
+                                <div class="badge-name">{{ userBadge.badge.name }}</div>
+                                <div class="badge-meta">
+                                    {{ userBadge.badge.description|default('Unlocked on BYAS') }}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">No badge unlocked yet.</div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="passport-panel">
+            <div class="passport-panel__inner">
+                <div class="share-card">
+                    <div class="share-qr">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
                     <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">{{ userBadge.badge.name }}</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ userBadge.awardedAt|date('M d, Y') }}</div>
+                        <div class="share-title">Share your passport</div>
+                        <div class="share-text">Scan or open your public profile to show your rank, fandoms and badges.</div>
+                        <div class="share-link-row">
+                            <a href="{{ path('app_front_passport_share') }}" class="hero-btn hero-btn--primary">
+                                <i class="fas fa-image"></i>
+                                Share card
+                            </a>
+                            <a href="{{ publicPassportUrl }}" class="hero-btn">
+                                <i class="fas fa-arrow-up-right-from-square"></i>
+                                Public page
+                            </a>
+                        </div>
+                    </div>
+                    <div class="share-mini">BYAS</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="activity-grid">
+            <section class="passport-panel">
+                <div class="passport-panel__inner">
+                    <div class="section-head">
+                        <div class="section-title">
+                            <i class="fas fa-bolt"></i>
+                            Recent XP
+                        </div>
+                    </div>
+
+                    <div class="activity-card">
+                        {% for transaction in xpTransactions %}
+                            <div class="activity-item">
+                                <div>
+                                    <div class="activity-item__title">{{ transaction.reason }}</div>
+                                    <div class="activity-item__meta">{{ transaction.artist ? transaction.artist.name ~ ' · ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}</div>
+                                </div>
+                                <div class="activity-item__pill">+{{ transaction.xpAmount }} XP</div>
+                            </div>
+                        {% else %}
+                            <div class="empty-state">No XP event yet.</div>
+                        {% endfor %}
                     </div>
                 </div>
-                <span class="status-badge">Earned</span>
-            </div>
-        {% else %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-medal"></i>
-                    <span style="font-size: 0.9rem;">No badge unlocked yet</span>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+            </section>
 
-    {% for message in app.flashes('success') %}
-        <div class="settings-list">
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-circle-check" style="color: var(--success);"></i>
-                    <span style="font-size: 0.9rem;">{{ message }}</span>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
+            <section class="passport-panel">
+                <div class="passport-panel__inner">
+                    <div class="section-head">
+                        <div class="section-title">
+                            <i class="fas fa-signal-stream"></i>
+                            Public Activity
+                        </div>
+                    </div>
 
-    {% for message in app.flashes('error') %}
-        <div class="settings-list">
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-circle-exclamation" style="color: #ff7a90;"></i>
-                    <span style="font-size: 0.9rem;">{{ message }}</span>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-
-    <div class="section-label">
-        <h2>Public Activity</h2>
-        <span class="section-meta">{{ publicVisitCount }} views</span>
-    </div>
-
-    <div class="settings-list">
-        <div class="action-item">
-            <div class="action-info">
-                <i class="fas fa-qrcode" style="color: var(--neon-cyan);"></i>
-                <div>
-                    <div style="font-size: 0.9rem; font-weight: 600;">Public Passport views</div>
-                    <div style="font-size: 0.72rem; color: var(--text-dim);">{{ publicVisitCount7d }} in the last 7 days</div>
-                </div>
-            </div>
-            <span class="status-badge">{{ publicVisitCount }}</span>
-        </div>
-
-        <div class="action-item">
-            <div class="action-info">
-                <i class="fas fa-message" style="color: var(--neon-pink);"></i>
-                <div>
-                    <div style="font-size: 0.9rem; font-weight: 600;">Message intents</div>
-                    <div style="font-size: 0.72rem; color: var(--text-dim);">Saved for the future social layer</div>
-                </div>
-            </div>
-            <span class="status-badge">{{ contactIntentCount }}</span>
-        </div>
-
-        {% for visit in recentPublicVisits %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-eye"></i>
-                    <div>
-                        <div style="font-size: 0.9rem; font-weight: 600;">Public profile opened</div>
-                        <div style="font-size: 0.72rem; color: var(--text-dim);">{{ visit.createdAt|date('M d, H:i') }}{% if visit.viewer %} by {{ visit.viewer.displayName }}{% endif %}</div>
+                    <div class="activity-card">
+                        {% for visit in recentPublicVisits %}
+                            <div class="activity-item">
+                                <div>
+                                    <div class="activity-item__title">Public profile opened</div>
+                                    <div class="activity-item__meta">{{ visit.createdAt|date('M d, H:i') }}{% if visit.viewer %} · {{ visit.viewer.displayName }}{% endif %}</div>
+                                </div>
+                                <div class="activity-item__pill">Visit</div>
+                            </div>
+                        {% else %}
+                            <div class="empty-state">No public visit yet.</div>
+                        {% endfor %}
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="action-item">
-                <div class="action-info">
-                    <i class="fas fa-eye-slash"></i>
-                    <span style="font-size: 0.9rem;">No public visit yet</span>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+            </section>
+        </div>
 
-    <div class="logout-wrap">
-        <button class="logout" id="btnLogout" type="button" data-passport-sync-target="logoutButton" data-action="passport-sync#logout">
-            <i class="fas fa-sign-out-alt"></i> Sign out
-        </button>
-    </div>
-</div>
+        {% if successFlashes is not empty %}
+            <div class="flash-grid">
+                {% for message in successFlashes %}
+                    <div class="flash-card flash-card--success">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
+        {% if errorFlashes is not empty %}
+            <div class="flash-grid">
+                {% for message in errorFlashes %}
+                    <div class="flash-card flash-card--error">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</main>
 {% endblock %}

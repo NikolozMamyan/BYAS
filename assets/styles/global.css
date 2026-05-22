@@ -20,6 +20,51 @@ body {
     background: var(--bg);
     color: #fff;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+body.pwa-install-open {
+    overflow: hidden;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+    touch-action: manipulation;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+@media (display-mode: standalone) {
+    html,
+    body {
+        min-height: 100dvh;
+    }
+
+    body {
+        padding-top: env(safe-area-inset-top, 0);
+        padding-left: env(safe-area-inset-left, 0);
+        padding-right: env(safe-area-inset-right, 0);
+    }
 }
 
 .btn-primary,

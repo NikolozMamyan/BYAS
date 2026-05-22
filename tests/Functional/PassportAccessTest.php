@@ -55,7 +55,6 @@ class PassportAccessTest extends FunctionalWebTestCase
         self::assertSelectorTextContains('#streamingOnboardingTitle', 'Activate your passport with your plays');
         self::assertSelectorExists('a[href="/app/connect/spotify"]');
         self::assertSelectorExists('a[href="/app/connect/youtube"]');
-        self::assertSelectorExists('a[href="/app/connect/apple-music"]');
 
         $repository = static::getContainer()->get(AppNotificationRepository::class);
         $notification = $repository->findLatestOfTypeForUser($user, AppNotification::TYPE_STREAMING_SETUP_REMINDER);

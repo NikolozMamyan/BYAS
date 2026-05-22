@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Service\GoogleOAuthService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -31,12 +32,16 @@ class YouTubeAuthController extends AbstractController
     }
 
     #[Route('/disconnect', name: 'disconnect', methods: ['POST'])]
-    public function disconnect(GoogleOAuthService $googleOAuthService): Response
+    public function disconnect(Request $request, GoogleOAuthService $googleOAuthService): Response
     {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('You must be logged in.');
+        }
+
+        if (!$this->isCsrfTokenValid('passport_settings', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         $googleOAuthService->disconnectYoutube($user);

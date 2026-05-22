@@ -116,7 +116,7 @@
                                 <h2 id="streamingOnboardingTitle">{{ 'passport.streaming_onboarding.title'|trans }}</h2>
                                 <p>{{ 'passport.streaming_onboarding.text'|trans }}</p>
                             </div>
-                            <div class="streaming-onboarding__actions">
+                            <div class="streaming-onboarding__actions streaming-onboarding__actions--compact">
                                 <a class="streaming-source streaming-source--spotify" href="{{ path('app_spotify_start') }}">
                                     <i class="fab fa-spotify"></i>
                                     <span>Spotify</span>
@@ -124,10 +124,6 @@
                                 <a class="streaming-source streaming-source--youtube" href="{{ path('app_youtube_start') }}">
                                     <i class="fab fa-youtube"></i>
                                     <span>YouTube</span>
-                                </a>
-                                <a class="streaming-source streaming-source--apple" href="{{ path('app_apple_music_start') }}">
-                                    <i class="fab fa-apple"></i>
-                                    <span>Apple Music</span>
                                 </a>
                             </div>
                         </section>

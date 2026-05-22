@@ -30,6 +30,19 @@ class StreamingSyncService
         $previousRank = $this->userRepository->getGlobalRankPosition($user);
         $accounts = $this->accountRepository->findConnectedByUser($user);
 
+        if ($accounts === []) {
+            return [
+                'accounts' => 0,
+                'totalFetched' => 0,
+                'totalInserted' => 0,
+                'totalSkipped' => 0,
+                'totalXpAwarded' => 0,
+                'previousRank' => $previousRank,
+                'currentRank' => $previousRank,
+                'providers' => [],
+            ];
+        }
+
         $providers = [];
         $totalFetched = 0;
         $totalInserted = 0;

@@ -190,7 +190,7 @@ class NotificationCenter
             $recipient,
             AppNotification::TYPE_STREAMING_SETUP_REMINDER,
             'Connect your first streaming account',
-            'Link Spotify, YouTube or Apple Music to unlock sync, play history and XP.',
+            'Link Spotify or YouTube to unlock sync, play history and XP.',
             $this->urlGenerator->generate('app_front_passport'),
             null,
             null,

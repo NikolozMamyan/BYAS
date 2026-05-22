@@ -3,7 +3,6 @@
 namespace App\Controller\Front;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\AuthCookieService;
 use App\Service\GoogleOAuthService;
 use App\Service\NotificationCenter;
@@ -38,7 +37,6 @@ class GoogleAuthController extends AbstractController
         SessionManager $sessionManager,
         AuthCookieService $authCookieService,
         PublicPassportProfileService $publicPassportProfileService,
-        UserRepository $userRepository,
         NotificationCenter $notificationCenter,
     ): Response {
         $error = (string) $request->query->get('error', '');
@@ -63,7 +61,7 @@ class GoogleAuthController extends AbstractController
             $payload = $result['payload'];
 
             return match ($payload['purpose'] ?? GoogleOAuthService::PURPOSE_LOGIN) {
-                GoogleOAuthService::PURPOSE_CONNECT_YOUTUBE => $this->handleYoutubeConnect($googleOAuthService, $userRepository, $notificationCenter, $result),
+                GoogleOAuthService::PURPOSE_CONNECT_YOUTUBE => $this->handleYoutubeConnect($googleOAuthService, $notificationCenter, $result),
                 default => $this->handleLogin($request, $googleOAuthService, $sessionManager, $authCookieService, $publicPassportProfileService, $result),
             };
         } catch (\Throwable $e) {
@@ -98,14 +96,13 @@ class GoogleAuthController extends AbstractController
 
     private function handleYoutubeConnect(
         GoogleOAuthService $googleOAuthService,
-        UserRepository $userRepository,
         NotificationCenter $notificationCenter,
         array $result
     ): Response {
         $userId = isset($result['payload']['userId']) ? (int) $result['payload']['userId'] : 0;
-        $currentUser = $userId > 0 ? $userRepository->find($userId) : null;
+        $currentUser = $this->getUser();
 
-        if (!$currentUser instanceof User) {
+        if (!$currentUser instanceof User || $currentUser->getId() !== $userId) {
             $this->addFlash('error', 'You must be logged in to connect YouTube.');
 
             return $this->redirectToRoute('show_login', [

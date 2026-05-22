@@ -79,12 +79,16 @@ class SpotifyAuthController extends AbstractController
     }
 
     #[Route('/disconnect', name: 'disconnect', methods: ['POST'])]
-    public function disconnect(SpotifyOAuthService $spotifyOAuthService): Response
+    public function disconnect(Request $request, SpotifyOAuthService $spotifyOAuthService): Response
     {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('You must be logged in.');
+        }
+
+        if (!$this->isCsrfTokenValid('passport_settings', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
         }
 
         $spotifyOAuthService->disconnect($user);

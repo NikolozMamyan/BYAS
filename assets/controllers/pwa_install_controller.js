@@ -10,7 +10,8 @@ export default class extends Controller {
     connect() {
         this.deferredPrompt = null;
         this.installAvailable = false;
-        this.isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        this.dismissedForSession = false;
+        this.isStandalone = this.detectInstalledDisplayMode();
 
         if (this.isStandalone) {
             window.localStorage.setItem(INSTALLED_KEY, '1');
@@ -41,7 +42,7 @@ export default class extends Controller {
         this.deferredPrompt = event;
         this.installAvailable = true;
 
-        if (this.isInstalled() || this.wasDismissedRecently()) {
+        if (this.isInstalled() || this.dismissedForSession || this.wasDismissedRecently()) {
             return;
         }
 
@@ -66,9 +67,13 @@ export default class extends Controller {
         }
 
         this.setStatus('');
-        this.deferredPrompt.prompt();
+        await this.deferredPrompt.prompt();
 
         const { outcome } = await this.deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            window.localStorage.setItem(INSTALLED_KEY, '1');
+        }
+
         this.deferredPrompt = null;
         this.installAvailable = false;
 
@@ -87,7 +92,10 @@ export default class extends Controller {
     }
 
     remindLater() {
+        this.dismissedForSession = true;
         window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
+        this.deferredPrompt = null;
+        this.installAvailable = false;
         this.setStatus('No problem. We will remind you later.');
         this.close();
     }
@@ -98,6 +106,7 @@ export default class extends Controller {
         }
 
         this.dialogTarget.hidden = false;
+        this.dialogTarget.setAttribute('aria-hidden', 'false');
         document.body.classList.add('pwa-install-open');
     }
 
@@ -107,6 +116,7 @@ export default class extends Controller {
         }
 
         this.dialogTarget.hidden = true;
+        this.dialogTarget.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('pwa-install-open');
     }
 
@@ -133,7 +143,20 @@ export default class extends Controller {
     }
 
     isInstalled() {
-        return this.isStandalone || window.localStorage.getItem(INSTALLED_KEY) === '1';
+        return this.detectInstalledDisplayMode() || window.localStorage.getItem(INSTALLED_KEY) === '1';
+    }
+
+    detectInstalledDisplayMode() {
+        const displayModes = [
+            '(display-mode: standalone)',
+            '(display-mode: minimal-ui)',
+            '(display-mode: fullscreen)',
+            '(display-mode: window-controls-overlay)',
+        ];
+
+        return displayModes.some((query) => window.matchMedia(query).matches)
+            || window.navigator.standalone === true
+            || document.referrer.startsWith('android-app://');
     }
 
     setStatus(message) {

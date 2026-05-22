@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'byas-v1';
+const CACHE_VERSION = 'byas-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const STATIC_ASSETS = [
   '/',
@@ -48,6 +48,29 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() => caches.match('/'))
+    );
+
+    return;
+  }
+
+  if (
+    url.pathname.startsWith('/assets/')
+    || request.destination === 'script'
+    || request.destination === 'style'
+    || request.destination === 'worker'
+  ) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          const responseToCache = networkResponse.clone();
+
+          caches.open(STATIC_CACHE).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
     );
 
     return;

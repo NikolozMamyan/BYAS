@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Settings{% endblock %}
+{% block title %}BYAS | {{ 'settings.title_short'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -274,6 +274,40 @@
         color: #ff9bb6;
     }
 
+    .lang-switcher {
+        display: grid;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .lang-switcher__label {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--text-dim);
+        text-transform: uppercase;
+    }
+
+    .lang-switcher__controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .lang-switcher__select,
+    .lang-switcher__button {
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: white;
+        padding: 12px;
+        font: inherit;
+    }
+
+    .lang-switcher__button {
+        font-weight: 900;
+        cursor: pointer;
+    }
+
     @media (max-width: 640px) {
         h1 {
             font-size: 1.65rem;
@@ -299,9 +333,10 @@
 {% block body %}
 <main class="settings-page">
     <section class="panel hero">
-        <div class="kicker">Account Settings</div>
-        <h1>Profile and connections</h1>
-        <p class="muted">Update your avatar, your name, your linked services, and what stays visible on your public Passport.</p>
+        <div class="kicker">{{ 'settings.kicker'|trans }}</div>
+        <h1>{{ 'settings.hero_title'|trans }}</h1>
+        <p class="muted">{{ 'settings.hero_subtitle'|trans }}</p>
+        {% include 'components/language_switcher.html.twig' with { id: 'settingsLocaleSwitcher' } only %}
     </section>
 
     {% for message in app.flashes('success') %}
@@ -322,53 +357,53 @@
                     avatarClass: user.avatarUrl ? 'avatar-frame' : 'avatar-frame'
                 } only %}
                 <div class="field" style="width: 100%;">
-                    <label for="avatar">Avatar</label>
+                    <label for="avatar">{{ 'settings.account.avatar'|trans }}</label>
                     <input class="file" id="avatar" type="file" name="avatar" accept="image/png,image/jpeg,image/webp,image/gif">
                 </div>
                 {% if user.avatarUrl %}
-                    <button class="btn btn-danger" type="submit" name="action" value="remove_avatar">Remove avatar</button>
+                    <button class="btn btn-danger" type="submit" name="action" value="remove_avatar">{{ 'settings.account.remove_avatar'|trans }}</button>
                 {% endif %}
             </div>
 
             <div class="form-grid">
-                <h2>Account</h2>
+                <h2>{{ 'settings.account.section'|trans }}</h2>
                 <div class="fields-2">
                     <div class="field">
-                        <label for="firstName">First name</label>
+                        <label for="firstName">{{ 'settings.account.first_name'|trans }}</label>
                         <input class="input" id="firstName" name="firstName" value="{{ user.firstName|default('') }}">
                     </div>
                     <div class="field">
-                        <label for="lastName">Last name</label>
+                        <label for="lastName">{{ 'settings.account.last_name'|trans }}</label>
                         <input class="input" id="lastName" name="lastName" value="{{ user.lastName|default('') }}">
                     </div>
                 </div>
                 <div class="field">
-                    <label for="displayName">Display name</label>
+                    <label for="displayName">{{ 'settings.account.display_name'|trans }}</label>
                     <input class="input" id="displayName" name="displayName" value="{{ user.displayName }}">
                 </div>
                 <div class="field">
-                    <label>Email</label>
+                    <label>{{ 'settings.account.email'|trans }}</label>
                     <input class="input" value="{{ user.email }}" disabled>
                 </div>
             </div>
         </section>
 
         <section class="form-grid">
-            <h2>Public Passport</h2>
-            <div class="field" data-controller="clipboard">
-                <label for="publicPassportUrl">Public link</label>
+            <h2>{{ 'settings.public_passport.section'|trans }}</h2>
+            <div class="field" data-controller="clipboard" data-clipboard-copied-label-value="{{ 'common.copied'|trans }}" data-clipboard-default-label-value="{{ 'common.copy_link'|trans }}">
+                <label for="publicPassportUrl">{{ 'settings.public_passport.public_link'|trans }}</label>
                 <input class="link-box" id="publicPassportUrl" value="{{ publicUrl }}" data-clipboard-target="source" readonly>
                 <div class="actions">
-                    <a class="btn" href="{{ publicUrl }}" target="_blank" rel="noopener">Preview</a>
-                    <button class="btn" type="button" data-clipboard-target="button" data-action="clipboard#copy">Copy link</button>
-                    <a class="btn" href="{{ path('app_front_passport_share') }}">Generate Share Card</a>
+                    <a class="btn" href="{{ publicUrl }}" target="_blank" rel="noopener">{{ 'common.preview'|trans }}</a>
+                    <button class="btn" type="button" data-clipboard-target="button" data-action="clipboard#copy">{{ 'common.copy_link'|trans }}</button>
+                    <a class="btn" href="{{ path('app_front_passport_share') }}">{{ 'settings.public_passport.generate_share_card'|trans }}</a>
                 </div>
             </div>
 
             <label class="switch-row">
                 <span>
-                    <strong>Public Passport</strong>
-                    <span class="muted">Allow anyone with the link or QR code to view your public Passport.</span>
+                    <strong>{{ 'settings.public_passport.public_passport'|trans }}</strong>
+                    <span class="muted">{{ 'settings.public_passport.public_passport_help'|trans }}</span>
                 </span>
                 <span class="switch">
                     <input type="checkbox" name="isProfilePublic" {{ profile.isProfilePublic() ? 'checked' : '' }}>
@@ -378,8 +413,8 @@
 
             <label class="switch-row">
                 <span>
-                    <strong>Global rank</strong>
-                    <span class="muted">Show your BYAS rank on the public page.</span>
+                    <strong>{{ 'settings.public_passport.global_rank'|trans }}</strong>
+                    <span class="muted">{{ 'settings.public_passport.global_rank_help'|trans }}</span>
                 </span>
                 <span class="switch">
                     <input type="checkbox" name="showGlobalRank" {{ profile.isShowGlobalRank() ? 'checked' : '' }}>
@@ -389,8 +424,8 @@
 
             <label class="switch-row">
                 <span>
-                    <strong>Fandom levels</strong>
-                    <span class="muted">Show your top artist fandom levels and XP.</span>
+                    <strong>{{ 'settings.public_passport.fandom_levels'|trans }}</strong>
+                    <span class="muted">{{ 'settings.public_passport.fandom_levels_help'|trans }}</span>
                 </span>
                 <span class="switch">
                     <input type="checkbox" name="showFandomLevels" {{ profile.isShowFandomLevels() ? 'checked' : '' }}>
@@ -400,8 +435,8 @@
 
             <label class="switch-row">
                 <span>
-                    <strong>Badges</strong>
-                    <span class="muted">Show earned badges on your public Passport.</span>
+                    <strong>{{ 'settings.public_passport.badges'|trans }}</strong>
+                    <span class="muted">{{ 'settings.public_passport.badges_help'|trans }}</span>
                 </span>
                 <span class="switch">
                     <input type="checkbox" name="showBadges" {{ profile.isShowBadges() ? 'checked' : '' }}>
@@ -411,8 +446,8 @@
 
             <label class="switch-row">
                 <span>
-                    <strong>Collection</strong>
-                    <span class="muted">Show public collection items when available.</span>
+                    <strong>{{ 'settings.public_passport.collection'|trans }}</strong>
+                    <span class="muted">{{ 'settings.public_passport.collection_help'|trans }}</span>
                 </span>
                 <span class="switch">
                     <input type="checkbox" name="showCollection" {{ profile.isShowCollection() ? 'checked' : '' }}>
@@ -422,32 +457,32 @@
         </section>
 
         <section class="form-grid">
-            <h2>Identity Sources</h2>
+            <h2>{{ 'settings.identity_sources.section'|trans }}</h2>
             {% for account in oauthAccounts %}
                 <div class="action-row">
                     <div>
                         <strong>{{ account.provider|capitalize }}</strong>
                         <div class="muted">{{ account.email }}</div>
                     </div>
-                    <span class="btn">Linked</span>
+                    <span class="btn">{{ 'settings.identity_sources.linked'|trans }}</span>
                 </div>
             {% endfor %}
 
             {% if spotifyAccount and spotifyAccount.connected %}
                 <div class="action-row">
                     <div>
-                        <strong>Spotify</strong>
+                        <strong>{{ 'settings.identity_sources.spotify'|trans }}</strong>
                         <div class="muted">{{ spotifyAccount.displayName|default(spotifyAccount.providerUserId) }}</div>
                     </div>
-                    <button type="submit" class="btn" formaction="{{ path('app_spotify_disconnect') }}" formmethod="post">Disconnect</button>
+                    <button type="submit" class="btn" formaction="{{ path('app_spotify_disconnect') }}" formmethod="post">{{ 'common.disconnect'|trans }}</button>
                 </div>
             {% else %}
                 <div class="action-row">
                     <div>
-                        <strong>Spotify</strong>
-                        <div class="muted">Connect your listening history</div>
+                        <strong>{{ 'settings.identity_sources.spotify'|trans }}</strong>
+                        <div class="muted">{{ 'settings.identity_sources.spotify_help'|trans }}</div>
                     </div>
-                    <a class="btn" href="{{ path('app_spotify_start') }}">Connect Spotify Music</a>
+                    <a class="btn" href="{{ path('app_spotify_start') }}">{{ 'settings.identity_sources.spotify_connect'|trans }}</a>
                 </div>
             {% endif %}
 
@@ -472,25 +507,25 @@
             {% if youtubeAccount and youtubeAccount.connected %}
                 <div class="action-row">
                     <div>
-                        <strong>YouTube</strong>
+                        <strong>{{ 'settings.identity_sources.youtube'|trans }}</strong>
                         <div class="muted">{{ youtubeAccount.displayName|default(youtubeAccount.providerUserId) }}</div>
                     </div>
-                    <button type="submit" class="btn" formaction="{{ path('app_youtube_disconnect') }}" formmethod="post">Disconnect</button>
+                    <button type="submit" class="btn" formaction="{{ path('app_youtube_disconnect') }}" formmethod="post">{{ 'common.disconnect'|trans }}</button>
                 </div>
             {% else %}
                 <div class="action-row">
                     <div>
-                        <strong>YouTube</strong>
-                        <div class="muted">Connect your liked videos and channel profile</div>
+                        <strong>{{ 'settings.identity_sources.youtube'|trans }}</strong>
+                        <div class="muted">{{ 'settings.identity_sources.youtube_help'|trans }}</div>
                     </div>
-                    <a class="btn" href="{{ path('app_youtube_start') }}">Connect YouTube</a>
+                    <a class="btn" href="{{ path('app_youtube_start') }}">{{ 'settings.identity_sources.youtube_connect'|trans }}</a>
                 </div>
             {% endif %}
         </section>
 
         <div class="actions">
-            <a class="btn" href="{{ path('app_front_passport') }}">Back</a>
-            <button class="btn btn-primary" type="submit" name="action" value="save_settings">Save settings</button>
+            <a class="btn" href="{{ path('app_front_passport') }}">{{ 'common.back'|trans }}</a>
+            <button class="btn btn-primary" type="submit" name="action" value="save_settings">{{ 'settings.save'|trans }}</button>
         </div>
     </form>
 </main>

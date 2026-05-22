@@ -1,0 +1,12 @@
+{% set currentLocale = app.request.locale|default('en') %}
+<form method="post" action="{{ path('app_locale_switch') }}" class="lang-switcher">
+    <input type="hidden" name="redirect_to" value="{{ app.request.requestUri }}">
+    <label class="lang-switcher__label" for="{{ id|default('localeSwitcher') }}">{{ 'language.label'|trans }}</label>
+    <div class="lang-switcher__controls">
+        <select class="lang-switcher__select" id="{{ id|default('localeSwitcher') }}" name="locale">
+            <option value="en" {{ currentLocale == 'en' ? 'selected' : '' }}>{{ 'language.option.en'|trans }}</option>
+            <option value="fr" {{ currentLocale == 'fr' ? 'selected' : '' }}>{{ 'language.option.fr'|trans }}</option>
+        </select>
+        <button type="submit" class="lang-switcher__button">{{ 'language.apply'|trans }}</button>
+    </div>
+</form>

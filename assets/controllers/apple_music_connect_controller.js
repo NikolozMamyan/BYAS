@@ -7,12 +7,24 @@ export default class extends Controller {
         appName: String,
         linkUrl: String,
         csrfToken: String,
+        openingMessage: String,
+        authorizationFailedMessage: String,
+        linkingMessage: String,
+        responseStatusPrefix: String,
+        connectionFailedMessage: String,
+        scriptFailedMessage: String,
+        connectingLabel: String,
+        defaultLabel: String,
     };
 
-    async connect(event) {
+    connect() {
+        this.setLoading(false);
+    }
+
+    async start(event) {
         event.preventDefault();
         this.setLoading(true);
-        this.setStatus('Opening Apple Music authorization...');
+        this.setStatus(this.openingMessageValue);
 
         try {
             const MusicKit = await this.waitForMusicKit();
@@ -29,10 +41,10 @@ export default class extends Controller {
             const musicUserToken = await music.authorize();
 
             if (!musicUserToken) {
-                throw new Error('Apple Music authorization failed.');
+                throw new Error(this.authorizationFailedMessageValue);
             }
 
-            this.setStatus('Linking Apple Music...');
+            this.setStatus(this.linkingMessageValue);
 
             const response = await fetch(this.linkUrlValue, {
                 method: 'POST',
@@ -51,12 +63,12 @@ export default class extends Controller {
             const payload = await response.json().catch(() => null);
 
             if (!response.ok) {
-                throw new Error(payload?.message || `Response status: ${response.status}`);
+                throw new Error(payload?.message || `${this.responseStatusPrefixValue} ${response.status}`);
             }
 
             window.location.href = payload?.redirectTo || '/app/passport/settings';
         } catch (error) {
-            this.setStatus(error.message || 'Apple Music connection failed.');
+            this.setStatus(error.message || this.connectionFailedMessageValue);
             this.setLoading(false);
         }
     }
@@ -80,7 +92,7 @@ export default class extends Controller {
 
                 if (attempts >= 80) {
                     window.clearInterval(interval);
-                    reject(new Error('MusicKit script failed to load.'));
+                    reject(new Error(this.scriptFailedMessageValue));
                 }
             }, 100);
         });
@@ -92,7 +104,7 @@ export default class extends Controller {
         }
 
         this.buttonTarget.disabled = isLoading;
-        this.buttonTarget.textContent = isLoading ? 'Connecting...' : 'Connect Apple Music';
+        this.buttonTarget.textContent = isLoading ? this.connectingLabelValue : this.defaultLabelValue;
     }
 
     setStatus(message) {

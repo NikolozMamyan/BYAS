@@ -4,6 +4,20 @@ export default class extends Controller {
     static targets = ['syncButton', 'feedback', 'feedbackText', 'logoutButton'];
     static values = {
         providers: Array,
+        syncLabel: String,
+        syncingLabel: String,
+        noProvidersMessage: String,
+        syncingMessage: String,
+        successMessage: String,
+        timeoutMessage: String,
+        failedMessage: String,
+        responseStatusPrefix: String,
+        logoutFailedMessage: String,
+        noProviderLabel: String,
+        detailsPrefix: String,
+        providerFallbackLabel: String,
+        unknownStatusLabel: String,
+        newLabel: String,
     };
 
     connect() {
@@ -12,13 +26,13 @@ export default class extends Controller {
 
     async sync() {
         if (this.providersValue.length === 0) {
-            this.setFeedback('Aucun provider connecte a synchroniser.', 'error');
+            this.setFeedback(this.noProvidersMessageValue, 'error');
             return;
         }
 
         this.syncButtonTarget.disabled = true;
-        this.syncButtonTarget.innerHTML = `Syncing ${this.renderProviderIcons()} <i class="fas fa-rotate fa-spin"></i>`;
-        this.setFeedback(`Synchronisation en cours: ${this.providersLabel()}.`, '');
+        this.syncButtonTarget.innerHTML = `${this.syncingLabelValue} ${this.renderProviderIcons()} <i class="fas fa-rotate fa-spin"></i>`;
+        this.setFeedback(this.syncingMessageValue.replace('%providers%', this.providersLabel()), '');
         const controller = new AbortController();
         const timeoutId = window.setTimeout(() => controller.abort(), 45000);
 
@@ -34,7 +48,7 @@ export default class extends Controller {
             const payload = await response.json().catch(() => null);
 
             if (!response.ok) {
-                throw new Error(payload?.error || payload?.message || `Statut de reponse : ${response.status}`);
+                throw new Error(payload?.error || payload?.message || `${this.responseStatusPrefixValue} ${response.status}`);
             }
 
             const result = payload?.result || {};
@@ -44,7 +58,11 @@ export default class extends Controller {
             const providerSummary = this.buildProviderSummary(result.providers ?? []);
 
             this.setFeedback(
-                `Sync terminee : ${inserted} nouveaux streams, ${skipped} ignores, +${xpAwarded} XP.${providerSummary}`,
+                this.successMessageValue
+                    .replace('%inserted%', String(inserted))
+                    .replace('%skipped%', String(skipped))
+                    .replace('%xp%', String(xpAwarded))
+                    .replace('%details%', providerSummary),
                 'success'
             );
 
@@ -53,8 +71,8 @@ export default class extends Controller {
             }
         } catch (error) {
             const message = error?.name === 'AbortError'
-                ? 'La sync a pris trop de temps. Verifie le provider connecte puis relance.'
-                : (error.message || 'La sync a echoue.');
+                ? this.timeoutMessageValue
+                : (error.message || this.failedMessageValue);
 
             this.setFeedback(message, 'error');
         } finally {
@@ -75,13 +93,13 @@ export default class extends Controller {
             });
 
             if (!response.ok) {
-                throw new Error(`Statut de reponse : ${response.status}`);
+                throw new Error(`${this.responseStatusPrefixValue} ${response.status}`);
             }
 
             await response.json();
             window.location.href = '/?t=' + Date.now();
         } catch (error) {
-            this.setFeedback(error.message || 'Deconnexion impossible.', 'error');
+            this.setFeedback(error.message || this.logoutFailedMessageValue, 'error');
 
             if (this.hasLogoutButtonTarget) {
                 this.logoutButtonTarget.disabled = false;
@@ -105,7 +123,7 @@ export default class extends Controller {
     }
 
     renderIdleButton() {
-        this.syncButtonTarget.innerHTML = `Sync ${this.renderProviderIcons()} <i class="fas fa-rotate"></i>`;
+        this.syncButtonTarget.innerHTML = `${this.syncLabelValue} ${this.renderProviderIcons()} <i class="fas fa-rotate"></i>`;
     }
 
     renderProviderIcons() {
@@ -134,7 +152,7 @@ export default class extends Controller {
 
     providersLabel() {
         if (this.providersValue.length === 0) {
-            return 'aucun provider';
+            return this.noProviderLabelValue;
         }
 
         return this.providersValue.map((provider) => {
@@ -160,14 +178,14 @@ export default class extends Controller {
         }
 
         const chunks = providers.map((providerResult) => {
-            const provider = providerResult.provider ?? 'provider';
+            const provider = providerResult.provider ?? this.providerFallbackLabelValue;
             const inserted = providerResult.inserted ?? 0;
             const xpAwarded = providerResult.xpAwarded ?? 0;
-            const status = providerResult.status ?? 'unknown';
+            const status = providerResult.status ?? this.unknownStatusLabelValue;
 
-            return `${provider}: ${status}, ${inserted} new, +${xpAwarded} XP`;
+            return `${provider}: ${status}, ${inserted} ${this.newLabelValue}, +${xpAwarded} XP`;
         });
 
-        return ` Details: ${chunks.join(' | ')}.`;
+        return ` ${this.detailsPrefixValue} ${chunks.join(' | ')}.`;
     }
 }

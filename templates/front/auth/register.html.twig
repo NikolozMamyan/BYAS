@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Create Account{% endblock %}
+{% block title %}BYAS | {{ 'auth.register.title_short'|trans }}{% endblock %}
 
 {% set has_prefill = (old is defined and (old.displayName is defined or old.email is defined)) or (error is defined and error) %}
 
@@ -22,7 +22,7 @@
   <div class="register-planet"></div>
 
   <main class="register-shell">
-    <a class="register-back" href="{{ path('app_landing') }}" aria-label="Back to landing">
+    <a class="register-back" href="{{ path('app_landing') }}" aria-label="{{ 'common.back_to_home'|trans }}">
       <i class="fa-solid fa-arrow-left"></i>
     </a>
 
@@ -36,14 +36,16 @@
       <div class="register-card-inner">
         <div class="register-divider" aria-hidden="true">
           <span class="register-divider-line"></span>
-          <span class="register-divider-star">✦</span>
+          <span class="register-divider-star">*</span>
           <span class="register-divider-line"></span>
         </div>
 
         <header class="register-copy">
-          <h1>Create your passport</h1>
-          <p>Start your fan journey</p>
+          <h1>{{ 'auth.register.hero_title'|trans }}</h1>
+          <p>{{ 'auth.register.hero_subtitle'|trans }}</p>
         </header>
+
+        {% include 'components/language_switcher.html.twig' with { id: 'registerLocaleSwitcher' } only %}
 
         <div class="register-actions">
           <a class="register-social register-social-google" href="{{ path('app_google_start', { next: next|default('/app/passport') }) }}">
@@ -55,18 +57,18 @@
                 <path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3c-.79 2.25-2.23 4.2-4.09 5.56l.01-.01 6.19 5.24C37 39.09 44 34 44 24c0-1.34-.14-2.65-.39-3.92Z"/>
               </svg>
             </span>
-            <span>Continue with Google</span>
+            <span>{{ 'auth.register.continue_google'|trans }}</span>
           </a>
 
           <a class="register-social register-social-apple" href="{{ path('app_apple_start', { next: next|default('/app/passport') }) }}">
             <i class="fab fa-apple" aria-hidden="true"></i>
-            <span>Continue with Apple</span>
+            <span>{{ 'auth.register.continue_apple'|trans }}</span>
           </a>
         </div>
 
         <div class="register-or">
           <span class="register-or-line"></span>
-          <span class="register-or-text">OR</span>
+          <span class="register-or-text">{{ 'common.or'|trans }}</span>
           <span class="register-or-line"></span>
         </div>
 
@@ -79,7 +81,7 @@
             aria-expanded="{{ has_prefill ? 'true' : 'false' }}"
           >
             <span class="register-email-icon"><i class="fa-regular fa-envelope" aria-hidden="true"></i></span>
-            <span>Continue with Email</span>
+            <span>{{ 'auth.register.continue_email'|trans }}</span>
           </button>
 
           {% for message in app.flashes('success') %}
@@ -117,7 +119,7 @@
                 <input
                   type="text"
                   name="displayName"
-                  placeholder="Display name"
+                  placeholder="{{ 'auth.register.display_name'|trans }}"
                   value="{{ old.displayName|default('') }}"
                   data-register-target="displayName"
                   required
@@ -129,7 +131,7 @@
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email address"
+                  placeholder="{{ 'auth.login.email'|trans }}"
                   value="{{ old.email|default('') }}"
                   data-register-target="email"
                   required
@@ -141,14 +143,14 @@
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="{{ 'auth.login.password'|trans }}"
                   data-register-target="password"
                   required
                 >
               </label>
 
               <button type="submit" class="register-submit" data-register-target="submit">
-                Create with Email
+                {{ 'auth.register.create_with_email'|trans }}
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </button>
             </form>
@@ -160,17 +162,17 @@
             <i class="fa-solid fa-lock" aria-hidden="true"></i>
           </div>
           <p>
-            By continuing, you agree to our
-            <a href="#">Terms of Service</a>
-            and
-            <a href="#">Privacy Policy</a>.
+            {{ 'auth.legal.prefix'|trans }}
+            <a href="#">{{ 'auth.legal.terms'|trans }}</a>
+            {{ 'auth.legal.and'|trans }}
+            <a href="#">{{ 'auth.legal.privacy'|trans }}</a>.
           </p>
         </div>
 
         <p class="register-login-link">
-          Already in the fandom?
+          {{ 'auth.register.already_member'|trans }}
           <a href="{{ path('show_login', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false">
-            Login
+            {{ 'auth.login.submit'|trans }}
           </a>
         </p>
       </div>

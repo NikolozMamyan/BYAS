@@ -304,13 +304,13 @@
                 data-controller="back-nav"
                 data-back-nav-fallback-value="{{ path('app_landing') }}"
                 data-action="click->back-nav#go"
-                aria-label="Go back"
+                aria-label="{{ 'common.go_back'|trans }}"
             >
                 <i class="fas fa-arrow-left"></i>
             </a>
             <a href="{{ path('app_landing') }}" class="brand">BYAS</a>
         </div>
-        <span class="public-label">Public Passport</span>
+        <span class="public-label">{{ 'public_passport.label'|trans }}</span>
     </div>
 
     {% if isPrivate %}
@@ -320,11 +320,11 @@
                     {% include 'components/user_avatar.html.twig' with { avatarUrl: user.avatarUrl, displayName: displayName, avatarClass: 'avatar' } only %}
                     <div>
                         <h1>{{ displayName }}</h1>
-                        <p class="muted">Account private</p>
+                        <p class="muted">{{ 'public_passport.account_private'|trans }}</p>
                     </div>
                 </div>
-                <p class="muted">This fan has chosen not to share their public Passport details yet.</p>
-                <a href="{{ path('show_register') }}">Create your BYAS Passport</a>
+                <p class="muted">{{ 'public_passport.private_text'|trans }}</p>
+                <a href="{{ path('show_register') }}">{{ 'public_passport.create_cta'|trans }}</a>
             </div>
         </section>
     {% else %}
@@ -339,20 +339,20 @@
 
             <div class="stats">
                 <div class="stat">
-                    <small>Global Rank</small>
-                    <strong>{{ globalRank ? '#' ~ globalRank : 'Hidden' }}</strong>
+                    <small>{{ 'public_passport.global_rank'|trans }}</small>
+                    <strong>{{ globalRank ? '#' ~ globalRank : ('public_passport.hidden'|trans) }}</strong>
                 </div>
                 <div class="stat">
-                    <small>Top Fandom</small>
-                    <strong>{{ profile.isShowFandomLevels() ? (fandoms|length and fandoms[0].artist ? fandoms[0].artist.name : 'None yet') : 'Hidden' }}</strong>
+                    <small>{{ 'public_passport.top_fandom'|trans }}</small>
+                    <strong>{{ profile.isShowFandomLevels() ? (fandoms|length and fandoms[0].artist ? fandoms[0].artist.name : ('public_passport.none_yet'|trans)) : ('public_passport.hidden'|trans) }}</strong>
                 </div>
                 <div class="stat">
-                    <small>Badges</small>
-                    <strong>{{ profile.isShowBadges() ? userBadges|length : 'Hidden' }}</strong>
+                    <small>{{ 'public_passport.badges'|trans }}</small>
+                    <strong>{{ profile.isShowBadges() ? userBadges|length : ('public_passport.hidden'|trans) }}</strong>
                 </div>
             </div>
 
-            <div class="xp-bar" aria-label="Global progress">
+            <div class="xp-bar" aria-label="{{ 'public_passport.global_progress'|trans }}">
                 <span style="width: {{ globalProgress.percent }}%;"></span>
             </div>
         </section>
@@ -360,21 +360,21 @@
         {% if profile.isShowFandomLevels() %}
             <section class="section-card">
                 <div class="section-head">
-                    <h2>Top Fandoms</h2>
+                    <h2>{{ 'public_passport.top_fandoms'|trans }}</h2>
                     <span class="pill">{{ fandoms|length }}</span>
                 </div>
                 <div class="list">
                     {% for fandom in fandoms %}
                         <div class="row">
                             <div>
-                                <strong>{{ fandom.artist ? fandom.artist.name : 'Artist' }}</strong>
+                                <strong>{{ fandom.artist ? fandom.artist.name : ('passport.artist_fallback'|trans) }}</strong>
                                 <span class="muted">{{ fandom.xp }} XP</span>
                             </div>
-                            <span class="pill">{{ attribute(fandomLevelBadges, fandom.id).fullTitle }} · Lv {{ fandom.level }}</span>
+                            <span class="pill">{{ attribute(fandomLevelBadges, fandom.id).fullTitle }} · {{ 'passport.level_short'|trans }} {{ fandom.level }}</span>
                         </div>
                     {% else %}
                         <div class="row">
-                            <span class="muted">No public fandom yet.</span>
+                            <span class="muted">{{ 'public_passport.no_fandom'|trans }}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -384,7 +384,7 @@
         {% if profile.isShowBadges() %}
             <section class="section-card">
                 <div class="section-head">
-                    <h2>Badges</h2>
+                    <h2>{{ 'public_passport.badges'|trans }}</h2>
                     <span class="pill">{{ userBadges|length }}</span>
                 </div>
                 <div class="list">
@@ -394,11 +394,11 @@
                                 <strong>{{ userBadge.badge.name }}</strong>
                                 <span class="muted">{{ userBadge.awardedAt|date('M d, Y') }}</span>
                             </div>
-                            <span class="pill">Earned</span>
+                            <span class="pill">{{ 'public_passport.earned'|trans }}</span>
                         </div>
                     {% else %}
                         <div class="row">
-                            <span class="muted">No public badge yet.</span>
+                            <span class="muted">{{ 'public_passport.no_badge'|trans }}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -408,7 +408,7 @@
         {% if profile.isShowCollection() %}
             <section class="section-card">
                 <div class="section-head">
-                    <h2>Collection</h2>
+                    <h2>{{ 'public_passport.collection'|trans }}</h2>
                     <span class="pill">{{ collectionItems|length }}</span>
                 </div>
                 <div class="list">
@@ -416,13 +416,13 @@
                         <div class="row">
                             <div>
                                 <strong>{{ item.title }}</strong>
-                                <span class="muted">{{ item.type ? item.type.label : 'Collection item' }}{% if item.artist %} - {{ item.artist.name }}{% endif %}</span>
+                                <span class="muted">{{ item.type ? item.type.label : ('public_passport.collection_item'|trans) }}{% if item.artist %} - {{ item.artist.name }}{% endif %}</span>
                             </div>
                             <span class="pill">x{{ item.quantity }}</span>
                         </div>
                     {% else %}
                         <div class="row">
-                            <span class="muted">No public collection item yet.</span>
+                            <span class="muted">{{ 'public_passport.no_collection_item'|trans }}</span>
                         </div>
                     {% endfor %}
                 </div>
@@ -431,13 +431,13 @@
 
         <section class="cta-card">
             {% if isOwner %}
-                <strong>This is your public Passport.</strong>
-                <p class="muted">Share this link or QR code to let people discover your BYAS status.</p>
-                <a href="{{ path('app_front_passport_settings') }}">Edit public settings</a>
+                <strong>{{ 'public_passport.owner_title'|trans }}</strong>
+                <p class="muted">{{ 'public_passport.owner_text'|trans }}</p>
+                <a href="{{ path('app_front_passport_settings') }}">{{ 'public_passport.owner_cta'|trans }}</a>
             {% else %}
-                <strong>Want to message {{ displayName }}?</strong>
-                <p class="muted">Join BYAS to connect with fans. Messaging will unlock in the social layer.</p>
-                <a href="{{ path('app_public_passport_message', { shareSlug: profile.shareSlug }) }}">Message intent</a>
+                <strong>{{ 'public_passport.message_title'|trans({ '%name%': displayName }) }}</strong>
+                <p class="muted">{{ 'public_passport.message_text'|trans }}</p>
+                <a href="{{ path('app_public_passport_message', { shareSlug: profile.shareSlug }) }}">{{ 'public_passport.message_cta'|trans }}</a>
             {% endif %}
         </section>
     {% endif %}

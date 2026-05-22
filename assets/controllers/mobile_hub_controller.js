@@ -4,6 +4,18 @@ export default class extends Controller {
     static targets = ['sheet', 'copyButton', 'status', 'scanner', 'scannerVideo', 'scannerStatus'];
     static values = {
         publicUrl: String,
+        publicLinkUnavailableMessage: String,
+        copiedLabel: String,
+        publicLinkCopiedMessage: String,
+        copyFailedMessage: String,
+        copyDefaultLabel: String,
+        cameraUnavailableMessage: String,
+        qrUnsupportedMessage: String,
+        scannerStartingMessage: String,
+        scannerPromptMessage: String,
+        scannerDeniedMessage: String,
+        qrDetectedMessage: String,
+        qrScanFailedMessage: String,
     };
 
     connect() {
@@ -55,21 +67,21 @@ export default class extends Controller {
         event.preventDefault();
 
         if (!this.hasPublicUrlValue || this.publicUrlValue === '') {
-            this.setStatus('Public link unavailable.');
+            this.setStatus(this.publicLinkUnavailableMessageValue);
             return;
         }
 
         try {
             await navigator.clipboard.writeText(this.publicUrlValue);
-            this.copyButtonTarget.textContent = 'Copied';
-            this.setStatus('Public link copied.');
+            this.copyButtonTarget.textContent = this.copiedLabelValue;
+            this.setStatus(this.publicLinkCopiedMessageValue);
         } catch (error) {
-            this.setStatus('Copy failed.');
+            this.setStatus(this.copyFailedMessageValue);
         }
 
         window.setTimeout(() => {
             if (this.hasCopyButtonTarget) {
-                this.copyButtonTarget.textContent = 'Copy link';
+                this.copyButtonTarget.textContent = this.copyDefaultLabelValue;
             }
         }, 1200);
     }
@@ -78,19 +90,19 @@ export default class extends Controller {
         event.preventDefault();
 
         if (!navigator.mediaDevices?.getUserMedia) {
-            this.setScannerStatus('Camera unavailable on this device.');
+            this.setScannerStatus(this.cameraUnavailableMessageValue);
             this.openScanner();
             return;
         }
 
         if (!this.barcodeDetector) {
-            this.setScannerStatus('QR scanning is not supported in this browser.');
+            this.setScannerStatus(this.qrUnsupportedMessageValue);
             this.openScanner();
             return;
         }
 
         this.openScanner();
-        this.setScannerStatus('Starting camera...');
+        this.setScannerStatus(this.scannerStartingMessageValue);
 
         try {
             this.stream = await navigator.mediaDevices.getUserMedia({
@@ -100,10 +112,10 @@ export default class extends Controller {
 
             this.scannerVideoTarget.srcObject = this.stream;
             await this.scannerVideoTarget.play();
-            this.setScannerStatus('Point the camera at a QR code.');
+            this.setScannerStatus(this.scannerPromptMessageValue);
             this.scanLoop();
         } catch (error) {
-            this.setScannerStatus('Camera access denied or unavailable.');
+            this.setScannerStatus(this.scannerDeniedMessageValue);
         }
     }
 
@@ -147,13 +159,13 @@ export default class extends Controller {
             const qrCode = barcodes.find((barcode) => barcode.rawValue);
 
             if (qrCode?.rawValue) {
-                this.setScannerStatus('QR detected. Opening...');
+                this.setScannerStatus(this.qrDetectedMessageValue);
                 this.stopScanner();
                 window.location.href = qrCode.rawValue;
                 return;
             }
         } catch (error) {
-            this.setScannerStatus('Unable to scan this QR code.');
+            this.setScannerStatus(this.qrScanFailedMessageValue);
         }
 
         this.scanFrame = window.requestAnimationFrame(() => this.scanLoop());

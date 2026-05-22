@@ -1,15 +1,15 @@
 {% if notifications is empty %}
     <div class="notif-panel__empty">
         <i class="fas fa-bell"></i>
-        <div>No notification yet</div>
+        <div>{{ 'notifications.empty_title'|trans }}</div>
     </div>
 {% else %}
     <div class="notif-panel__head">
         <div>
-            <strong>Notifications</strong>
-            <div class="notif-panel__muted">{{ unreadCount }} unread</div>
+            <strong>{{ 'notifications.title'|trans }}</strong>
+            <div class="notif-panel__muted">{{ 'notifications.unread_count'|trans({ '%count%': unreadCount }) }}</div>
         </div>
-        <a href="{{ path('app_front_notifications') }}" class="notif-panel__link">View all</a>
+        <a href="{{ path('app_front_notifications') }}" class="notif-panel__link">{{ 'notifications.view_all'|trans }}</a>
     </div>
     <div class="notif-panel__list">
         {% for notification in notifications %}
@@ -17,6 +17,6 @@
         {% endfor %}
     </div>
     <div class="notif-panel__footer">
-        <a href="{{ path('app_front_notifications') }}" class="notif-panel__button">Open inbox</a>
+        <a href="{{ path('app_front_notifications') }}" class="notif-panel__button">{{ 'notifications.open_inbox'|trans }}</a>
     </div>
 {% endif %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Passport Ready{% endblock %}
+{% block title %}BYAS | {{ 'ready.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -23,13 +23,13 @@
       <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
     </section>
 
-    <a class="ready-share" href="{{ continueUrl }}" aria-label="Continue to BYAS">
+    <a class="ready-share" href="{{ continueUrl }}" aria-label="{{ 'ready.continue_aria'|trans }}">
       <i class="fa-solid fa-arrow-up-from-bracket"></i>
     </a>
 
     <header class="ready-copy">
-      <h1>Your passport <span>is ready</span></h1>
-      <p>Welcome to your fandom identity</p>
+      <h1>{{ 'ready.heading_prefix'|trans }} <span>{{ 'ready.heading_suffix'|trans }}</span></h1>
+      <p>{{ 'ready.subtitle'|trans }}</p>
     </header>
 
     <section class="ready-passport-wrap" aria-hidden="true">
@@ -40,7 +40,7 @@
     <section class="ready-fandom">
       <div class="ready-fandom-line">
         <span class="ready-fandom-star">✦</span>
-        <p>You are now a</p>
+        <p>{{ 'ready.you_are_now'|trans }}</p>
         <span class="ready-fandom-star">✦</span>
       </div>
       <div class="ready-fandom-name">♥ {{ selectedFandom }} ♥</div>
@@ -48,13 +48,13 @@
     </section>
 
     <a class="ready-submit" href="{{ continueUrl }}">
-      <span>Enter BYAS</span>
+      <span>{{ 'ready.enter'|trans }}</span>
       <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     </a>
 
     <div class="ready-footnote">
       <i class="fa-solid fa-bolt"></i>
-      <span>Start earning XP now</span>
+      <span>{{ 'ready.start_xp'|trans }}</span>
     </div>
   </main>
 </div>

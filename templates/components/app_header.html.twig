@@ -257,13 +257,13 @@
     data-notifications-panel-url-value="{{ path('app_front_notifications_panel') }}"
 >
     <div class="app-header__side app-header__side--left">
-        <a href="{{ path('app_front_passport_settings') }}" class="app-header__icon" aria-label="Settings">
+        <a href="{{ path('app_front_passport_settings') }}" class="app-header__icon" aria-label="{{ 'app_header.settings'|trans }}">
             <i class="fas fa-gear"></i>
         </a>
     </div>
 
     <div class="app-header__center">
-        <a href="{{ path('app_front_passport') }}" class="app-header__brand" aria-label="BYAS home">
+        <a href="{{ path('app_front_passport') }}" class="app-header__brand" aria-label="{{ 'app_header.home'|trans }}">
             <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
         </a>
     </div>
@@ -272,7 +272,7 @@
         <button
             type="button"
             class="app-header__icon"
-            aria-label="Notifications"
+            aria-label="{{ 'app_header.notifications'|trans }}"
             data-action="notifications-panel#toggle"
             data-notifications-panel-target="button"
         >
@@ -291,7 +291,7 @@
         <div class="notif-panel__shell" data-notifications-panel-target="content">
             <div class="notif-panel__empty">
                 <i class="fas fa-spinner fa-spin"></i>
-                <div>Loading notifications...</div>
+                <div>{{ 'app_header.loading_notifications'|trans }}</div>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Hall of Fame{% endblock %}
+{% block title %}BYAS | {{ 'leaderboard.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -660,26 +660,26 @@
         <div class="ranking-hero-inner">
             <div class="ranking-kicker">
                 <i class="fas fa-trophy"></i>
-                Competitive Board
+                {{ 'leaderboard.kicker'|trans }}
             </div>
 
-            <h1 class="ranking-title">Rankings</h1>
+            <h1 class="ranking-title">{{ 'leaderboard.heading'|trans }}</h1>
 
             <p class="ranking-subtitle">
-                Track the top collectors, compare fan power, and climb your way into the BYAS Hall of Fame.
+                {{ 'leaderboard.subtitle'|trans }}
             </p>
 
             <div class="ranking-stats">
                 <div class="ranking-stat">
-                    <div class="ranking-stat-label">Mode</div>
+                    <div class="ranking-stat-label">{{ 'leaderboard.mode'|trans }}</div>
                     <div class="ranking-stat-value">{{ mode }}</div>
                 </div>
                 <div class="ranking-stat">
-                    <div class="ranking-stat-label">Players</div>
+                    <div class="ranking-stat-label">{{ 'leaderboard.players'|trans }}</div>
                     <div class="ranking-stat-value">{{ playerCount }}</div>
                 </div>
                 <div class="ranking-stat">
-                    <div class="ranking-stat-label">Your Rank</div>
+                    <div class="ranking-stat-label">{{ 'leaderboard.your_rank'|trans }}</div>
                     <div class="ranking-stat-value">{{ currentUserRank ? '#' ~ currentUserRank : '-' }}</div>
                 </div>
             </div>
@@ -687,7 +687,7 @@
     </section>
 
     <div class="fandom-tabs">
-        <a href="{{ path('app_front_leaderboard') }}" class="fandom-tab {{ selectedArtist ? '' : 'active' }}">Global</a>
+        <a href="{{ path('app_front_leaderboard') }}" class="fandom-tab {{ selectedArtist ? '' : 'active' }}">{{ 'leaderboard.global'|trans }}</a>
         {% for artist in artists %}
             <a href="{{ path('app_front_leaderboard', { artist: artist.slug }) }}" class="fandom-tab {{ selectedArtist and selectedArtist.id == artist.id ? 'active' : '' }}">{{ artist.name }}</a>
         {% endfor %}
@@ -696,7 +696,7 @@
     <section class="podium-shell">
         <div class="podium-title">
             <i class="fas fa-crown"></i>
-            Top 3 Champions
+            {{ 'leaderboard.top3'|trans }}
         </div>
 
         <div class="podium-section">
@@ -709,15 +709,15 @@
                         </div>
                         <p class="podium-name">{{ second.displayName }}</p>
                         <span class="podium-xp">{{ second.xp }} XP</span>
-                        <span class="podium-label">Silver Tier</span>
+                        <span class="podium-label">{{ 'leaderboard.silver_tier'|trans }}</span>
                     </a>
                 {% else %}
                     <div class="podium-avatar-wrapper">
-                        {% include 'components/user_avatar.html.twig' with { avatarUrl: second ? second.avatarUrl : null, displayName: second ? second.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: second ? second.avatarUrl : null, displayName: second ? second.displayName : ('leaderboard.open_spot'|trans), avatarClass: 'podium-avatar' } only %}
                     </div>
-                    <p class="podium-name">{{ second ? second.displayName : 'Open spot' }}</p>
+                    <p class="podium-name">{{ second ? second.displayName : ('leaderboard.open_spot'|trans) }}</p>
                     <span class="podium-xp">{{ second ? second.xp : 0 }} XP</span>
-                    <span class="podium-label">Silver Tier</span>
+                    <span class="podium-label">{{ 'leaderboard.silver_tier'|trans }}</span>
                 {% endif %}
             </article>
 
@@ -731,15 +731,15 @@
                         </div>
                         <p class="podium-name">{{ first.displayName }}</p>
                         <span class="podium-xp">{{ first.xp }} XP</span>
-                        <span class="podium-label">Legend</span>
+                        <span class="podium-label">{{ 'leaderboard.legend'|trans }}</span>
                     </a>
                 {% else %}
                     <div class="podium-avatar-wrapper">
-                        {% include 'components/user_avatar.html.twig' with { avatarUrl: first ? first.avatarUrl : null, displayName: first ? first.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: first ? first.avatarUrl : null, displayName: first ? first.displayName : ('leaderboard.open_spot'|trans), avatarClass: 'podium-avatar' } only %}
                     </div>
-                    <p class="podium-name">{{ first ? first.displayName : 'Open spot' }}</p>
+                    <p class="podium-name">{{ first ? first.displayName : ('leaderboard.open_spot'|trans) }}</p>
                     <span class="podium-xp">{{ first ? first.xp : 0 }} XP</span>
-                    <span class="podium-label">Legend</span>
+                    <span class="podium-label">{{ 'leaderboard.legend'|trans }}</span>
                 {% endif %}
             </article>
 
@@ -752,15 +752,15 @@
                         </div>
                         <p class="podium-name">{{ third.displayName }}</p>
                         <span class="podium-xp">{{ third.xp }} XP</span>
-                        <span class="podium-label">Bronze Tier</span>
+                        <span class="podium-label">{{ 'leaderboard.bronze_tier'|trans }}</span>
                     </a>
                 {% else %}
                     <div class="podium-avatar-wrapper">
-                        {% include 'components/user_avatar.html.twig' with { avatarUrl: third ? third.avatarUrl : null, displayName: third ? third.displayName : 'Open spot', avatarClass: 'podium-avatar' } only %}
+                        {% include 'components/user_avatar.html.twig' with { avatarUrl: third ? third.avatarUrl : null, displayName: third ? third.displayName : ('leaderboard.open_spot'|trans), avatarClass: 'podium-avatar' } only %}
                     </div>
-                    <p class="podium-name">{{ third ? third.displayName : 'Open spot' }}</p>
+                    <p class="podium-name">{{ third ? third.displayName : ('leaderboard.open_spot'|trans) }}</p>
                     <span class="podium-xp">{{ third ? third.xp : 0 }} XP</span>
-                    <span class="podium-label">Bronze Tier</span>
+                    <span class="podium-label">{{ 'leaderboard.bronze_tier'|trans }}</span>
                 {% endif %}
             </article>
         </div>
@@ -768,8 +768,8 @@
 
     <section class="rank-list-shell">
         <div class="list-head">
-            <h2>Leaderboard</h2>
-            <span>Positions 4+</span>
+            <h2>{{ 'leaderboard.list_title'|trans }}</h2>
+            <span>{{ 'leaderboard.positions_4_plus'|trans }}</span>
         </div>
 
         <div class="rank-list">
@@ -797,7 +797,7 @@
                     {% endif %}
 
                     {% if currentUser and currentUser.id == user.userId %}
-                        <span class="badge-pill badge-top">You</span>
+                        <span class="badge-pill badge-top">{{ 'leaderboard.you'|trans }}</span>
                     {% else %}
                         <span class="badge-pill badge-s">#{{ position }}</span>
                     {% endif %}
@@ -806,8 +806,8 @@
                 <div class="rank-item">
                     <div class="rank-info">
                         <div class="rank-user-data">
-                            <span class="name">No ranking data yet</span>
-                            <span class="xp">Sync Spotify to start earning XP.</span>
+                            <span class="name">{{ 'leaderboard.empty_title'|trans }}</span>
+                            <span class="xp">{{ 'leaderboard.empty_text'|trans }}</span>
                         </div>
                     </div>
                 </div>

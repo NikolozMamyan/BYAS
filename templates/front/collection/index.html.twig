@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Collection Wall{% endblock %}
+{% block title %}BYAS | {{ 'collection.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -194,16 +194,16 @@
 {% block body %}
 <div class="collection-page">
     <header class="collection-header">
-        <h1>Showcase</h1>
+        <h1>{{ 'collection.showcase'|trans }}</h1>
         <p style="color: var(--text-dim); font-size: 0.9rem;">
-            {{ items|length }} Treasures Collected by {{ user.displayName }}
+            {{ 'collection.summary'|trans({ '%count%': items|length, '%name%': user.displayName }) }}
         </p>
     </header>
 
     {% if shelves is empty %}
         <div style="text-align: center; padding: 50px; background: rgba(255,255,255,0.02); border-radius: 20px;">
             <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; color: var(--text-dim);"></i>
-            <p>Your shelves are empty. Start adding items!</p>
+            <p>{{ 'collection.empty'|trans }}</p>
         </div>
     {% else %}
         {% for shelfName, shelfItems in shelves %}
@@ -223,9 +223,9 @@
                             </div>
 
                             <div class="album-info">
-                                <div class="collection-type">{{ item.type ? item.type.label : 'Item' }}</div>
+                                <div class="collection-type">{{ item.type ? item.type.label : 'collection.item_fallback'|trans }}</div>
                                 <div class="collection-title">{{ item.title }}</div>
-                                <div class="collection-artist">{{ item.artist ? item.artist.name : 'Various' }}</div>
+                                <div class="collection-artist">{{ item.artist ? item.artist.name : 'collection.various'|trans }}</div>
                             </div>
                         </article>
                     {% endfor %}

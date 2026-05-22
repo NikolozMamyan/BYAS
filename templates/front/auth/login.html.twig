@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Login{% endblock %}
+{% block title %}BYAS | {{ 'auth.login.submit'|trans }}{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -20,7 +20,7 @@
   <div class="login-planet"></div>
 
   <main class="login-shell">
-    <a class="login-back" href="{{ path('app_landing') }}" aria-label="Back to landing">
+    <a class="login-back" href="{{ path('app_landing') }}" aria-label="{{ 'common.back_to_home'|trans }}">
       <i class="fa-solid fa-arrow-left"></i>
     </a>
 
@@ -34,14 +34,16 @@
       <div class="login-card-inner">
         <div class="login-divider" aria-hidden="true">
           <span class="login-divider-line"></span>
-          <span class="login-divider-star">✦</span>
+          <span class="login-divider-star">*</span>
           <span class="login-divider-line"></span>
         </div>
 
         <header class="login-copy">
-          <h1>Login to your passport</h1>
-          <p>Pick up your fan journey</p>
+          <h1>{{ 'auth.login.hero_title'|trans }}</h1>
+          <p>{{ 'auth.login.hero_subtitle'|trans }}</p>
         </header>
+
+        {% include 'components/language_switcher.html.twig' with { id: 'loginLocaleSwitcher' } only %}
 
         {% for message in app.flashes('error') %}
           <div class="login-feedback login-feedback-error">
@@ -73,7 +75,7 @@
               id="username"
               name="_username"
               value=""
-              placeholder="Email address"
+              placeholder="{{ 'auth.login.email'|trans }}"
               data-login-target="email"
               required
             >
@@ -85,28 +87,28 @@
               type="password"
               id="password"
               name="_password"
-              placeholder="Password"
+              placeholder="{{ 'auth.login.password'|trans }}"
               data-login-target="password"
               required
             >
           </label>
 
           <button type="submit" class="login-submit" data-login-target="submit">
-            Login
+            {{ 'auth.login.submit'|trans }}
             <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
           </button>
         </form>
 
         <div class="login-or">
           <span class="login-or-line"></span>
-          <span class="login-or-text">OR</span>
+          <span class="login-or-text">{{ 'common.or'|trans }}</span>
           <span class="login-or-line"></span>
         </div>
 
         <p class="login-register-link">
-          Don’t have an account?
+          {{ 'auth.login.no_account'|trans }}
           <a href="{{ path('show_register', { intent: intent|default(null), passport: passport|default(null), next: next|default(null) }) }}" data-turbo="false">
-            Create Account
+            {{ 'auth.register.title_short'|trans }}
           </a>
         </p>
 
@@ -115,10 +117,10 @@
             <i class="fa-solid fa-lock" aria-hidden="true"></i>
           </div>
           <p>
-            By continuing, you agree to our
-            <a href="#">Terms of Service</a>
-            and
-            <a href="#">Privacy Policy</a>.
+            {{ 'auth.legal.prefix'|trans }}
+            <a href="#">{{ 'auth.legal.terms'|trans }}</a>
+            {{ 'auth.legal.and'|trans }}
+            <a href="#">{{ 'auth.legal.privacy'|trans }}</a>.
           </p>
         </div>
       </div>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-{# <html lang="{{ app.request.locale|default('fr') }}"> #}
-<html>
+<html lang="{{ app.request.locale|default('en') }}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,7 +17,7 @@
       referrerpolicy="no-referrer"
     />
 
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}{{ 'common.welcome'|trans }}{% endblock %}</title>
 
     {# CSS global (idéalement via importmap/asset mapper). Laisse ton système actuel. #}
     {% block stylesheets %}

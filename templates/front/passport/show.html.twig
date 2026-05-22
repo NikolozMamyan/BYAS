@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Digital Passport{% endblock %}
+{% block title %}BYAS | {{ 'passport.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -684,7 +684,25 @@
 {% block body %}
 {% set successFlashes = app.flashes('success') %}
 {% set errorFlashes = app.flashes('error') %}
-<main class="passport-page" data-controller="passport-sync" data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}">
+<main
+    class="passport-page"
+    data-controller="passport-sync"
+    data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}"
+    data-passport-sync-sync-label-value="{{ 'passport.sync'|trans }}"
+    data-passport-sync-syncing-label-value="{{ 'passport.syncing'|trans }}"
+    data-passport-sync-no-providers-message-value="{{ 'passport.sync_status.no_providers'|trans }}"
+    data-passport-sync-syncing-message-value="{{ 'passport.sync_status.syncing'|trans }}"
+    data-passport-sync-success-message-value="{{ 'passport.sync_status.success'|trans }}"
+    data-passport-sync-timeout-message-value="{{ 'passport.sync_status.timeout'|trans }}"
+    data-passport-sync-failed-message-value="{{ 'passport.sync_status.failed'|trans }}"
+    data-passport-sync-response-status-prefix-value="{{ 'common.response_status'|trans }}"
+    data-passport-sync-logout-failed-message-value="{{ 'passport.sync_status.logout_failed'|trans }}"
+    data-passport-sync-no-provider-label-value="{{ 'passport.sync_status.no_provider_label'|trans }}"
+    data-passport-sync-details-prefix-value="{{ 'passport.sync_status.details_prefix'|trans }}"
+    data-passport-sync-provider-fallback-label-value="{{ 'passport.sync_status.provider'|trans }}"
+    data-passport-sync-unknown-status-label-value="{{ 'passport.sync_status.unknown'|trans }}"
+    data-passport-sync-new-label-value="{{ 'passport.sync_status.new'|trans }}"
+>
     <div class="passport-stack">
         <section class="passport-panel">
             <div class="passport-panel__inner">
@@ -698,7 +716,7 @@
                                     avatarClass: 'hero-avatar'
                                 } only %}
                             </div>
-                            <a href="{{ path('app_front_passport_settings') }}" class="hero-avatar-edit" aria-label="Edit passport">
+                            <a href="{{ path('app_front_passport_settings') }}" class="hero-avatar-edit" aria-label="{{ 'passport.edit'|trans }}">
                                 <i class="fas fa-pen"></i>
                             </a>
                         </div>
@@ -710,10 +728,10 @@
                             </div>
                             <div class="hero-handle">
                                 <i class="fas fa-heart"></i>
-                                {{ topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : 'BYAS Fan' }}
+                                {{ topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : ('passport.byas_fan'|trans) }}
                             </div>
-                            <div class="hero-caption">Base level</div>
-                            <div class="hero-level">Level <span>{{ user.globalLevel }}</span></div>
+                            <div class="hero-caption">{{ 'passport.base_level'|trans }}</div>
+                            <div class="hero-level">{{ 'passport.level'|trans }} <span>{{ user.globalLevel }}</span></div>
                             <div class="hero-tier">
                                 <i class="fas fa-sparkles"></i>
                                 {{ globalLevelBadge.fullTitle }}
@@ -732,15 +750,15 @@
                             <div class="hero-actions">
                                 <button id="syncHistoryBtn" class="hero-btn hero-btn--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync" {{ connectedSyncProviders is empty ? 'disabled' : '' }}>
                                     <i class="fas fa-rotate"></i>
-                                    Sync
+                                    {{ 'passport.sync'|trans }}
                                 </button>
                                 <a href="{{ path('app_front_passport_share') }}" class="hero-btn">
                                     <i class="fas fa-share-nodes"></i>
-                                    Share
+                                    {{ 'passport.share'|trans }}
                                 </a>
                                 <a href="{{ path('app_front_collection_index') }}" class="hero-btn">
                                     <i class="fas fa-layer-group"></i>
-                                    Collection
+                                    {{ 'passport.collection'|trans }}
                                 </a>
                             </div>
                         </div>
@@ -761,28 +779,28 @@
                     <article class="stat-card">
                         <div class="stat-card__label">
                             <i class="fas fa-globe"></i>
-                            Global rank
+                            {{ 'passport.global_rank'|trans }}
                         </div>
                         <div class="stat-card__value">{{ globalRank ? '#' ~ globalRank : '--' }}</div>
-                        <div class="stat-card__meta">{{ fandoms|length }} active fandoms</div>
+                        <div class="stat-card__meta">{{ 'passport.active_fandoms'|trans({ '%count%': fandoms|length }) }}</div>
                     </article>
 
                     <article class="stat-card stat-card--accent">
                         <div class="stat-card__label">
                             <i class="fas fa-eye"></i>
-                            Public views
+                            {{ 'passport.public_views'|trans }}
                         </div>
                         <div class="stat-card__value">{{ publicVisitCount }}</div>
-                        <div class="stat-card__meta">{{ publicVisitCount7d }} views over 7 days</div>
+                        <div class="stat-card__meta">{{ 'passport.views_7d'|trans({ '%count%': publicVisitCount7d }) }}</div>
                     </article>
 
                     <article class="stat-card">
                         <div class="stat-card__label">
                             <i class="fas fa-heart"></i>
-                            Message intents
+                            {{ 'passport.message_intents'|trans }}
                         </div>
                         <div class="stat-card__value">{{ contactIntentCount }}</div>
-                        <div class="stat-card__meta">{{ userBadges|length }} badge{{ userBadges|length > 1 ? 's' : '' }} unlocked</div>
+                        <div class="stat-card__meta">{{ 'passport.badges_unlocked'|trans({ '%count%': userBadges|length }) }}</div>
                     </article>
                 </div>
             </div>
@@ -793,9 +811,9 @@
                 <div class="section-head">
                     <div class="section-title">
                         <i class="fas fa-users"></i>
-                        My Top 3 Fandoms
+                        {{ 'passport.top_fandoms'|trans }}
                     </div>
-                    <a href="{{ path('app_public_passport', { shareSlug: profile.shareSlug }) }}" class="section-link">View all</a>
+                    <a href="{{ path('app_public_passport', { shareSlug: profile.shareSlug }) }}" class="section-link">{{ 'common.view_all'|trans }}</a>
                 </div>
 
                 {% if topFandoms is not empty %}
@@ -809,10 +827,10 @@
                                     </div>
                                     <i class="fas fa-heart" style="color: #9f80ff;"></i>
                                 </div>
-                                <div class="fandom-artist">{{ fandom.artist ? fandom.artist.name : 'Artist' }}</div>
+                                <div class="fandom-artist">{{ fandom.artist ? fandom.artist.name : ('passport.artist_fallback'|trans) }}</div>
                                 <div class="fandom-title">{{ fandomBadge.fullTitle }}</div>
                                 <div class="fandom-meta">
-                                    <span>Level {{ fandom.level }}</span>
+                                    <span>{{ 'passport.level'|trans }} {{ fandom.level }}</span>
                                     <span>{{ fandom.rankPosition ? '#' ~ fandom.rankPosition : user.globalXp ~ ' XP' }}</span>
                                 </div>
                                 <div class="fandom-line"></div>
@@ -820,7 +838,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-state">No fandom linked yet. Start syncing your listening history to build your ranking.</div>
+                    <div class="empty-state">{{ 'passport.empty_fandoms'|trans }}</div>
                 {% endif %}
             </div>
         </section>
@@ -830,9 +848,9 @@
                 <div class="section-head">
                     <div class="section-title">
                         <i class="fas fa-layer-group"></i>
-                        My Collection
+                        {{ 'passport.collection_mine'|trans }}
                     </div>
-                    <a href="{{ path('app_front_collection_index') }}" class="section-link">View all</a>
+                    <a href="{{ path('app_front_collection_index') }}" class="section-link">{{ 'common.view_all'|trans }}</a>
                 </div>
 
                 {% if collectionHighlights is not empty %}
@@ -850,7 +868,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-state">Your collection is still empty.</div>
+                    <div class="empty-state">{{ 'passport.empty_collection'|trans }}</div>
                 {% endif %}
             </div>
         </section>
@@ -860,9 +878,9 @@
                 <div class="section-head">
                     <div class="section-title">
                         <i class="fas fa-shield-star"></i>
-                        My Rarest Badges
+                        {{ 'passport.rarest_badges'|trans }}
                     </div>
-                    <span class="section-link">{{ userBadges|length }} total</span>
+                    <span class="section-link">{{ 'passport.total_count'|trans({ '%count%': userBadges|length }) }}</span>
                 </div>
 
                 {% if featuredBadges is not empty %}
@@ -874,13 +892,13 @@
                                 </div>
                                 <div class="badge-name">{{ userBadge.badge.name }}</div>
                                 <div class="badge-meta">
-                                    {{ userBadge.badge.description|default('Unlocked on BYAS') }}
+                                    {{ userBadge.badge.description|default('passport.badge_default_description'|trans) }}
                                 </div>
                             </article>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-state">No badge unlocked yet.</div>
+                    <div class="empty-state">{{ 'passport.empty_badges'|trans }}</div>
                 {% endif %}
             </div>
         </section>
@@ -892,16 +910,16 @@
                         <i class="fas fa-qrcode"></i>
                     </div>
                     <div>
-                        <div class="share-title">Share your passport</div>
-                        <div class="share-text">Scan or open your public profile to show your rank, fandoms and badges.</div>
+                        <div class="share-title">{{ 'passport.share_title'|trans }}</div>
+                        <div class="share-text">{{ 'passport.share_text'|trans }}</div>
                         <div class="share-link-row">
                             <a href="{{ path('app_front_passport_share') }}" class="hero-btn hero-btn--primary">
                                 <i class="fas fa-image"></i>
-                                Share card
+                                {{ 'passport.share_card'|trans }}
                             </a>
                             <a href="{{ publicPassportUrl }}" class="hero-btn">
                                 <i class="fas fa-arrow-up-right-from-square"></i>
-                                Public page
+                                {{ 'passport.public_page'|trans }}
                             </a>
                         </div>
                     </div>

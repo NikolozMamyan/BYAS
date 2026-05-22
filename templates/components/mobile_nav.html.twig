@@ -225,14 +225,26 @@
     class="bottom-nav-wrap"
     data-controller="mobile-hub"
     data-mobile-hub-public-url-value="{{ publicPassportUrl }}"
+    data-mobile-hub-public-link-unavailable-message-value="{{ 'mobile_hub.status.public_link_unavailable'|trans }}"
+    data-mobile-hub-copied-label-value="{{ 'common.copied'|trans }}"
+    data-mobile-hub-public-link-copied-message-value="{{ 'mobile_hub.status.public_link_copied'|trans }}"
+    data-mobile-hub-copy-failed-message-value="{{ 'mobile_hub.status.copy_failed'|trans }}"
+    data-mobile-hub-copy-default-label-value="{{ 'common.copy_link'|trans }}"
+    data-mobile-hub-camera-unavailable-message-value="{{ 'mobile_hub.status.camera_unavailable'|trans }}"
+    data-mobile-hub-qr-unsupported-message-value="{{ 'mobile_hub.status.qr_unsupported'|trans }}"
+    data-mobile-hub-scanner-starting-message-value="{{ 'mobile_hub.status.starting_camera'|trans }}"
+    data-mobile-hub-scanner-prompt-message-value="{{ 'mobile_hub.status.scanner_prompt'|trans }}"
+    data-mobile-hub-scanner-denied-message-value="{{ 'mobile_hub.status.camera_denied'|trans }}"
+    data-mobile-hub-qr-detected-message-value="{{ 'mobile_hub.status.qr_detected'|trans }}"
+    data-mobile-hub-qr-scan-failed-message-value="{{ 'mobile_hub.status.qr_failed'|trans }}"
 >
     <div class="mobile-hub" data-mobile-hub-target="sheet" hidden>
         <div class="mobile-hub__head">
             <div>
-                <div class="mobile-hub__title">Passport hub</div>
-                <div class="mobile-hub__subtitle">Share or open your public profile</div>
+                <div class="mobile-hub__title">{{ 'mobile_hub.title'|trans }}</div>
+                <div class="mobile-hub__subtitle">{{ 'mobile_hub.subtitle'|trans }}</div>
             </div>
-            <button type="button" class="mobile-hub__close" data-action="mobile-hub#close" aria-label="Close hub">
+            <button type="button" class="mobile-hub__close" data-action="mobile-hub#close" aria-label="{{ 'mobile_hub.close'|trans }}">
                 <i class="fas fa-xmark"></i>
             </button>
         </div>
@@ -240,26 +252,26 @@
         <div class="mobile-hub__grid">
             <a href="{{ path('app_front_passport_share') }}" class="mobile-hub__action">
                 <i class="fas fa-image"></i>
-                <strong>Share card</strong>
-                <span>Open your Passport card</span>
+                <strong>{{ 'mobile_hub.share_card'|trans }}</strong>
+                <span>{{ 'mobile_hub.share_card_text'|trans }}</span>
             </a>
 
             <button type="button" class="mobile-hub__action" data-action="mobile-hub#startScanner">
                 <i class="fas fa-qrcode"></i>
-                <strong>Scan QR</strong>
-                <span>Open the camera and scan a code</span>
+                <strong>{{ 'mobile_hub.scan_qr'|trans }}</strong>
+                <span>{{ 'mobile_hub.scan_qr_text'|trans }}</span>
             </button>
 
             <a href="{{ publicPassportPath }}" class="mobile-hub__action">
                 <i class="fas fa-globe"></i>
-                <strong>Public link</strong>
-                <span>{{ hasPublicProfile ? 'Open your public Passport' : 'Finish profile setup' }}</span>
+                <strong>{{ 'mobile_hub.public_link'|trans }}</strong>
+                <span>{{ hasPublicProfile ? ('mobile_hub.public_link_ready'|trans) : ('mobile_hub.public_link_setup'|trans) }}</span>
             </a>
 
             <button type="button" class="mobile-hub__action" data-mobile-hub-target="copyButton" data-action="mobile-hub#copy" {{ hasPublicProfile ? '' : 'disabled' }}>
                 <i class="fas fa-copy"></i>
-                <strong>Copy link</strong>
-                <span>{{ hasPublicProfile ? 'Copy your public Passport URL' : 'Copy unavailable until setup' }}</span>
+                <strong>{{ 'common.copy_link'|trans }}</strong>
+                <span>{{ hasPublicProfile ? ('mobile_hub.copy_ready'|trans) : ('mobile_hub.copy_unavailable'|trans) }}</span>
             </button>
         </div>
 
@@ -268,8 +280,8 @@
                 <video data-mobile-hub-target="scannerVideo" playsinline></video>
             </div>
             <div class="mobile-hub__scanner-meta">
-                <div class="mobile-hub__scanner-text" data-mobile-hub-target="scannerStatus">Point the camera at a QR code.</div>
-                <button type="button" class="mobile-hub__close" data-action="mobile-hub#closeScanner" aria-label="Close scanner">
+                <div class="mobile-hub__scanner-text" data-mobile-hub-target="scannerStatus">{{ 'mobile_hub.scanner_prompt'|trans }}</div>
+                <button type="button" class="mobile-hub__close" data-action="mobile-hub#closeScanner" aria-label="{{ 'mobile_hub.close_scanner'|trans }}">
                     <i class="fas fa-xmark"></i>
                 </button>
             </div>
@@ -282,19 +294,19 @@
         <a href="{{ path('app_front_passport') }}"
            class="nav-link {{ app.request.attributes.get('_route') == 'app_front_passport' ? 'active' : '' }}">
             <i class="fas fa-id-card"></i>
-            <span>Passport</span>
+            <span>{{ 'mobile_nav.passport'|trans }}</span>
         </a>
 
         <a href="{{ path('app_front_leaderboard') }}"
            class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_leaderboard' ? 'active' : '' }}">
             <i class="fas fa-chart-line"></i>
-            <span>Leaderboard</span>
+            <span>{{ 'mobile_nav.leaderboard'|trans }}</span>
         </a>
 
         <button
             type="button"
             class="nav-scan {{ app.request.attributes.get('_route') == 'app_front_passport_share' ? 'active' : '' }}"
-            aria-label="Open Passport hub"
+            aria-label="{{ 'mobile_hub.open'|trans }}"
             data-action="mobile-hub#toggle"
         >
             <i class="fas fa-qrcode fa-lg"></i>
@@ -303,15 +315,15 @@
         <a href="{{ path('app_front_play_history') }}"
            class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_play_history' ? 'active' : '' }}">
             <i class="fas fa-clock-rotate-left"></i>
-            <span>Play History</span>
+            <span>{{ 'mobile_nav.play_history'|trans }}</span>
         </a>
 
         <a href="#"
            class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}"
            aria-disabled="true"
-           title="Chat coming soon">
+           title="{{ 'mobile_nav.chat_soon'|trans }}">
             <i class="fas fa-comment-dots"></i>
-            <span>Chat</span>
+            <span>{{ 'mobile_nav.chat'|trans }}</span>
         </a>
     </nav>
 </div>

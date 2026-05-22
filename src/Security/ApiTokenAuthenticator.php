@@ -32,6 +32,7 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         '/',
         '/login',
         '/register',
+        '/locale/switch',
         '/forgot-password',
         '/reset-password',
         '/app/security/pending-login',

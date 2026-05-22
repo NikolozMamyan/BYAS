@@ -6,6 +6,12 @@ const DISMISS_TTL = 7 * 24 * 60 * 60 * 1000;
 
 export default class extends Controller {
     static targets = ['dialog', 'status', 'installButton'];
+    static values = {
+        installedMessage: String,
+        unavailableMessage: String,
+        startedMessage: String,
+        laterMessage: String,
+    };
 
     connect() {
         this.deferredPrompt = null;
@@ -54,7 +60,7 @@ export default class extends Controller {
         window.localStorage.setItem(INSTALLED_KEY, '1');
         this.deferredPrompt = null;
         this.installAvailable = false;
-        this.setStatus('BYAS is now installed on your device.');
+        this.setStatus(this.installedMessageValue);
         this.close();
     }
 
@@ -62,7 +68,7 @@ export default class extends Controller {
         event.preventDefault();
 
         if (!this.installAvailable || this.deferredPrompt === null) {
-            this.setStatus('Installation is not available yet on this device.');
+            this.setStatus(this.unavailableMessageValue);
             return;
         }
 
@@ -78,7 +84,7 @@ export default class extends Controller {
         this.installAvailable = false;
 
         if (outcome === 'accepted') {
-            this.setStatus('Installation started.');
+            this.setStatus(this.startedMessageValue);
             this.close();
             return;
         }
@@ -96,7 +102,7 @@ export default class extends Controller {
         window.localStorage.setItem(DISMISS_KEY, String(Date.now()));
         this.deferredPrompt = null;
         this.installAvailable = false;
-        this.setStatus('No problem. We will remind you later.');
+        this.setStatus(this.laterMessageValue);
         this.close();
     }
 

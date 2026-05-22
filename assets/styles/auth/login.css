@@ -256,6 +256,52 @@ body {
   color: rgba(226, 210, 255, 0.82);
 }
 
+.lang-switcher {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  margin: 0 auto 22px;
+  width: min(100%, 360px);
+}
+
+.lang-switcher__label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(226, 210, 255, 0.72);
+  text-align: center;
+}
+
+.lang-switcher__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.lang-switcher__select,
+.lang-switcher__button {
+  min-height: 48px;
+  border-radius: 16px;
+  border: 1px solid rgba(219, 194, 255, 0.18);
+  background: rgba(7, 10, 30, 0.82);
+  color: #fff;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+}
+
+.lang-switcher__select {
+  padding: 0 16px;
+}
+
+.lang-switcher__button {
+  padding: 0 18px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(90deg, rgba(248, 60, 176, 0.18), rgba(74, 72, 235, 0.22));
+}
+
 .login-feedback {
   display: flex;
   align-items: flex-start;
@@ -465,5 +511,13 @@ body {
 
   .login-or-text {
     font-size: 24px;
+  }
+
+  .lang-switcher {
+    width: 100%;
+  }
+
+  .lang-switcher__controls {
+    grid-template-columns: 1fr;
   }
 }

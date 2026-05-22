@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Play History{% endblock %}
+{% block title %}{{ 'play_history.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -595,20 +595,20 @@
     <div class="page-header">
         <h1 class="page-title">
             <i class="fas fa-music"></i>
-            Play History
+            {{ 'play_history.title'|trans }}
         </h1>
-        <p class="page-subtitle">Your musical journey, beautifully tracked</p>
+        <p class="page-subtitle">{{ 'play_history.subtitle'|trans }}</p>
     </div>
 
     {% if playHistory is not empty %}
         <!-- Stats Bar -->
         <div class="stats-bar">
             <div class="stat-card">
-                <div class="stat-label">Total Tracks</div>
+                <div class="stat-label">{{ 'play_history.total_tracks'|trans }}</div>
                 <div class="stat-value">{{ playHistory|length }}</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Total Listening Time</div>
+                <div class="stat-label">{{ 'play_history.total_listening_time'|trans }}</div>
                 <div class="stat-value">
                     {% set totalMs = 0 %}
                     {% for play in playHistory %}
@@ -618,7 +618,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Most Recent</div>
+                <div class="stat-label">{{ 'play_history.most_recent'|trans }}</div>
                 <div class="stat-value" style="font-size: 1.2rem;">
                     {{ playHistory|first.playedAt|date('H:i') }}
                 </div>
@@ -629,24 +629,24 @@
         <div class="filters-section">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label class="filter-label">Search Track</label>
-                    <input type="text" class="filter-input" id="searchInput" placeholder="Search by title, artist, or album..." data-play-history-target="search" data-action="input->play-history#filter">
+                    <label class="filter-label">{{ 'play_history.search_track'|trans }}</label>
+                    <input type="text" class="filter-input" id="searchInput" placeholder="{{ 'play_history.search_placeholder'|trans }}" data-play-history-target="search" data-action="input->play-history#filter">
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Provider</label>
+                    <label class="filter-label">{{ 'play_history.provider'|trans }}</label>
                     <select class="filter-input" id="providerFilter" data-play-history-target="provider" data-action="change->play-history#filter">
-                        <option value="">All Providers</option>
+                        <option value="">{{ 'play_history.all_providers'|trans }}</option>
                         <option value="spotify">Spotify</option>
                         <option value="apple">Apple Music</option>
                         <option value="youtube">YouTube Music</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Type</label>
+                    <label class="filter-label">{{ 'play_history.type'|trans }}</label>
                     <select class="filter-input" id="typeFilter" data-play-history-target="type" data-action="change->play-history#filter">
-                        <option value="">All Types</option>
-                        <option value="track">Track</option>
-                        <option value="episode">Episode</option>
+                        <option value="">{{ 'play_history.all_types'|trans }}</option>
+                        <option value="track">{{ 'play_history.track'|trans }}</option>
+                        <option value="episode">{{ 'play_history.episode'|trans }}</option>
                     </select>
                 </div>
             </div>
@@ -715,19 +715,19 @@
                                 <a href="https://open.spotify.com/track/{{ play.providerItemId }}" 
                                    target="_blank" 
                                    class="action-btn spotify"
-                                   title="Open in Spotify">
+                                   title="{{ 'play_history.open_spotify'|trans }}">
                                     <i class="fab fa-spotify"></i>
                                 </a>
                             {% elseif play.provider == 'youtube' and play.providerItemId %}
                                 <a href="https://www.youtube.com/watch?v={{ play.providerItemId }}"
                                    target="_blank"
                                    class="action-btn"
-                                   title="Open in YouTube">
+                                   title="{{ 'play_history.open_youtube'|trans }}">
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             {% endif %}
                             
-                            <button class="action-btn toggle-details" title="Show details" data-action="play-history#toggleDetails">
+                            <button class="action-btn toggle-details" title="{{ 'play_history.show_details'|trans }}" data-action="play-history#toggleDetails">
                                 <i class="fas fa-chevron-down"></i>
                             </button>
                         </div>
@@ -737,36 +737,36 @@
                     <div class="play-details">
                         <div class="details-grid">
                             <div class="detail-item">
-                                <span class="detail-label">Provider Item ID</span>
+                                <span class="detail-label">{{ 'play_history.provider_item_id'|trans }}</span>
                                 <span class="detail-value">{{ play.providerItemId }}</span>
                             </div>
                             
                             <div class="detail-item">
-                                <span class="detail-label">Type</span>
+                                <span class="detail-label">{{ 'play_history.type'|trans }}</span>
                                 <span class="detail-value">{{ play.providerType|capitalize }}</span>
                             </div>
                             
                             <div class="detail-item">
-                                <span class="detail-label">Played At</span>
+                                <span class="detail-label">{{ 'play_history.played_at'|trans }}</span>
                                 <span class="detail-value">{{ play.playedAt|date('d/m/Y H:i:s') }}</span>
                             </div>
                             
                             <div class="detail-item">
-                                <span class="detail-label">Imported At</span>
+                                <span class="detail-label">{{ 'play_history.imported_at'|trans }}</span>
                                 <span class="detail-value">{{ play.createdAt|date('d/m/Y H:i:s') }}</span>
                             </div>
 
                             {% if play.streamingAccount %}
                                 <div class="detail-item">
-                                    <span class="detail-label">Account ID</span>
+                                    <span class="detail-label">{{ 'play_history.account_id'|trans }}</span>
                                     <span class="detail-value">#{{ play.streamingAccount.id }}</span>
                                 </div>
                             {% endif %}
 
                             {% if play.durationMs %}
                                 <div class="detail-item">
-                                    <span class="detail-label">Duration</span>
-                                    <span class="detail-value">{{ (play.durationMs / 1000)|round }} seconds</span>
+                                    <span class="detail-label">{{ 'play_history.duration'|trans }}</span>
+                                    <span class="detail-value">{{ 'play_history.duration_seconds'|trans({ '%count%': (play.durationMs / 1000)|round }) }}</span>
                                 </div>
                             {% endif %}
                         </div>
@@ -774,7 +774,7 @@
                         <details class="raw-data-toggle">
                             <summary>
                                 <i class="fas fa-code"></i>
-                                View Raw Data
+                                {{ 'play_history.view_raw_data'|trans }}
                             </summary>
                             <div class="raw-data-content">
                                 <pre>{{ play.rawData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
@@ -791,8 +791,8 @@
             <div class="empty-icon">
                 <i class="fas fa-music"></i>
             </div>
-            <h2 class="empty-title">No listening history yet</h2>
-            <p class="empty-text">Start listening to music and your history will appear here.</p>
+            <h2 class="empty-title">{{ 'play_history.empty_title'|trans }}</h2>
+            <p class="empty-text">{{ 'play_history.empty_text'|trans }}</p>
         </div>
     {% endif %}
 </div>

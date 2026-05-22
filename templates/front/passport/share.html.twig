@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Share Card{% endblock %}
+{% block title %}BYAS | {{ 'share_card.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -369,7 +369,18 @@
 
 {% block body %}
 {% set displayName = profile.username|default(user.displayName) %}
-<main class="share-page" data-controller="share-export" data-share-export-url-value="{{ shareUrl }}">
+<main
+    class="share-page"
+    data-controller="share-export"
+    data-share-export-url-value="{{ shareUrl }}"
+    data-share-export-loading-message-value="{{ 'share_card.status.loading'|trans }}"
+    data-share-export-rendering-label-value="{{ 'share_card.status.rendering_label'|trans }}"
+    data-share-export-rendering-message-value="{{ 'share_card.status.rendering'|trans }}"
+    data-share-export-failed-message-value="{{ 'share_card.status.failed'|trans }}"
+    data-share-export-download-label-value="{{ 'share_card.download_png'|trans }}"
+    data-share-export-ready-message-value="{{ 'share_card.status.ready'|trans }}"
+    data-share-export-qr-fallback-label-value="{{ 'share_card.qr_fallback'|trans }}"
+>
     <div class="share-topbar">
         <a
             href="{{ path('app_front_passport') }}"
@@ -377,7 +388,7 @@
             data-controller="back-nav"
             data-back-nav-fallback-value="{{ path('app_front_passport') }}"
             data-action="click->back-nav#go"
-            aria-label="Go back"
+            aria-label="{{ 'common.go_back'|trans }}"
         >
             <i class="fas fa-arrow-left"></i>
         </a>
@@ -404,10 +415,10 @@
 
             <div class="xp-panel">
                 <div class="xp-head">
-                    <span>Global Progress</span>
+                    <span>{{ 'share_card.global_progress'|trans }}</span>
                     <span>{{ globalProgress.percent|round }}%</span>
                 </div>
-                <div class="xp-bar" aria-label="Global progress">
+                <div class="xp-bar" aria-label="{{ 'share_card.global_progress'|trans }}">
                     <span style="width: {{ globalProgress.percent }}%;"></span>
                 </div>
             </div>
@@ -415,11 +426,11 @@
             <div>
                 <div class="share-stats">
                     <div class="share-stat">
-                        <small>Top Fandom</small>
-                        <strong>{{ topFandom and topFandom.artist ? topFandom.artist.name : 'No fandom yet' }}</strong>
+                        <small>{{ 'share_card.top_fandom'|trans }}</small>
+                        <strong>{{ topFandom and topFandom.artist ? topFandom.artist.name : ('share_card.no_fandom'|trans) }}</strong>
                     </div>
                     <div class="share-stat">
-                        <small>Fandom Level</small>
+                        <small>{{ 'share_card.fandom_level'|trans }}</small>
                         <strong>{{ topFandomLevelBadge ? topFandomLevelBadge.fullTitle ~ ' · Lv ' ~ topFandom.level : '-' }}</strong>
                     </div>
                 </div>
@@ -428,25 +439,25 @@
                     {% for userBadge in userBadges %}
                         <span class="badge">{{ userBadge.badge.name }}</span>
                     {% else %}
-                        <span class="badge">First badge loading</span>
+                        <span class="badge">{{ 'share_card.first_badge_loading'|trans }}</span>
                     {% endfor %}
                 </div>
             </div>
         </div>
 
         <div class="story-bottom">
-            <div class="caption">Scan the code to open this BYAS Passport story.</div>
-            <div class="qr-box" id="shareQr" aria-label="QR code" data-share-export-target="qr"></div>
+            <div class="caption">{{ 'share_card.caption'|trans }}</div>
+            <div class="qr-box" id="shareQr" aria-label="{{ 'share_card.qr_code'|trans }}" data-share-export-target="qr"></div>
         </div>
     </section>
 
     <div class="share-actions">
-        <a href="{{ path('app_front_passport') }}">Back to Passport</a>
-        <button type="button" class="primary" id="downloadStory" data-share-export-target="download" data-action="share-export#download">Download PNG</button>
+        <a href="{{ path('app_front_passport') }}">{{ 'share_card.back_to_passport'|trans }}</a>
+        <button type="button" class="primary" id="downloadStory" data-share-export-target="download" data-action="share-export#download">{{ 'share_card.download_png'|trans }}</button>
         {# <button type="button" data-action="share-export#print">Save as PDF</button> #}
     </div>
 
-    <p class="share-note" id="shareExportStatus" data-share-export-target="status">PNG export uses the story card only, including your uploaded avatar when available.</p>
+    <p class="share-note" id="shareExportStatus" data-share-export-target="status">{{ 'share_card.note'|trans }}</p>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>

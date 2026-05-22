@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Notifications{% endblock %}
+{% block title %}BYAS | {{ 'notifications.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -240,38 +240,38 @@
     <section class="hero">
         <div class="hero-top">
             <div>
-                <div class="kicker">Notifications</div>
-                <h1>Inbox</h1>
+                <div class="kicker">{{ 'notifications.title'|trans }}</div>
+                <h1>{{ 'notifications.inbox'|trans }}</h1>
             </div>
             {% if unreadCount > 0 %}
                 <form method="post" action="{{ path('app_front_notifications_mark_all_read') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('mark_all_notifications_read') }}">
-                    <button type="submit" class="mark-read-btn">Mark all as read</button>
+                    <button type="submit" class="mark-read-btn">{{ 'notifications.mark_all_read'|trans }}</button>
                 </form>
             {% endif %}
         </div>
-        <p class="muted">Public visits, message intents and new badge milestones are now stored and tracked.</p>
+        <p class="muted">{{ 'notifications.subtitle'|trans }}</p>
     </section>
 
     <section class="stats">
         <div class="stat">
-            <small>Total</small>
+            <small>{{ 'notifications.total'|trans }}</small>
             <strong>{{ notificationCount }}</strong>
         </div>
         <div class="stat">
-            <small>Unread</small>
+            <small>{{ 'notifications.unread'|trans }}</small>
             <strong>{{ unreadCount }}</strong>
         </div>
         <div class="stat">
-            <small>Read</small>
+            <small>{{ 'notifications.read'|trans }}</small>
             <strong>{{ notificationCount - unreadCount }}</strong>
         </div>
     </section>
 
     <section class="feed-shell">
         <div class="feed-head">
-            <h2>Recent activity</h2>
-            <span class="muted">{{ notifications|length }} events</span>
+            <h2>{{ 'notifications.recent_activity'|trans }}</h2>
+            <span class="muted">{{ 'notifications.events_count'|trans({ '%count%': notifications|length }) }}</span>
         </div>
 
         <div class="feed-list">
@@ -283,8 +283,8 @@
                         <i class="fas fa-bell"></i>
                     </div>
                     <div class="feed-content">
-                        <div class="feed-title">No notification yet</div>
-                        <div class="muted">Share your Passport or keep syncing your accounts to generate activity.</div>
+                        <div class="feed-title">{{ 'notifications.empty_title'|trans }}</div>
+                        <div class="muted">{{ 'notifications.empty_text'|trans }}</div>
                     </div>
                 </article>
             {% endfor %}

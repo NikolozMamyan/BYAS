@@ -4,6 +4,13 @@ export default class extends Controller {
     static targets = ['card', 'qr', 'download', 'status'];
     static values = {
         url: String,
+        loadingMessage: String,
+        renderingLabel: String,
+        renderingMessage: String,
+        failedMessage: String,
+        downloadLabel: String,
+        readyMessage: String,
+        qrFallbackLabel: String,
     };
 
     connect() {
@@ -16,23 +23,23 @@ export default class extends Controller {
 
     async download() {
         if (!window.html2canvas) {
-            this.setStatus('PNG export is still loading. Try again in a moment.');
+            this.setStatus(this.loadingMessageValue);
             return;
         }
 
         this.downloadTarget.disabled = true;
-        this.downloadTarget.textContent = 'Rendering...';
-        this.setStatus('Rendering your story card...');
+        this.downloadTarget.textContent = this.renderingLabelValue;
+        this.setStatus(this.renderingMessageValue);
 
         try {
             await this.waitForImages();
             const canvas = await this.renderCard();
             await this.deliverCanvas(canvas);
         } catch (error) {
-            this.setStatus('PNG export failed. Try again in a moment.');
+            this.setStatus(this.failedMessageValue);
         } finally {
             this.downloadTarget.disabled = false;
-            this.downloadTarget.textContent = 'Download PNG';
+            this.downloadTarget.textContent = this.downloadLabelValue;
         }
     }
 
@@ -78,7 +85,7 @@ export default class extends Controller {
         link.click();
         link.remove();
         window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-        this.setStatus('PNG ready for download.');
+        this.setStatus(this.readyMessageValue);
     }
 
     canvasToBlob(canvas) {
@@ -114,7 +121,7 @@ export default class extends Controller {
 
     initQr() {
         if (!window.QRCode) {
-            this.qrTarget.textContent = 'QR';
+            this.qrTarget.textContent = this.qrFallbackLabelValue;
             return;
         }
 

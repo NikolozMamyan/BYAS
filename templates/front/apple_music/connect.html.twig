@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BYAS | Connect Apple Music{% endblock %}
+{% block title %}BYAS | {{ 'apple_music.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -77,11 +77,19 @@
     data-apple-music-connect-app-name-value="{{ appName }}"
     data-apple-music-connect-link-url-value="{{ linkUrl }}"
     data-apple-music-connect-csrf-token-value="{{ csrfToken }}"
+    data-apple-music-connect-opening-message-value="{{ 'apple_music.status.opening'|trans }}"
+    data-apple-music-connect-authorization-failed-message-value="{{ 'apple_music.status.authorization_failed'|trans }}"
+    data-apple-music-connect-linking-message-value="{{ 'apple_music.status.linking'|trans }}"
+    data-apple-music-connect-response-status-prefix-value="{{ 'common.response_status'|trans }}"
+    data-apple-music-connect-connection-failed-message-value="{{ 'apple_music.status.connection_failed'|trans }}"
+    data-apple-music-connect-script-failed-message-value="{{ 'apple_music.status.script_failed'|trans }}"
+    data-apple-music-connect-connecting-label-value="{{ 'apple_music.status.connecting'|trans }}"
+    data-apple-music-connect-default-label-value="{{ 'apple_music.connect'|trans }}"
 >
-    <div class="kicker">Apple Music</div>
-    <h1>Connect your Apple Music account</h1>
-    <p>Authorize Apple Music to bring your recent listening into BYAS. This flow uses MusicKit on the web.</p>
-    <button type="button" class="btn" data-apple-music-connect-target="button" data-action="apple-music-connect#connect">Connect Apple Music</button>
+    <div class="kicker">{{ 'apple_music.kicker'|trans }}</div>
+    <h1>{{ 'apple_music.heading'|trans }}</h1>
+    <p>{{ 'apple_music.text'|trans }}</p>
+    <button type="button" class="btn" data-apple-music-connect-target="button" data-action="apple-music-connect#start">{{ 'apple_music.connect'|trans }}</button>
     <div class="status" data-apple-music-connect-target="status"></div>
 </main>
 

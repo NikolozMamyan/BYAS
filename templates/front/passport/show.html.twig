@@ -77,10 +77,17 @@
                             </div>
 
                             <div class="hero-actions">
-                                <button id="syncHistoryBtn" class="hero-btn hero-btn--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync" {{ connectedSyncProviders is empty ? 'disabled' : '' }}>
-                                    <i class="fas fa-rotate"></i>
-                                    {{ 'passport.sync'|trans }}
-                                </button>
+                                {% if connectedSyncProviders is empty %}
+                                    <a id="syncHistoryBtn" class="hero-btn hero-btn--primary hero-btn--connect" href="{{ path('app_spotify_start') }}" data-passport-sync-target="syncButton">
+                                        <i class="fas fa-plug-circle-bolt"></i>
+                                        {{ 'passport.connect_first_source'|trans }}
+                                    </a>
+                                {% else %}
+                                    <button id="syncHistoryBtn" class="hero-btn hero-btn--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync">
+                                        <i class="fas fa-rotate"></i>
+                                        {{ 'passport.sync'|trans }}
+                                    </button>
+                                {% endif %}
                                 <a href="{{ path('app_front_passport_share') }}" class="hero-btn">
                                     <i class="fas fa-share-nodes"></i>
                                     {{ 'passport.share'|trans }}
@@ -98,6 +105,33 @@
                             <span data-passport-sync-target="feedbackText"></span>
                         </div>
                     </div>
+
+                    {% if connectedSyncProviders is empty %}
+                        <section class="streaming-onboarding" aria-labelledby="streamingOnboardingTitle">
+                            <div class="streaming-onboarding__icon">
+                                <i class="fas fa-wave-square"></i>
+                            </div>
+                            <div class="streaming-onboarding__copy">
+                                <div class="streaming-onboarding__kicker">{{ 'passport.streaming_onboarding.kicker'|trans }}</div>
+                                <h2 id="streamingOnboardingTitle">{{ 'passport.streaming_onboarding.title'|trans }}</h2>
+                                <p>{{ 'passport.streaming_onboarding.text'|trans }}</p>
+                            </div>
+                            <div class="streaming-onboarding__actions">
+                                <a class="streaming-source streaming-source--spotify" href="{{ path('app_spotify_start') }}">
+                                    <i class="fab fa-spotify"></i>
+                                    <span>Spotify</span>
+                                </a>
+                                <a class="streaming-source streaming-source--youtube" href="{{ path('app_youtube_start') }}">
+                                    <i class="fab fa-youtube"></i>
+                                    <span>YouTube</span>
+                                </a>
+                                <a class="streaming-source streaming-source--apple" href="{{ path('app_apple_music_start') }}">
+                                    <i class="fab fa-apple"></i>
+                                    <span>Apple Music</span>
+                                </a>
+                            </div>
+                        </section>
+                    {% endif %}
                 </div>
             </div>
         </section>

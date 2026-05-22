@@ -4,12 +4,14 @@ namespace App\Tests\Functional;
 
 use App\Entity\AppNotification;
 use App\Repository\AppNotificationRepository;
+use App\Service\PublicPassportProfileService;
 
 class NotificationControllerTest extends FunctionalWebTestCase
 {
     public function testNotificationInboxDisplaysStoredNotifications(): void
     {
         $user = $this->createUser('notify@example.com', 'Notify Fan');
+        $this->completeOnboarding($user);
         $this->persistNotification($user, 'Sync completed', 'Spotify sync finished with 12 XP.');
         $this->login($user);
 
@@ -23,6 +25,7 @@ class NotificationControllerTest extends FunctionalWebTestCase
     public function testNotificationCanBeDeletedFromInbox(): void
     {
         $user = $this->createUser('delete@example.com', 'Delete Fan');
+        $this->completeOnboarding($user);
         $notification = $this->persistNotification($user, 'Delete me', 'This notification should be removed.');
         $this->login($user);
 
@@ -39,6 +42,7 @@ class NotificationControllerTest extends FunctionalWebTestCase
     public function testOpeningNotificationMarksItAsRead(): void
     {
         $user = $this->createUser('read@example.com', 'Read Fan');
+        $this->completeOnboarding($user);
         $notification = $this->persistNotification($user, 'Open me', 'This notification becomes read.', '/app/passport');
         $this->login($user);
 
@@ -70,5 +74,10 @@ class NotificationControllerTest extends FunctionalWebTestCase
         $this->entityManager->flush();
 
         return $notification;
+    }
+
+    private function completeOnboarding(\App\Entity\User $user): void
+    {
+        static::getContainer()->get(PublicPassportProfileService::class)->completeOnboarding($user);
     }
 }

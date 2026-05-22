@@ -16,6 +16,7 @@ class AppNotification
     public const TYPE_SYNC_COMPLETED = 'sync_completed';
     public const TYPE_PROVIDER_CONNECTED = 'provider_connected';
     public const TYPE_RANK_IMPROVED = 'rank_improved';
+    public const TYPE_STREAMING_SETUP_REMINDER = 'streaming_setup_reminder';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

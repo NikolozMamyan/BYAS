@@ -20,6 +20,9 @@
 {% elseif notification.type == 'public_visit' %}
     {% set icon = 'fa-eye' %}
     {% set iconClass = 'feed-icon--public-visit' %}
+{% elseif notification.type == 'streaming_setup_reminder' %}
+    {% set icon = 'fa-plug-circle-bolt' %}
+    {% set iconClass = 'feed-icon--streaming-setup' %}
 {% endif %}
 
 <article class="feed-item {{ notification.isRead ? '' : 'is-unread' }}">

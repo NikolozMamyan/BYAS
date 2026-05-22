@@ -42,6 +42,19 @@ class AppNotificationRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findLatestOfTypeForUser(User $user, string $type): ?AppNotification
+    {
+        return $this->createQueryBuilder('notification')
+            ->andWhere('notification.user = :user')
+            ->andWhere('notification.type = :type')
+            ->setParameter('user', $user)
+            ->setParameter('type', $type)
+            ->orderBy('notification.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function markAllReadForUser(User $user): void
     {
         $this->createQueryBuilder('notification')

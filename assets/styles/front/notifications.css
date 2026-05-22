@@ -176,6 +176,10 @@
         color: var(--soft-purple);
     }
 
+    .feed-icon--streaming-setup {
+        color: #1DB954;
+    }
+
     .feed-content {
         min-width: 0;
     }

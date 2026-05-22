@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\AppNotification;
 use App\Entity\Badge;
 use App\Entity\User;
+use App\Repository\AppNotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -13,6 +14,7 @@ class NotificationCenter
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly AppNotificationRepository $notificationRepository,
     ) {
     }
 
@@ -165,6 +167,38 @@ class NotificationCenter
                 'gain' => $gain,
             ]
         );
+    }
+
+    public function ensureStreamingSetupReminder(User $recipient): void
+    {
+        $latestReminder = $this->notificationRepository->findLatestOfTypeForUser(
+            $recipient,
+            AppNotification::TYPE_STREAMING_SETUP_REMINDER
+        );
+
+        if (
+            $latestReminder instanceof AppNotification
+            && (
+                !$latestReminder->isRead()
+                || $latestReminder->getCreatedAt() > new \DateTimeImmutable('-7 days')
+            )
+        ) {
+            return;
+        }
+
+        $this->notify(
+            $recipient,
+            AppNotification::TYPE_STREAMING_SETUP_REMINDER,
+            'Connect your first streaming account',
+            'Link Spotify, YouTube or Apple Music to unlock sync, play history and XP.',
+            $this->urlGenerator->generate('app_front_passport'),
+            null,
+            null,
+            null,
+            ['reason' => 'no_connected_streaming_account']
+        );
+
+        $this->flush();
     }
 
     private function humanizeProvider(string $provider): string

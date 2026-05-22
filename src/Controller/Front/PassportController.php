@@ -11,6 +11,7 @@ use App\Repository\XpTransactionRepository;
 use App\Service\AppleMusicService;
 use App\Service\AvatarManager;
 use App\Service\LevelBadgeCatalog;
+use App\Service\NotificationCenter;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,7 @@ class PassportController extends AbstractController
         PublicPassportContactIntentRepository $contactIntentRepository,
         AppleMusicService $appleMusicService,
         LevelBadgeCatalog $levelBadgeCatalog,
+        NotificationCenter $notificationCenter,
     ): Response
     {
         $user = $this->getUser();
@@ -85,6 +87,10 @@ class PassportController extends AbstractController
             ) {
                 $connectedSyncProviders[] = $streamingAccount->getProvider();
             }
+        }
+
+        if ($connectedSyncProviders === []) {
+            $notificationCenter->ensureStreamingSetupReminder($user);
         }
 
         $fandoms = $user->getUserFandoms()->toArray();

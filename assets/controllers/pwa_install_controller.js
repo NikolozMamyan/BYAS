@@ -3,6 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 const DISMISS_KEY = 'byas-pwa-install-dismissed-at';
 const INSTALLED_KEY = 'byas-pwa-installed';
 const DISMISS_TTL = 7 * 24 * 60 * 60 * 1000;
+const FALLBACK_DELAY = 1400;
 
 export default class extends Controller {
     static targets = ['dialog', 'status', 'installButton'];
@@ -18,6 +19,7 @@ export default class extends Controller {
         this.installAvailable = false;
         this.dismissedForSession = false;
         this.isStandalone = this.detectInstalledDisplayMode();
+        this.fallbackTimer = null;
 
         if (this.isStandalone) {
             window.localStorage.setItem(INSTALLED_KEY, '1');
@@ -35,18 +37,36 @@ export default class extends Controller {
         window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
         window.addEventListener('appinstalled', this.handleAppInstalled);
         document.addEventListener('keydown', this.handleEscape);
+
+        this.fallbackTimer = window.setTimeout(() => {
+            if (this.installAvailable || this.isInstalled() || this.dismissedForSession || this.wasDismissedRecently()) {
+                return;
+            }
+
+            this.open();
+        }, FALLBACK_DELAY);
     }
 
     disconnect() {
         window.removeEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
         window.removeEventListener('appinstalled', this.handleAppInstalled);
         document.removeEventListener('keydown', this.handleEscape);
+
+        if (this.fallbackTimer !== null) {
+            window.clearTimeout(this.fallbackTimer);
+            this.fallbackTimer = null;
+        }
     }
 
     handleBeforeInstallPrompt(event) {
         event.preventDefault();
         this.deferredPrompt = event;
         this.installAvailable = true;
+
+        if (this.fallbackTimer !== null) {
+            window.clearTimeout(this.fallbackTimer);
+            this.fallbackTimer = null;
+        }
 
         if (this.isInstalled() || this.dismissedForSession || this.wasDismissedRecently()) {
             return;

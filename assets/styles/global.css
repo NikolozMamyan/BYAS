@@ -20,19 +20,28 @@ body {
     background: var(--bg);
     color: #fff;
     overflow-x: hidden;
-    overscroll-behavior-y: none;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
     -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-overflow-scrolling: touch;
 }
 
 html {
     background: var(--bg);
+    height: auto;
+    scroll-behavior: smooth;
 }
 
 body {
+    position: relative;
     padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+body[data-turbo="false"] {
+    padding-bottom: max(env(safe-area-inset-bottom, 0), 96px);
 }
 
 body.pwa-install-open {
@@ -64,6 +73,7 @@ textarea {
         padding-top: env(safe-area-inset-top, 0);
         padding-left: env(safe-area-inset-left, 0);
         padding-right: env(safe-area-inset-right, 0);
+        padding-bottom: max(env(safe-area-inset-bottom, 0), 12px);
     }
 }
 

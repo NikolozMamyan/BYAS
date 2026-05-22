@@ -9,7 +9,7 @@ body {
 .ready-page {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   isolation: isolate;
 }
 
@@ -51,37 +51,37 @@ body {
 .ready-shell {
   position: relative;
   z-index: 1;
-  width: min(680px, calc(100% - 28px));
+  width: min(600px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 28px 0 84px;
+  padding: 22px 0 72px;
   text-align: center;
 }
 
 .ready-brand {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .ready-brand img {
-  width: min(220px, 50vw);
+  width: min(190px, 46vw);
   display: block;
   filter: drop-shadow(0 0 18px rgba(74, 72, 235, 0.34)) drop-shadow(0 0 22px rgba(248, 60, 176, 0.16));
 }
 
 .ready-share {
   position: absolute;
-  top: 26px;
+  top: 18px;
   right: 4px;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #f4efff;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   background: radial-gradient(circle at 30% 30%, rgba(99, 22, 208, 0.48), rgba(8, 8, 28, 0.92) 72%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 28px rgba(6, 7, 30, 0.42), 0 0 24px rgba(99, 22, 208, 0.24);
@@ -89,7 +89,7 @@ body {
 
 .ready-copy h1 {
   margin: 0;
-  font-size: clamp(42px, 7vw, 72px);
+  font-size: clamp(32px, 5.4vw, 56px);
   font-weight: 800;
   letter-spacing: -0.05em;
   line-height: 1.05;
@@ -103,14 +103,14 @@ body {
 
 .ready-copy p {
   margin: 12px 0 0;
-  font-size: clamp(18px, 3vw, 24px);
+  font-size: clamp(15px, 2.2vw, 18px);
   color: rgba(223, 214, 243, 0.84);
 }
 
 .ready-passport-wrap {
   position: relative;
-  margin: 24px auto 20px;
-  width: min(520px, 82vw);
+  margin: 20px auto 16px;
+  width: min(460px, 78vw);
 }
 
 .ready-orbit {
@@ -147,7 +147,7 @@ body {
 }
 
 .ready-fandom {
-  margin: 10px 0 24px;
+  margin: 8px 0 18px;
 }
 
 .ready-fandom-line {
@@ -156,7 +156,7 @@ body {
   justify-content: center;
   gap: 12px;
   color: rgba(223, 214, 243, 0.84);
-  font-size: 18px;
+  font-size: 15px;
 }
 
 .ready-fandom-line p {
@@ -170,7 +170,7 @@ body {
 
 .ready-fandom-name {
   margin-top: 8px;
-  font-size: clamp(38px, 6vw, 60px);
+  font-size: clamp(30px, 4.8vw, 46px);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #f7b4ff;
@@ -180,13 +180,13 @@ body {
 .ready-fandom-artist {
   margin-top: 4px;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 24px;
+  font-size: 18px;
   letter-spacing: 0.08em;
   color: rgba(185, 193, 255, 0.84);
 }
 
 .ready-submit {
-  min-height: 82px;
+  min-height: 68px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -194,7 +194,7 @@ body {
   gap: 14px;
   text-decoration: none;
   color: #fff;
-  font-size: clamp(22px, 3.2vw, 30px);
+  font-size: clamp(18px, 2.4vw, 22px);
   font-weight: 700;
   background: linear-gradient(90deg, #f83cb0 0%, #c837ff 42%, #4a48eb 100%);
   box-shadow: 0 0 28px rgba(248, 60, 176, 0.28), 0 0 34px rgba(74, 72, 235, 0.22);
@@ -207,7 +207,7 @@ body {
   justify-content: center;
   gap: 10px;
   color: rgba(223, 214, 243, 0.72);
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .ready-footnote i {

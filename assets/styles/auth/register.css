@@ -1,6 +1,6 @@
 :root {
-  --register-shell-width: 880px;
-  --register-card-width: 740px;
+  --register-shell-width: 760px;
+  --register-card-width: 640px;
 }
 
 body {
@@ -14,7 +14,7 @@ body {
 .register-page {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   isolation: isolate;
 }
 
@@ -109,22 +109,22 @@ body {
   z-index: 1;
   width: min(var(--register-shell-width), calc(100% - 48px));
   margin: 0 auto;
-  padding: 34px 0 240px;
+  padding: 24px 0 180px;
 }
 
 .register-back {
   position: absolute;
-  top: 34px;
+  top: 24px;
   left: 0;
-  width: 88px;
-  height: 88px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #f4efff;
   text-decoration: none;
-  font-size: 40px;
+  font-size: 30px;
   background:
     radial-gradient(circle at 30% 30%, rgba(99, 22, 208, 0.48), rgba(8, 8, 28, 0.92) 72%);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -146,12 +146,12 @@ body {
 .register-brand {
   display: flex;
   justify-content: center;
-  padding-top: 118px;
-  margin-bottom: 56px;
+  padding-top: 92px;
+  margin-bottom: 36px;
 }
 
 .register-brand img {
-  width: min(360px, 72vw);
+  width: min(300px, 68vw);
   display: block;
   filter:
     drop-shadow(0 0 20px rgba(74, 72, 235, 0.44))
@@ -162,7 +162,7 @@ body {
   position: relative;
   width: min(var(--register-card-width), 100%);
   margin: 0 auto;
-  border-radius: 46px;
+  border-radius: 34px;
 }
 
 .register-card-border {
@@ -186,7 +186,7 @@ body {
 .register-card-inner {
   position: relative;
   border-radius: inherit;
-  padding: 58px 52px 44px;
+  padding: 42px 34px 32px;
   background:
     linear-gradient(180deg, rgba(7, 10, 32, 0.88), rgba(4, 6, 24, 0.94)),
     radial-gradient(circle at 22% 28%, rgba(74, 72, 235, 0.12), transparent 24%),
@@ -222,7 +222,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-bottom: 42px;
+  margin-bottom: 28px;
 }
 
 .register-divider-line {
@@ -233,7 +233,7 @@ body {
 }
 
 .register-divider-star {
-  font-size: 34px;
+  font-size: 28px;
   line-height: 1;
   background: linear-gradient(180deg, #7cf3ff 0%, #d3abff 44%, #ff73d7 100%);
   -webkit-background-clip: text;
@@ -243,12 +243,12 @@ body {
 
 .register-copy {
   text-align: center;
-  margin-bottom: 42px;
+  margin-bottom: 28px;
 }
 
 .register-copy h1 {
   margin: 0 0 12px;
-  font-size: clamp(40px, 5vw, 62px);
+  font-size: clamp(30px, 4vw, 48px);
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #f6f3ff;
@@ -256,7 +256,7 @@ body {
 
 .register-copy p {
   margin: 0;
-  font-size: clamp(22px, 2.8vw, 28px);
+  font-size: clamp(17px, 2vw, 22px);
   font-weight: 500;
   color: rgba(226, 210, 255, 0.82);
 }
@@ -269,7 +269,7 @@ body {
 .register-social,
 .register-email-trigger,
 .register-submit {
-  min-height: 92px;
+  min-height: 72px;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -277,7 +277,7 @@ body {
   gap: 18px;
   text-decoration: none;
   font-family: 'Exo 2', sans-serif;
-  font-size: clamp(20px, 2.4vw, 28px);
+  font-size: clamp(18px, 2vw, 22px);
   font-weight: 700;
   letter-spacing: -0.02em;
   transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
@@ -286,7 +286,7 @@ body {
 .register-social i,
 .register-email-trigger i,
 .register-submit i {
-  font-size: 40px;
+  font-size: 28px;
 }
 
 .register-social:hover,
@@ -329,7 +329,7 @@ body {
   display: flex;
   align-items: center;
   gap: 22px;
-  margin: 34px 0;
+  margin: 24px 0;
 }
 
 .register-or-line {
@@ -341,7 +341,7 @@ body {
 .register-or-text {
   color: rgba(218, 190, 255, 0.84);
   font-family: 'Rajdhani', sans-serif;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -432,7 +432,7 @@ body {
 
 .register-field input {
   width: 100%;
-  min-height: 68px;
+  min-height: 60px;
   padding: 0 22px 0 62px;
   border-radius: 22px;
   box-sizing: border-box;
@@ -440,7 +440,7 @@ body {
   background: rgba(7, 10, 30, 0.82);
   color: #fff;
   font-family: 'Exo 2', sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
@@ -502,7 +502,7 @@ body {
   margin: 0;
   max-width: 500px;
   text-align: center;
-  font-size: clamp(16px, 2vw, 18px);
+  font-size: clamp(14px, 1.8vw, 16px);
   line-height: 1.65;
 }
 
@@ -514,7 +514,7 @@ body {
 .register-login-link {
   margin: 20px 0 0;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(223, 214, 243, 0.76);
 }
 

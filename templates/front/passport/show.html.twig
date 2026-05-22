@@ -910,58 +910,6 @@
             </div>
         </section>
 
-        <div class="activity-grid">
-            <section class="passport-panel">
-                <div class="passport-panel__inner">
-                    <div class="section-head">
-                        <div class="section-title">
-                            <i class="fas fa-bolt"></i>
-                            Recent XP
-                        </div>
-                    </div>
-
-                    <div class="activity-card">
-                        {% for transaction in xpTransactions %}
-                            <div class="activity-item">
-                                <div>
-                                    <div class="activity-item__title">{{ transaction.reason }}</div>
-                                    <div class="activity-item__meta">{{ transaction.artist ? transaction.artist.name ~ ' · ' : '' }}{{ transaction.occurredAt|date('M d, H:i') }}</div>
-                                </div>
-                                <div class="activity-item__pill">+{{ transaction.xpAmount }} XP</div>
-                            </div>
-                        {% else %}
-                            <div class="empty-state">No XP event yet.</div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </section>
-
-            <section class="passport-panel">
-                <div class="passport-panel__inner">
-                    <div class="section-head">
-                        <div class="section-title">
-                            <i class="fas fa-signal-stream"></i>
-                            Public Activity
-                        </div>
-                    </div>
-
-                    <div class="activity-card">
-                        {% for visit in recentPublicVisits %}
-                            <div class="activity-item">
-                                <div>
-                                    <div class="activity-item__title">Public profile opened</div>
-                                    <div class="activity-item__meta">{{ visit.createdAt|date('M d, H:i') }}{% if visit.viewer %} · {{ visit.viewer.displayName }}{% endif %}</div>
-                                </div>
-                                <div class="activity-item__pill">Visit</div>
-                            </div>
-                        {% else %}
-                            <div class="empty-state">No public visit yet.</div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </section>
-        </div>
-
         {% if successFlashes is not empty %}
             <div class="flash-grid">
                 {% for message in successFlashes %}

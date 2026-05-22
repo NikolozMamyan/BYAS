@@ -115,15 +115,14 @@ final class AuthController extends AbstractController
     #[Route('/logout', name: 'logout', methods: ['POST'])]
     public function logout(
         Request $request,
-        SessionManager $sessionManager
+        SessionManager $sessionManager,
+        AuthCookieService $authCookieService,
     ): JsonResponse {
-        $plainToken = $request->cookies->get('AUTH_TOKEN');
+        $plainToken = $request->cookies->get(AuthCookieService::AUTH_COOKIE_NAME);
 
-        if (!$plainToken) {
-            return $this->jsonError('Missing authentication token', 401);
-        }
-
-        $session = $sessionManager->findActiveSessionByPlainToken($plainToken);
+        $session = is_string($plainToken) && trim($plainToken) !== ''
+            ? $sessionManager->findActiveSessionByPlainToken($plainToken)
+            : null;
 
         $response = new JsonResponse([
             'message' => 'Logout successful',
@@ -133,8 +132,7 @@ final class AuthController extends AbstractController
             $sessionManager->revoke($session, 'logout');
         }
 
-        $response->headers->clearCookie('AUTH_TOKEN', '/');
-        $response->headers->clearCookie('PHPSESSID', '/');
+        $authCookieService->clearAuthenticationCookies($response);
 
         return $response;
     }

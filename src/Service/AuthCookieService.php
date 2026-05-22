@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthCookieService
 {
+    public const AUTH_COOKIE_NAME = 'AUTH_TOKEN';
+
     public function attachAuthenticationCookies(
         Response $response,
         Request $request,
@@ -19,9 +21,18 @@ class AuthCookieService
         $response->headers->setCookie($this->buildDeviceCookie($request, $deviceId));
     }
 
+    public function refreshAuthenticationCookie(
+        Response $response,
+        Request $request,
+        string $plainToken,
+        \DateTimeInterface $expiresAt
+    ): void {
+        $response->headers->setCookie($this->buildAuthCookie($request, $plainToken, $expiresAt));
+    }
+
     public function clearAuthenticationCookies(Response $response): void
     {
-        $response->headers->clearCookie('AUTH_TOKEN', '/');
+        $response->headers->clearCookie(self::AUTH_COOKIE_NAME, '/');
         $response->headers->clearCookie(DeviceIdentifier::COOKIE_NAME, '/');
         $response->headers->clearCookie('PHPSESSID', '/');
     }
@@ -31,7 +42,7 @@ class AuthCookieService
         string $plainToken,
         \DateTimeInterface $expiresAt
     ): Cookie {
-        return Cookie::create('AUTH_TOKEN')
+        return Cookie::create(self::AUTH_COOKIE_NAME)
             ->withValue($plainToken)
             ->withHttpOnly(true)
             ->withSecure($request->isSecure())

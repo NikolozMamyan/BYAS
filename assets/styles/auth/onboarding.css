@@ -9,7 +9,7 @@ body {
 .onboarding-page {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   isolation: isolate;
 }
 
@@ -89,24 +89,24 @@ body {
 .onboarding-shell {
   position: relative;
   z-index: 1;
-  width: min(820px, calc(100% - 32px));
+  width: min(720px, calc(100% - 28px));
   margin: 0 auto;
-  padding: 28px 0 220px;
+  padding: 22px 0 172px;
 }
 
 .onboarding-back {
   position: absolute;
-  top: 24px;
+  top: 18px;
   left: 0;
-  width: 58px;
-  height: 58px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #f4efff;
   text-decoration: none;
-  font-size: 24px;
+  font-size: 20px;
   background: radial-gradient(circle at 30% 30%, rgba(99, 22, 208, 0.48), rgba(8, 8, 28, 0.92) 72%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 12px 28px rgba(6, 7, 30, 0.42), 0 0 24px rgba(99, 22, 208, 0.24);
@@ -115,12 +115,12 @@ body {
 .onboarding-brand {
   display: flex;
   justify-content: center;
-  padding-top: 10px;
-  margin-bottom: 18px;
+  padding-top: 4px;
+  margin-bottom: 14px;
 }
 
 .onboarding-brand img {
-  width: min(220px, 52vw);
+  width: min(190px, 48vw);
   display: block;
   filter: drop-shadow(0 0 18px rgba(74, 72, 235, 0.34)) drop-shadow(0 0 22px rgba(248, 60, 176, 0.16));
 }
@@ -129,7 +129,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .onboarding-progress-step {
@@ -146,9 +146,9 @@ body {
 
 .onboarding-card {
   position: relative;
-  width: min(680px, 100%);
+  width: min(600px, 100%);
   margin: 0 auto;
-  border-radius: 36px;
+  border-radius: 28px;
 }
 
 .onboarding-card-border {
@@ -167,7 +167,7 @@ body {
 .onboarding-card-inner {
   position: relative;
   border-radius: inherit;
-  padding: 34px 24px 170px;
+  padding: 28px 20px 148px;
   background:
     linear-gradient(180deg, rgba(7, 10, 32, 0.88), rgba(4, 6, 24, 0.94)),
     radial-gradient(circle at 22% 28%, rgba(74, 72, 235, 0.12), transparent 24%),
@@ -178,12 +178,12 @@ body {
 
 .onboarding-copy {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .onboarding-copy h1 {
   margin: 0 0 8px;
-  font-size: clamp(28px, 5vw, 44px);
+  font-size: clamp(24px, 4vw, 36px);
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #f6f3ff;
@@ -191,7 +191,7 @@ body {
 
 .onboarding-copy p {
   margin: 0;
-  font-size: clamp(16px, 2.8vw, 22px);
+  font-size: clamp(15px, 2.2vw, 18px);
   color: rgba(226, 210, 255, 0.82);
 }
 
@@ -202,7 +202,7 @@ body {
 .onboarding-search {
   position: relative;
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .onboarding-search i {
@@ -215,7 +215,7 @@ body {
 
 .onboarding-search input {
   width: 100%;
-  min-height: 52px;
+  min-height: 48px;
   padding: 0 16px 0 44px;
   box-sizing: border-box;
   border-radius: 16px;
@@ -228,7 +228,7 @@ body {
 .onboarding-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
   padding-bottom: 12px;
 }
 
@@ -240,7 +240,7 @@ body {
   position: relative;
   border-radius: 20px;
   padding: 10px;
-  min-height: 212px;
+  min-height: 188px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(8, 10, 28, 0.86);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -302,7 +302,7 @@ body {
 }
 
 .onboarding-fandom-cover {
-  height: 166px;
+  height: 146px;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -324,7 +324,7 @@ body {
   margin-top: 10px;
   text-align: center;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -358,7 +358,7 @@ body {
 }
 
 .onboarding-submit {
-  min-height: 78px;
+  min-height: 68px;
     width: 100%;
   border-radius: 999px;
   display: flex;
@@ -367,7 +367,7 @@ body {
   gap: 14px;
   text-decoration: none;
   color: #fff;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   background: linear-gradient(90deg, #f83cb0 0%, #c837ff 42%, #4a48eb 100%);
   box-shadow: 0 0 28px rgba(248, 60, 176, 0.28), 0 0 34px rgba(74, 72, 235, 0.22);

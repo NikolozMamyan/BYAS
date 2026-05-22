@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Service\SessionManager;
+use App\Service\AuthCookieService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,20 +71,25 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     public function supports(Request $request): ?bool
     {
         $path = $this->normalizePath($request->getPathInfo());
+        $hasAuthToken = $this->hasAuthenticationToken($request);
 
-        if ($this->isPublicPath($path)) {
+        if ($this->isAssetPath($path) || $this->isDevToolPath($path)) {
             return false;
         }
 
-        if ($this->isAssetPath($path)) {
+        if ($this->isPublicAuthenticationEndpoint($path)) {
             return false;
         }
 
-        if ($this->isDevToolPath($path)) {
-            return false;
+        if ($this->isProtectedPath($path)) {
+            return true;
         }
 
-        return $this->isProtectedPath($path);
+        if ($hasAuthToken) {
+            return $this->shouldAutoAuthenticatePublicPage($path);
+        }
+
+        return false;
     }
 
     public function authenticate(Request $request): Passport
@@ -107,6 +113,8 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         }
 
         $this->sessionManager->touch($session);
+        $request->attributes->set('_security_main_user', $user);
+        $request->attributes->set('_auth_plain_token', $plainToken);
 
         return new SelfValidatingPassport(
             new UserBadge(
@@ -135,13 +143,20 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
                 'error' => $exception->getMessage(),
             ], Response::HTTP_UNAUTHORIZED);
 
-            $response->headers->clearCookie('AUTH_TOKEN', '/');
+            $response->headers->clearCookie(AuthCookieService::AUTH_COOKIE_NAME, '/');
 
             return $response;
         }
 
+        if ($this->isPublicPath($path)) {
+            $response = new RedirectResponse($request->getRequestUri());
+            $response->headers->clearCookie(AuthCookieService::AUTH_COOKIE_NAME, '/');
+            $response->headers->clearCookie('PHPSESSID', '/');
+            return $response;
+        }
+
         $response = new RedirectResponse('/login?next=' . rawurlencode($request->getRequestUri()));
-        $response->headers->clearCookie('AUTH_TOKEN', '/');
+        $response->headers->clearCookie(AuthCookieService::AUTH_COOKIE_NAME, '/');
 
         return $response;
     }
@@ -158,7 +173,7 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
             }
         }
 
-        $cookieToken = $request->cookies->get('AUTH_TOKEN');
+        $cookieToken = $request->cookies->get(AuthCookieService::AUTH_COOKIE_NAME);
 
         if (is_string($cookieToken)) {
             $cookieToken = trim($cookieToken);
@@ -169,6 +184,11 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         }
 
         return null;
+    }
+
+    private function hasAuthenticationToken(Request $request): bool
+    {
+        return $this->extractToken($request) !== null;
     }
 
     private function normalizePath(string $path): string
@@ -219,5 +239,15 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
         return $path === '/app'
             || str_starts_with($path, '/app/')
             || str_starts_with($path, '/api/');
+    }
+
+    private function shouldAutoAuthenticatePublicPage(string $path): bool
+    {
+        return in_array($path, ['/', '/login', '/register'], true);
+    }
+
+    private function isPublicAuthenticationEndpoint(string $path): bool
+    {
+        return in_array($path, ['/api/login', '/api/register', '/api/logout'], true);
     }
 }

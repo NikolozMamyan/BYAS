@@ -205,5 +205,15 @@
             <button class="btn btn-primary" type="submit" name="action" value="save_settings">{{ 'settings.save'|trans }}</button>
         </div>
     </form>
+
+    <section class="panel settings-danger-zone">
+        <div class="settings-danger-zone__copy">
+            <h2>{{ 'settings.logout.section'|trans }}</h2>
+            <p class="muted">{{ 'settings.logout.text'|trans }}</p>
+        </div>
+        <form method="post" action="{{ path('app_front_logout') }}" class="settings-danger-zone__form">
+            <button class="btn btn-danger" type="submit">{{ 'settings.logout.submit'|trans }}</button>
+        </form>
+    </section>
 </main>
 {% endblock %}

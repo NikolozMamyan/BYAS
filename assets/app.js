@@ -157,6 +157,8 @@ const edgeSwipeNavigation = (() => {
         document.documentElement.style.setProperty('--swipe-nav-offset', `${offset}px`);
         document.documentElement.style.setProperty('--swipe-nav-progress', String(progress));
         document.documentElement.style.setProperty('--swipe-nav-direction', String(direction));
+        document.documentElement.style.setProperty('--swipe-preview-left-visible', direction > 0 ? '1' : '0');
+        document.documentElement.style.setProperty('--swipe-preview-right-visible', direction < 0 ? '1' : '0');
     }
 
     function setTranslate(distance) {

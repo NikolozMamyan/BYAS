@@ -3,13 +3,31 @@
 {% set isFrontApp = app.user and currentRoute starts with 'app_front_' %}
 {% set swipePrevUrl = '' %}
 {% set swipeNextUrl = '' %}
+{% set swipePrevIcon = '' %}
+{% set swipeNextIcon = '' %}
+{% set swipePrevTitle = '' %}
+{% set swipeNextTitle = '' %}
+{% set swipePrevSubtitle = '' %}
+{% set swipeNextSubtitle = '' %}
 {% if currentRoute == 'app_front_passport' %}
   {% set swipeNextUrl = path('app_front_leaderboard') %}
+  {% set swipeNextIcon = 'fa-chart-line' %}
+  {% set swipeNextTitle = 'mobile_nav.leaderboard'|trans %}
+  {% set swipeNextSubtitle = 'swipe.preview.leaderboard'|trans %}
 {% elseif currentRoute starts with 'app_front_leaderboard' %}
   {% set swipePrevUrl = path('app_front_passport') %}
   {% set swipeNextUrl = path('app_front_play_history') %}
+  {% set swipePrevIcon = 'fa-id-card' %}
+  {% set swipeNextIcon = 'fa-clock-rotate-left' %}
+  {% set swipePrevTitle = 'mobile_nav.passport'|trans %}
+  {% set swipeNextTitle = 'mobile_nav.play_history'|trans %}
+  {% set swipePrevSubtitle = 'swipe.preview.passport'|trans %}
+  {% set swipeNextSubtitle = 'swipe.preview.play_history'|trans %}
 {% elseif currentRoute starts with 'app_front_play_history' %}
   {% set swipePrevUrl = path('app_front_leaderboard') %}
+  {% set swipePrevIcon = 'fa-chart-line' %}
+  {% set swipePrevTitle = 'mobile_nav.leaderboard'|trans %}
+  {% set swipePrevSubtitle = 'swipe.preview.leaderboard'|trans %}
 {% endif %}
 <html lang="{{ app.request.locale|default('en') }}">
   <head>
@@ -42,8 +60,28 @@
     {% block javascripts %}
       {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
-  </head>
+      </head>
       <body data-turbo="false" data-route="{{ currentRoute }}">
+        {% if isFrontApp and (swipePrevUrl or swipeNextUrl) %}
+        <div class="swipe-preview-layer" aria-hidden="true">
+          {% if swipePrevUrl %}
+          <div class="swipe-preview swipe-preview--left">
+            <div class="swipe-preview__chip">{{ 'swipe.preview.previous'|trans }}</div>
+            <div class="swipe-preview__icon"><i class="fas {{ swipePrevIcon }}"></i></div>
+            <div class="swipe-preview__title">{{ swipePrevTitle }}</div>
+            <div class="swipe-preview__text">{{ swipePrevSubtitle }}</div>
+          </div>
+          {% endif %}
+          {% if swipeNextUrl %}
+          <div class="swipe-preview swipe-preview--right">
+            <div class="swipe-preview__chip">{{ 'swipe.preview.next'|trans }}</div>
+            <div class="swipe-preview__icon"><i class="fas {{ swipeNextIcon }}"></i></div>
+            <div class="swipe-preview__title">{{ swipeNextTitle }}</div>
+            <div class="swipe-preview__text">{{ swipeNextSubtitle }}</div>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
         <div
           class="app-shell"
           id="appShell"

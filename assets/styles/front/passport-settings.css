@@ -319,6 +319,23 @@
     cursor: pointer;
 }
 
+.settings-danger-zone {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.settings-danger-zone__copy {
+    display: grid;
+    gap: 6px;
+}
+
+.settings-danger-zone__form {
+    flex: 0 0 auto;
+}
+
 @media (max-width: 640px) {
     .settings-page {
         width: min(100% - 20px, 860px);
@@ -344,6 +361,15 @@
     .lang-switcher__controls {
         display: grid;
         grid-template-columns: 1fr;
+    }
+
+    .settings-danger-zone {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .settings-danger-zone__form {
+        width: 100%;
     }
 
     .settings-page .btn,

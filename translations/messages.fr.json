@@ -290,6 +290,9 @@
   "settings.public_passport.section": "Passport public",
   "settings.save": "Enregistrer les changements",
   "settings.title_short": "Paramètres",
+  "settings.logout.section": "Déconnexion",
+  "settings.logout.submit": "Se déconnecter",
+  "settings.logout.text": "Ferme cette session sur cet appareil et retourne à l'expérience publique BYAS.",
   "share_card.back_to_passport": "Retour au Passport",
   "share_card.caption": "Scanne le code pour ouvrir cette story BYAS Passport.",
   "share_card.download_png": "Télécharger le PNG",
@@ -306,5 +309,10 @@
   "share_card.status.rendering": "Rendu de ta story card en cours...",
   "share_card.status.rendering_label": "Rendu...",
   "share_card.title": "Carte de partage",
-  "share_card.top_fandom": "Top fandom"
+  "share_card.top_fandom": "Top fandom",
+  "swipe.preview.leaderboard": "Aperçu du Hall of Fame et des classements en cours.",
+  "swipe.preview.next": "Page suivante",
+  "swipe.preview.passport": "Aperçu de ta carte d'identité, de ton niveau XP et de tes fandoms.",
+  "swipe.preview.play_history": "Aperçu de ta timeline d'écoute et de tes imports récents.",
+  "swipe.preview.previous": "Page précédente"
 }

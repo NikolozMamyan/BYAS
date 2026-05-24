@@ -275,6 +275,9 @@
   "settings.identity_sources.youtube_connect": "Connect YouTube",
   "settings.identity_sources.youtube_help": "Connect your YouTube activity.",
   "settings.kicker": "Account controls",
+  "settings.logout.section": "Sign out",
+  "settings.logout.submit": "Log out",
+  "settings.logout.text": "End this session on this device and return to the public BYAS experience.",
   "settings.public_passport.badges": "Badges",
   "settings.public_passport.badges_help": "Show your earned badges on the public passport.",
   "settings.public_passport.collection": "Collection",
@@ -306,5 +309,10 @@
   "share_card.status.rendering": "Rendering your story card...",
   "share_card.status.rendering_label": "Rendering...",
   "share_card.title": "Share Card",
-  "share_card.top_fandom": "Top Fandom"
+  "share_card.top_fandom": "Top Fandom",
+  "swipe.preview.leaderboard": "Preview the Hall of Fame and current competitive rankings.",
+  "swipe.preview.next": "Next page",
+  "swipe.preview.passport": "Preview your identity card, XP level and fandom highlights.",
+  "swipe.preview.play_history": "Preview your recent listening timeline and imported plays.",
+  "swipe.preview.previous": "Previous page"
 }

@@ -20,6 +20,10 @@ function isKeyScreenPath(pathname) {
   return KEY_SCREEN_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
+function shouldBypassCache(pathname) {
+  return pathname === '/app/notifications/panel';
+}
+
 async function refreshNavigationCache(request) {
   const response = await fetch(request);
 
@@ -81,6 +85,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  if (shouldBypassCache(url.pathname)) {
+    event.respondWith(fetch(request));
     return;
   }
 

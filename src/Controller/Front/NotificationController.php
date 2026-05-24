@@ -35,13 +35,19 @@ class NotificationController extends AbstractController
         $user = $this->getAuthenticatedUser();
         $notifications = $notificationRepository->findRecentForUser($user, 6);
 
-        return $this->json([
+        $response = $this->json([
             'html' => $this->renderView('front/notifications/_panel.html.twig', [
                 'notifications' => $notifications,
                 'unreadCount' => $notificationRepository->countUnreadForUser($user),
             ]),
             'unreadCount' => $notificationRepository->countUnreadForUser($user),
         ]);
+
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+
+        return $response;
     }
 
     #[Route('/{id}/open', name: 'app_front_notifications_open', methods: ['GET'], requirements: ['id' => '\d+'])]

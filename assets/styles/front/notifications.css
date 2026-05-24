@@ -1,16 +1,5 @@
     * { box-sizing: border-box; }
 
-    body {
-        margin: 0;
-        background:
-            radial-gradient(circle at 50% -10%, rgba(0, 242, 255, 0.13) 0%, transparent 40%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 122, 0.10) 0%, transparent 35%),
-            linear-gradient(180deg, #0B0E14 0%, #0E121A 100%);
-        color: var(--text-main);
-        font-family: 'Outfit', sans-serif;
-        padding-bottom: 120px;
-    }
-
     .notifications-page {
         max-width: 760px;
         margin: 0 auto;
@@ -22,18 +11,19 @@
     .hero,
     .stats,
     .feed-shell {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255,255,255,0.04);
-        box-shadow: 0 18px 42px rgba(0,0,0,0.28);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+        background:
+            radial-gradient(circle at top right, rgba(248, 60, 176, 0.08), transparent 24%),
+            radial-gradient(circle at left center, rgba(74, 72, 235, 0.1), transparent 24%),
+            linear-gradient(180deg, rgba(18, 8, 42, 0.92) 0%, rgba(8, 4, 22, 0.96) 100%);
+        box-shadow:
+            0 18px 42px rgba(0,0,0,0.28),
+            0 0 24px rgba(99, 22, 208, 0.12);
     }
 
     .hero {
-        padding: 18px;
-        background:
-            linear-gradient(135deg, rgba(255,0,122,0.16), transparent 36%),
-            linear-gradient(45deg, rgba(0,242,255,0.12), transparent 42%),
-            rgba(255,255,255,0.04);
+        padding: 20px;
     }
 
     .hero-top {
@@ -70,7 +60,7 @@
     .mark-read-btn {
         min-height: 40px;
         padding: 0 14px;
-        border-radius: 8px;
+        border-radius: 14px;
         border: 1px solid rgba(255,255,255,0.12);
         background: rgba(255,255,255,0.05);
         color: var(--text-main);
@@ -105,7 +95,7 @@
     }
 
     .feed-shell {
-        padding: 12px;
+        padding: 14px;
     }
 
     .feed-head {
@@ -127,7 +117,7 @@
         gap: 12px;
         align-items: center;
         padding: 12px;
-        border-radius: 8px;
+        border-radius: 16px;
         border: 1px solid rgba(255,255,255,0.08);
         background: rgba(255,255,255,0.03);
     }
@@ -146,7 +136,7 @@
     .feed-icon {
         width: 42px;
         height: 42px;
-        border-radius: 8px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -213,7 +203,7 @@
     .feed-delete {
         width: 34px;
         height: 34px;
-        border-radius: 8px;
+        border-radius: 12px;
         border: 1px solid rgba(255, 88, 120, 0.34);
         background: rgba(255, 88, 120, 0.08);
         color: #ff5878;
@@ -228,6 +218,12 @@
     }
 
     @media (max-width: 640px) {
+        .notifications-page {
+            padding-top: 84px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
         .stats {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -245,5 +241,9 @@
         .feed-time {
             grid-column: 2;
             text-align: left;
+        }
+
+        .mark-read-btn {
+            width: 100%;
         }
     }

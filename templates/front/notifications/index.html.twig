@@ -8,7 +8,21 @@
 {% endblock %}
 
 {% block body %}
-<main class="notifications-page">
+<main class="notifications-page native-screen is-hydrating" data-controller="screen-shell">
+    <div class="screen-skeleton notifications-screen-skeleton" aria-hidden="true">
+        <div class="screen-skeleton__panel"></div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--three">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
+        <div class="screen-skeleton__stack">
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+        </div>
+    </div>
+    <div class="screen-content">
     <section class="hero">
         <div class="hero-top">
             <div>
@@ -62,5 +76,6 @@
             {% endfor %}
         </div>
     </section>
+    </div>
 </main>
 {% endblock %}

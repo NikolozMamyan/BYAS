@@ -147,6 +147,21 @@
         display: block;
     }
 
+    .notif-panel__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 9996;
+        background: rgba(4, 3, 12, 0.56);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        opacity: 0;
+        transition: opacity 180ms ease;
+    }
+
+    .notif-panel__backdrop.is-visible {
+        opacity: 1;
+    }
+
     .notif-panel__shell {
         max-height: inherit;
         overflow: auto;
@@ -275,5 +290,46 @@
         .app-header {
             min-height: calc(72px + env(safe-area-inset-top, 0));
             padding-top: max(12px, env(safe-area-inset-top, 0));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .notif-panel {
+            position: fixed;
+            top: auto;
+            right: 10px;
+            left: 10px;
+            bottom: calc(max(8px, env(safe-area-inset-bottom, 0)) + 8px);
+            width: auto;
+            max-height: min(70dvh, 560px);
+            border-radius: 24px;
+            z-index: 9997;
+            animation: notif-sheet-in 180ms ease;
+        }
+
+        .notif-panel__shell {
+            padding: 14px;
+        }
+
+        .notif-panel__shell::before {
+            content: "";
+            display: block;
+            width: 44px;
+            height: 5px;
+            margin: 0 auto 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.2);
+        }
+    }
+
+    @keyframes notif-sheet-in {
+        from {
+            opacity: 0;
+            transform: translateY(14px) scale(0.985);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
     }

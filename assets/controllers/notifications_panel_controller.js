@@ -43,9 +43,15 @@ export default class extends Controller {
     open() {
         this.isOpen = true;
         this.panelTarget.hidden = false;
+        this.panelTarget.removeAttribute('hidden');
+        this.panelTarget.style.display = 'block';
+        this.panelTarget.style.visibility = 'visible';
+        this.applyPanelLayout();
         this.panelTarget.classList.add('is-open');
         if (this.hasBackdropTarget && this.isCompactLayout()) {
             this.backdropTarget.hidden = false;
+            this.backdropTarget.removeAttribute('hidden');
+            this.backdropTarget.style.display = 'block';
             window.requestAnimationFrame(() => {
                 if (this.hasBackdropTarget) {
                     this.backdropTarget.classList.add('is-visible');
@@ -63,10 +69,14 @@ export default class extends Controller {
 
         this.isOpen = false;
         this.panelTarget.hidden = true;
+        this.resetPanelLayout();
+        this.panelTarget.style.display = '';
+        this.panelTarget.style.visibility = '';
         this.panelTarget.classList.remove('is-open');
         if (this.hasBackdropTarget) {
             this.backdropTarget.classList.remove('is-visible');
             this.backdropTarget.hidden = true;
+            this.backdropTarget.style.display = '';
         }
         document.body.classList.remove('sheet-open');
         this.buttonTarget.setAttribute('aria-expanded', 'false');
@@ -147,6 +157,32 @@ export default class extends Controller {
         if (document.visibilityState === 'visible') {
             this.loadPanel();
         }
+    }
+
+    applyPanelLayout() {
+        if (!this.isCompactLayout()) {
+            return;
+        }
+
+        this.panelTarget.style.position = 'fixed';
+        this.panelTarget.style.top = '0';
+        this.panelTarget.style.bottom = 'auto';
+        this.panelTarget.style.left = '10px';
+        this.panelTarget.style.right = '10px';
+        this.panelTarget.style.width = 'auto';
+        this.panelTarget.style.maxHeight = 'min(70dvh, 560px)';
+        this.panelTarget.style.zIndex = '9997';
+    }
+
+    resetPanelLayout() {
+        this.panelTarget.style.position = '';
+        this.panelTarget.style.top = '';
+        this.panelTarget.style.bottom = '';
+        this.panelTarget.style.left = '';
+        this.panelTarget.style.right = '';
+        this.panelTarget.style.width = '';
+        this.panelTarget.style.maxHeight = '';
+        this.panelTarget.style.zIndex = '';
     }
 
     isCompactLayout() {

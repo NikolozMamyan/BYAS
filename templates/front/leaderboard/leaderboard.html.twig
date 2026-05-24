@@ -8,7 +8,21 @@
 {% endblock %}
 
 {% block body %}
-<div class="leaderboard-page">
+<div class="leaderboard-page native-screen is-hydrating" data-controller="screen-shell">
+    <div class="screen-skeleton leaderboard-screen-skeleton" aria-hidden="true">
+        <div class="screen-skeleton__panel"></div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--three">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
+        <div class="screen-skeleton__stack">
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+        </div>
+    </div>
+    <div class="screen-content">
     {% set first = podium[0] ?? null %}
     {% set second = podium[1] ?? null %}
     {% set third = podium[2] ?? null %}
@@ -171,6 +185,7 @@
             {% endfor %}
         </div>
     </section>
+    </div>
 </div>
 {% endblock %}
 

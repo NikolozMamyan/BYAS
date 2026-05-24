@@ -24,7 +24,9 @@
     data-mobile-hub-qr-detected-message-value="{{ 'mobile_hub.status.qr_detected'|trans }}"
     data-mobile-hub-qr-scan-failed-message-value="{{ 'mobile_hub.status.qr_failed'|trans }}"
 >
+    <div class="mobile-hub__backdrop" data-mobile-hub-target="backdrop" data-action="click->mobile-hub#close" hidden></div>
     <div class="mobile-hub" data-mobile-hub-target="sheet" hidden>
+        <div class="mobile-hub__handle"></div>
         <div class="mobile-hub__head">
             <div>
                 <div class="mobile-hub__title">{{ 'mobile_hub.title'|trans }}</div>

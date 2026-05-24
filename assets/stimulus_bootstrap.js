@@ -10,6 +10,7 @@ import NotificationsPanelController from './controllers/notifications_panel_cont
 import MobileHubController from './controllers/mobile_hub_controller.js';
 import AppleMusicConnectController from './controllers/apple_music_connect_controller.js';
 import PwaInstallController from './controllers/pwa_install_controller.js';
+import ScreenShellController from './controllers/screen_shell_controller.js';
 import './controllers/csrf_protection_controller.js';
 
 const app = startStimulusApp();
@@ -24,3 +25,4 @@ app.register('notifications-panel', NotificationsPanelController);
 app.register('mobile-hub', MobileHubController);
 app.register('apple-music-connect', AppleMusicConnectController);
 app.register('pwa-install', PwaInstallController);
+app.register('screen-shell', ScreenShellController);

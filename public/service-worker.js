@@ -1,5 +1,6 @@
-const CACHE_VERSION = 'byas-v2';
+const CACHE_VERSION = 'byas-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
+const NAVIGATION_CACHE = `${CACHE_VERSION}-navigation`;
 const STATIC_ASSETS = [
   '/',
   '/manifest.webmanifest',
@@ -9,6 +10,44 @@ const STATIC_ASSETS = [
   '/screenshots/pwa-home-narrow.png',
   '/screenshots/pwa-passport-wide.png',
 ];
+const KEY_SCREEN_PREFIXES = [
+  '/app/passport',
+  '/app/leaderboard',
+  '/app/play-history',
+];
+
+function isKeyScreenPath(pathname) {
+  return KEY_SCREEN_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+async function refreshNavigationCache(request) {
+  const response = await fetch(request);
+
+  if (response && response.ok) {
+    const cache = await caches.open(NAVIGATION_CACHE);
+    await cache.put(request, response.clone());
+  }
+
+  return response;
+}
+
+async function staleWhileRevalidateNavigation(event) {
+  const cachedResponse = await caches.match(event.request, { cacheName: NAVIGATION_CACHE });
+  const networkUpdate = refreshNavigationCache(event.request)
+    .then((response) => {
+      event.waitUntil(Promise.resolve(response));
+      return response;
+    })
+    .catch(() => null);
+
+  if (cachedResponse) {
+    event.waitUntil(networkUpdate);
+    return cachedResponse;
+  }
+
+  const freshResponse = await networkUpdate;
+  return freshResponse || caches.match('/');
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -23,7 +62,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => key !== STATIC_CACHE)
+          .filter((key) => ![STATIC_CACHE, NAVIGATION_CACHE].includes(key))
           .map((key) => caches.delete(key))
       )
     )
@@ -46,8 +85,22 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
+    if (isKeyScreenPath(url.pathname)) {
+      event.respondWith(staleWhileRevalidateNavigation(event));
+      return;
+    }
+
     event.respondWith(
-      fetch(request).catch(() => caches.match('/'))
+      fetch(request)
+        .then(async (response) => {
+          if (response && response.ok) {
+            const cache = await caches.open(NAVIGATION_CACHE);
+            await cache.put(request, response.clone());
+          }
+
+          return response;
+        })
+        .catch(() => caches.match(request, { cacheName: NAVIGATION_CACHE }).then((cached) => cached || caches.match('/')))
     );
 
     return;
@@ -58,19 +111,24 @@ self.addEventListener('fetch', (event) => {
     || request.destination === 'script'
     || request.destination === 'style'
     || request.destination === 'worker'
+    || request.destination === 'font'
+    || request.destination === 'image'
   ) {
     event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          const responseToCache = networkResponse.clone();
+      caches.match(request, { cacheName: STATIC_CACHE }).then((cachedResponse) => {
+        const networkResponse = fetch(request)
+          .then(async (response) => {
+            if (response && response.ok) {
+              const cache = await caches.open(STATIC_CACHE);
+              await cache.put(request, response.clone());
+            }
 
-          caches.open(STATIC_CACHE).then((cache) => {
-            cache.put(request, responseToCache);
-          });
+            return response;
+          })
+          .catch(() => cachedResponse);
 
-          return networkResponse;
-        })
-        .catch(() => caches.match(request))
+        return cachedResponse || networkResponse;
+      })
     );
 
     return;
@@ -82,12 +140,11 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse;
       }
 
-      return fetch(request).then((networkResponse) => {
-        const responseToCache = networkResponse.clone();
-
-        caches.open(STATIC_CACHE).then((cache) => {
-          cache.put(request, responseToCache);
-        });
+      return fetch(request).then(async (networkResponse) => {
+        if (networkResponse && networkResponse.ok) {
+          const cache = await caches.open(STATIC_CACHE);
+          await cache.put(request, networkResponse.clone());
+        }
 
         return networkResponse;
       });

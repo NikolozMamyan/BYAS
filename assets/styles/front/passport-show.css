@@ -253,6 +253,11 @@ body {
             cursor: pointer;
         }
 
+        .hero-btn:active,
+        .streaming-source:active {
+            transform: scale(0.985);
+        }
+
         .hero-btn--primary {
             background: linear-gradient(90deg, rgba(74, 72, 235, 0.32), rgba(248, 60, 176, 0.24));
             border-color: rgba(132, 102, 255, 0.34);
@@ -770,11 +775,24 @@ body {
         @media (max-width: 767px) {
             .passport-page {
                 padding-top: 84px;
+                padding-left: 12px;
+                padding-right: 12px;
             }
 
             .hero-main {
                 grid-template-columns: 1fr;
                 text-align: center;
+            }
+
+            .passport-panel,
+            .passport-panel__inner,
+            .stat-card,
+            .fandom-card,
+            .collection-card,
+            .badge-card,
+            .share-card,
+            .empty-state {
+                border-radius: 18px;
             }
 
             .hero-avatar-wrap {
@@ -786,6 +804,14 @@ body {
             .hero-tier,
             .hero-actions {
                 justify-content: center;
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .hero-btn {
+                width: 100%;
+                justify-content: center;
+                min-height: 46px;
             }
 
             .activity-grid,
@@ -794,14 +820,14 @@ body {
             }
 
             .stats-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: 1fr;
             }
 
             .fandom-grid,
             .collection-grid,
             .badge-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 8px;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
             }
 
             .stat-card {

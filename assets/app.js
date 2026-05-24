@@ -95,6 +95,27 @@ const pageTransition = (() => {
 pageTransition.bind();
 window.BYASPageTransition = pageTransition;
 
+function warmNavigationScreens() {
+    const shell = document.getElementById('appShell');
+
+    if (!shell) {
+        return;
+    }
+
+    [shell.dataset.swipePrevUrl, shell.dataset.swipeNextUrl]
+        .filter((url, index, entries) => typeof url === 'string' && url !== '' && entries.indexOf(url) === index)
+        .forEach((url) => {
+            window.setTimeout(() => {
+                fetch(url, {
+                    credentials: 'include',
+                    headers: {
+                        'X-BYAS-Prefetch': '1',
+                    },
+                }).catch(() => undefined);
+            }, 120);
+        });
+}
+
 const edgeSwipeNavigation = (() => {
     const EDGE_SIZE = 28;
     const ACTIVATE_DISTANCE = 92;
@@ -321,6 +342,7 @@ const edgeSwipeNavigation = (() => {
 })();
 
 edgeSwipeNavigation.bind();
+warmNavigationScreens();
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

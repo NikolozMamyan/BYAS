@@ -31,6 +31,10 @@
     --swipe-nav-direction: 1;
     --swipe-preview-left-visible: 0;
     --swipe-preview-right-visible: 0;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
 }
 
 * {
@@ -160,6 +164,8 @@ body {
     position: relative;
     padding-bottom: env(safe-area-inset-bottom, 0);
     will-change: opacity;
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
 }
 
 .app-shell {
@@ -227,6 +233,16 @@ html.is-edge-swiping .bottom-nav-wrap {
     }
 }
 
+@keyframes skeleton-shimmer {
+    from {
+        background-position: 200% 0, 0 0;
+    }
+
+    to {
+        background-position: -40% 0, 0 0;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     body {
         animation: none;
@@ -257,12 +273,17 @@ body.pwa-install-open {
     overflow: hidden;
 }
 
+body.sheet-open {
+    overflow: hidden;
+}
+
 a,
 button,
 input,
 select,
 textarea {
     touch-action: manipulation;
+    -webkit-touch-callout: none;
 }
 
 button,
@@ -270,6 +291,219 @@ input,
 select,
 textarea {
     font: inherit;
+}
+
+a,
+button,
+[role="button"],
+.nav-link,
+.hero-btn,
+.btn,
+.app-header__icon,
+.action-btn,
+.fandom-tab,
+.rank-item,
+.play-item,
+.stat-card,
+.collection-card,
+.badge-card,
+.fandom-card {
+    transition:
+        transform 160ms ease,
+        opacity 160ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease,
+        background 180ms ease,
+        color 180ms ease;
+}
+
+@media (pointer: coarse) {
+    a:active,
+    button:active,
+    [role="button"]:active,
+    .nav-link:active,
+    .hero-btn:active,
+    .btn:active,
+    .app-header__icon:active,
+    .action-btn:active,
+    .fandom-tab:active,
+    .rank-item:active,
+    .play-item:active {
+        transform: scale(0.985);
+    }
+}
+
+.native-screen {
+    position: relative;
+}
+
+.screen-content {
+    position: relative;
+    z-index: 1;
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.screen-skeleton {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.native-screen.is-hydrating .screen-skeleton {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.native-screen.is-hydrating .screen-content {
+    opacity: 0.01;
+    transform: translateY(6px);
+}
+
+.screen-skeleton__panel,
+.screen-skeleton__card,
+.screen-skeleton__row {
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%),
+        linear-gradient(180deg, rgba(14, 8, 32, 0.88), rgba(8, 5, 22, 0.94));
+    background-size: 240% 100%, 100% 100%;
+    animation: skeleton-shimmer 1.4s linear infinite;
+}
+
+.screen-skeleton__panel {
+    min-height: 160px;
+    padding: 18px;
+}
+
+.screen-skeleton__panel--hero {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.screen-skeleton__avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%),
+        linear-gradient(180deg, rgba(14, 8, 32, 0.88), rgba(8, 5, 22, 0.94));
+    background-size: 240% 100%, 100% 100%;
+    animation: skeleton-shimmer 1.4s linear infinite;
+}
+
+.screen-skeleton__copy {
+    display: grid;
+    gap: 10px;
+}
+
+.screen-skeleton__bar {
+    display: block;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+}
+
+.screen-skeleton__bar--lg { width: 58%; }
+.screen-skeleton__bar--md { width: 44%; }
+.screen-skeleton__bar--sm { width: 28%; }
+.screen-skeleton__bar--full { width: 100%; }
+
+.screen-skeleton__grid {
+    display: grid;
+    gap: 12px;
+}
+
+.screen-skeleton__grid--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.screen-skeleton__grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.screen-skeleton__card {
+    min-height: 116px;
+}
+
+.screen-skeleton__stack {
+    display: grid;
+    gap: 10px;
+}
+
+.screen-skeleton__row {
+    min-height: 78px;
+}
+
+.sheet-backdrop,
+.mobile-hub__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9996;
+    background: rgba(4, 3, 12, 0.56);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 180ms ease;
+}
+
+.sheet-backdrop.is-visible,
+.mobile-hub__backdrop.is-visible {
+    opacity: 1;
+}
+
+.native-sheet__handle,
+.mobile-hub__handle {
+    width: 44px;
+    height: 5px;
+    margin: 0 auto 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.2);
+}
+
+.native-sheet__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.native-sheet__title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+}
+
+.native-sheet__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: white;
+}
+
+.native-sheet__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.native-sheet__button {
+    width: auto;
+    margin-bottom: 0;
 }
 
 @media (display-mode: standalone) {
@@ -287,6 +521,20 @@ textarea {
 }
 
 @media (max-width: 640px) {
+    .screen-skeleton__panel--hero {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .screen-skeleton__grid--three {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .screen-skeleton__card {
+        min-height: 92px;
+    }
+
     .swipe-preview {
         top: 92px;
         bottom: 104px;

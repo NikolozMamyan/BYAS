@@ -9,14 +9,34 @@
 {% endblock %}
 
 {% block body %}
-<div class="container" data-controller="play-history">
+<div class="container native-screen is-hydrating" data-controller="screen-shell play-history">
+    <div class="screen-skeleton play-history-screen-skeleton" aria-hidden="true">
+        <div class="screen-skeleton__panel"></div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--three">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
+        <div class="screen-skeleton__stack">
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+            <div class="screen-skeleton__row"></div>
+        </div>
+    </div>
+    <div class="screen-content">
     <!-- Header -->
     <div class="page-header">
-        <h1 class="page-title">
-            <i class="fas fa-music"></i>
-            {{ 'play_history.title'|trans }}
-        </h1>
-        <p class="page-subtitle">{{ 'play_history.subtitle'|trans }}</p>
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-music"></i>
+                {{ 'play_history.title'|trans }}
+            </h1>
+            <p class="page-subtitle">{{ 'play_history.subtitle'|trans }}</p>
+        </div>
+        <button type="button" class="page-mobile-action" data-action="play-history#openFilters">
+            <i class="fas fa-sliders"></i>
+            {{ 'common.filters'|trans }}
+        </button>
     </div>
 
     {% if playHistory is not empty %}
@@ -45,7 +65,15 @@
         </div>
 
         <!-- Filters Section -->
-        <div class="filters-section">
+        <div class="sheet-backdrop" data-play-history-target="backdrop" data-action="click->play-history#closeFilters" hidden></div>
+        <div class="filters-section native-sheet" data-play-history-target="sheet">
+            <div class="native-sheet__handle"></div>
+            <div class="native-sheet__head">
+                <div class="native-sheet__title">{{ 'common.filters'|trans }}</div>
+                <button type="button" class="native-sheet__close" data-action="play-history#closeFilters" aria-label="{{ 'common.close'|trans }}">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
             <div class="filters-grid">
                 <div class="filter-group">
                     <label class="filter-label">{{ 'play_history.search_track'|trans }}</label>
@@ -68,6 +96,9 @@
                         <option value="episode">{{ 'play_history.episode'|trans }}</option>
                     </select>
                 </div>
+            </div>
+            <div class="native-sheet__actions">
+                <button type="button" class="btn-secondary native-sheet__button" data-action="play-history#closeFilters">{{ 'common.close'|trans }}</button>
             </div>
         </div>
 
@@ -214,6 +245,7 @@
             <p class="empty-text">{{ 'play_history.empty_text'|trans }}</p>
         </div>
     {% endif %}
+    </div>
 </div>
 
 {% endblock %}

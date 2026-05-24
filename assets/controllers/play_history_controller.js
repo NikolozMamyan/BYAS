@@ -1,15 +1,17 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['search', 'provider', 'type', 'item'];
+    static targets = ['search', 'provider', 'type', 'item', 'sheet', 'backdrop'];
 
     connect() {
+        this.isSheetOpen = false;
         this.showInitialItems();
         this.observeItems();
     }
 
     disconnect() {
         this.observer?.disconnect();
+        document.body.classList.remove('sheet-open');
     }
 
     toggleDetails(event) {
@@ -46,6 +48,44 @@ export default class extends Controller {
                 item.classList.remove('visible');
             }
         });
+
+        if (window.matchMedia('(max-width: 768px)').matches) {
+            this.closeFilters();
+        }
+    }
+
+    openFilters() {
+        if (!this.hasSheetTarget || !window.matchMedia('(max-width: 768px)').matches) {
+            return;
+        }
+
+        this.isSheetOpen = true;
+        this.sheetTarget.classList.add('is-open');
+        if (this.hasBackdropTarget) {
+            this.backdropTarget.hidden = false;
+            window.requestAnimationFrame(() => {
+                this.backdropTarget.classList.add('is-visible');
+            });
+        }
+        document.body.classList.add('sheet-open');
+    }
+
+    closeFilters() {
+        if (!this.hasSheetTarget) {
+            return;
+        }
+
+        this.isSheetOpen = false;
+        this.sheetTarget.classList.remove('is-open');
+        if (this.hasBackdropTarget) {
+            this.backdropTarget.classList.remove('is-visible');
+            window.setTimeout(() => {
+                if (!this.isSheetOpen && this.hasBackdropTarget) {
+                    this.backdropTarget.hidden = true;
+                }
+            }, 180);
+        }
+        document.body.classList.remove('sheet-open');
     }
 
     showInitialItems() {

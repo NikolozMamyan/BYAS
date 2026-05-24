@@ -14,8 +14,8 @@
 {% set successFlashes = app.flashes('success') %}
 {% set errorFlashes = app.flashes('error') %}
 <main
-    class="passport-page"
-    data-controller="passport-sync"
+    class="passport-page native-screen is-hydrating"
+    data-controller="screen-shell passport-sync"
     data-passport-sync-providers-value="{{ connectedSyncProviders|json_encode|e('html_attr') }}"
     data-passport-sync-sync-label-value="{{ 'passport.sync'|trans }}"
     data-passport-sync-syncing-label-value="{{ 'passport.syncing'|trans }}"
@@ -32,6 +32,27 @@
     data-passport-sync-unknown-status-label-value="{{ 'passport.sync_status.unknown'|trans }}"
     data-passport-sync-new-label-value="{{ 'passport.sync_status.new'|trans }}"
 >
+    <div class="screen-skeleton passport-screen-skeleton" aria-hidden="true">
+        <div class="screen-skeleton__panel screen-skeleton__panel--hero">
+            <div class="screen-skeleton__avatar"></div>
+            <div class="screen-skeleton__copy">
+                <span class="screen-skeleton__bar screen-skeleton__bar--lg"></span>
+                <span class="screen-skeleton__bar screen-skeleton__bar--md"></span>
+                <span class="screen-skeleton__bar screen-skeleton__bar--sm"></span>
+                <span class="screen-skeleton__bar screen-skeleton__bar--full"></span>
+            </div>
+        </div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--two">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--three">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
+    </div>
+    <div class="screen-content">
     <div class="passport-stack">
         <section class="passport-panel">
             <div class="passport-panel__inner">
@@ -293,6 +314,7 @@
                 {% endfor %}
             </div>
         {% endif %}
+    </div>
     </div>
 </main>
 {% endblock %}

@@ -150,6 +150,7 @@
         white-space: nowrap;
         flex-shrink: 0;
         transition: 0.2s ease;
+        text-decoration: none;
     }
 
     .fandom-tab.active {
@@ -413,7 +414,7 @@
     }
 
     .rank-item:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
         border-color: rgba(255,255,255,0.10);
     }
 
@@ -509,6 +510,7 @@
 
         .ranking-stats {
             gap: 8px;
+            grid-template-columns: 1fr;
         }
 
         .ranking-stat {
@@ -617,5 +619,15 @@
 
         .rank-item {
             padding: 10px;
+            align-items: flex-start;
+        }
+
+        .rank-info {
+            gap: 10px;
+        }
+
+        .rank-user-data .xp {
+            white-space: normal;
+            line-height: 1.35;
         }
     }

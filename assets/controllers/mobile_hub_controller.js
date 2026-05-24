@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['sheet', 'copyButton', 'status', 'scanner', 'scannerVideo', 'scannerStatus'];
+    static targets = ['sheet', 'backdrop', 'copyButton', 'status', 'scanner', 'scannerVideo', 'scannerStatus'];
     static values = {
         publicUrl: String,
         publicLinkUnavailableMessage: String,
@@ -53,14 +53,32 @@ export default class extends Controller {
         this.isOpen = false;
         this.stopScanner();
         this.sheetTarget.hidden = true;
+        if (this.hasBackdropTarget) {
+            this.backdropTarget.classList.remove('is-visible');
+            window.setTimeout(() => {
+                if (!this.isOpen && this.hasBackdropTarget) {
+                    this.backdropTarget.hidden = true;
+                }
+            }, 180);
+        }
         this.element.classList.remove('is-open');
+        document.body.classList.remove('sheet-open');
         this.setStatus('');
     }
 
     open() {
         this.isOpen = true;
         this.sheetTarget.hidden = false;
+        if (this.hasBackdropTarget) {
+            this.backdropTarget.hidden = false;
+            window.requestAnimationFrame(() => {
+                if (this.hasBackdropTarget) {
+                    this.backdropTarget.classList.add('is-visible');
+                }
+            });
+        }
         this.element.classList.add('is-open');
+        document.body.classList.add('sheet-open');
     }
 
     async copy(event) {

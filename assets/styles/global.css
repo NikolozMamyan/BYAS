@@ -186,19 +186,6 @@ body::before {
     transition: opacity 70ms ease;
 }
 
-body {
-    animation: page-enter 90ms ease both;
-}
-
-html.is-page-leaving body {
-    opacity: 0;
-    transition: opacity 70ms ease;
-}
-
-html.is-page-leaving body::before {
-    opacity: 1;
-}
-
 html.is-edge-swiping::before {
     opacity: calc(var(--swipe-nav-progress) * 0.9);
 }
@@ -223,14 +210,22 @@ html.is-edge-swiping .bottom-nav-wrap {
     transition: none;
 }
 
-@keyframes page-enter {
-    from {
-        opacity: 0;
-    }
+html.is-edge-swiping .app-header,
+html.is-edge-swiping .bottom-nav,
+html.is-edge-swiping .passport-panel,
+html.is-edge-swiping .ranking-hero-inner,
+html.is-edge-swiping .filters-section,
+html.is-edge-swiping .play-item,
+html.is-edge-swiping .stat-card,
+html.is-edge-swiping .rank-item {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
 
-    to {
-        opacity: 1;
-    }
+html.is-edge-swiping .app-shell,
+html.is-edge-swiping .app-header,
+html.is-edge-swiping .bottom-nav-wrap {
+    contain: layout paint style;
 }
 
 @keyframes skeleton-shimmer {
@@ -245,7 +240,6 @@ html.is-edge-swiping .bottom-nav-wrap {
 
 @media (prefers-reduced-motion: reduce) {
     body {
-        animation: none;
         transition: none;
         will-change: auto;
     }
@@ -253,15 +247,6 @@ html.is-edge-swiping .bottom-nav-wrap {
     body::before {
         opacity: 0;
         transition: none;
-    }
-
-    html.is-page-leaving body {
-        opacity: 1;
-        transition: none;
-    }
-
-    html.is-page-leaving body::before {
-        opacity: 0;
     }
 }
 
@@ -517,6 +502,18 @@ button,
         padding-left: env(safe-area-inset-left, 0);
         padding-right: env(safe-area-inset-right, 0);
         padding-bottom: max(env(safe-area-inset-bottom, 0), 12px);
+    }
+
+    .swipe-preview {
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+        background:
+            linear-gradient(180deg, rgba(18, 8, 42, 0.94) 0%, rgba(8, 4, 22, 0.97) 100%);
+    }
+
+    html.is-edge-swiping .app-shell {
+        box-shadow:
+            0 0 0 1px rgba(255,255,255,0.03),
+            calc(-20px * var(--swipe-nav-direction)) 0 32px rgba(0,0,0,0.28);
     }
 }
 

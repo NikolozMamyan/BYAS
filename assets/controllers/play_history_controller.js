@@ -5,12 +5,16 @@ export default class extends Controller {
 
     connect() {
         this.isSheetOpen = false;
+        this.handleResize = this.handleResize.bind(this);
+        window.addEventListener('resize', this.handleResize);
         this.showInitialItems();
         this.observeItems();
+        this.closeFilters(true);
     }
 
     disconnect() {
         this.observer?.disconnect();
+        window.removeEventListener('resize', this.handleResize);
         document.body.classList.remove('sheet-open');
     }
 
@@ -33,8 +37,8 @@ export default class extends Controller {
             const title = item.dataset.title || '';
             const artist = item.dataset.artist || '';
             const album = item.dataset.album || '';
-            const provider = item.dataset.provider || '';
-            const type = item.dataset.type || '';
+            const provider = this.normalizeProvider(item.dataset.provider || '');
+            const type = (item.dataset.type || '').toLowerCase();
 
             const matchesSearch = !searchTerm || title.includes(searchTerm) || artist.includes(searchTerm) || album.includes(searchTerm);
             const matchesProvider = !providerValue || provider === providerValue;
@@ -70,7 +74,7 @@ export default class extends Controller {
         document.body.classList.add('sheet-open');
     }
 
-    closeFilters() {
+    closeFilters(skipDelay = false) {
         if (!this.hasSheetTarget) {
             return;
         }
@@ -83,9 +87,29 @@ export default class extends Controller {
                 if (!this.isSheetOpen && this.hasBackdropTarget) {
                     this.backdropTarget.hidden = true;
                 }
-            }, 180);
+            }, skipDelay ? 0 : 180);
         }
         document.body.classList.remove('sheet-open');
+    }
+
+    handleResize() {
+        if (!window.matchMedia('(max-width: 768px)').matches) {
+            this.closeFilters(true);
+        }
+    }
+
+    normalizeProvider(provider) {
+        const normalized = provider.toLowerCase();
+
+        if (normalized === 'apple_music' || normalized === 'apple-music') {
+            return 'apple';
+        }
+
+        if (normalized === 'youtube_music') {
+            return 'youtube';
+        }
+
+        return normalized;
     }
 
     showInitialItems() {

@@ -129,6 +129,8 @@ const edgeSwipeNavigation = (() => {
     let startY = 0;
     let currentX = 0;
     let swipeDirection = 0;
+    let pendingDistance = 0;
+    let translateFrame = 0;
 
     function getShell() {
         return document.getElementById('appShell');
@@ -182,7 +184,7 @@ const edgeSwipeNavigation = (() => {
         document.documentElement.style.setProperty('--swipe-preview-right-visible', direction < 0 ? '1' : '0');
     }
 
-    function setTranslate(distance) {
+    function applyTranslate(distance) {
         const viewportWidth = Math.max(window.innerWidth, 1);
         const translate = distance * 0.98;
         const visibleTranslate = Math.sign(translate) * Math.min(Math.abs(translate), MAX_TRANSLATE);
@@ -193,6 +195,19 @@ const edgeSwipeNavigation = (() => {
         if (shell) {
             shell.style.transition = 'none';
         }
+    }
+
+    function setTranslate(distance) {
+        pendingDistance = distance;
+
+        if (translateFrame) {
+            return;
+        }
+
+        translateFrame = window.requestAnimationFrame(() => {
+            translateFrame = 0;
+            applyTranslate(pendingDistance);
+        });
     }
 
     function reset(animate = true) {
@@ -212,6 +227,12 @@ const edgeSwipeNavigation = (() => {
         startY = 0;
         currentX = 0;
         swipeDirection = 0;
+        pendingDistance = 0;
+
+        if (translateFrame) {
+            window.cancelAnimationFrame(translateFrame);
+            translateFrame = 0;
+        }
 
         window.setTimeout(() => {
             if (!tracking && !active) {

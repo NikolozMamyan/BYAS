@@ -36,8 +36,8 @@ export default class extends Controller {
             return;
         }
 
-        await this.loadPanel();
         this.open();
+        this.loadPanel();
     }
 
     open() {
@@ -98,7 +98,18 @@ export default class extends Controller {
             return;
         }
 
-        const data = await response.json();
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            return;
+        }
+
+        if (!data || typeof data.html !== 'string') {
+            return;
+        }
+
         this.contentTarget.innerHTML = data.html;
         this.updateBadge(data.unreadCount ?? 0);
     }
@@ -139,6 +150,7 @@ export default class extends Controller {
     }
 
     isCompactLayout() {
-        return window.matchMedia('(max-width: 768px)').matches;
+        return window.matchMedia('(max-width: 980px)').matches
+            || window.matchMedia('(display-mode: standalone)').matches;
     }
 }

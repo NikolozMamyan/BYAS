@@ -5,16 +5,20 @@ export default class extends Controller {
 
     connect() {
         this.isSheetOpen = false;
+        this.closeTimer = null;
         this.handleResize = this.handleResize.bind(this);
         window.addEventListener('resize', this.handleResize);
         this.showInitialItems();
         this.observeItems();
-        this.closeFilters(true);
+        this.syncFilterLayout();
     }
 
     disconnect() {
         this.observer?.disconnect();
         window.removeEventListener('resize', this.handleResize);
+        if (this.closeTimer) {
+            window.clearTimeout(this.closeTimer);
+        }
         document.body.classList.remove('sheet-open');
     }
 
@@ -53,17 +57,23 @@ export default class extends Controller {
             }
         });
 
-        if (window.matchMedia('(max-width: 768px)').matches) {
+        if (this.isCompactLayout()) {
             this.closeFilters();
         }
     }
 
     openFilters() {
-        if (!this.hasSheetTarget || !window.matchMedia('(max-width: 768px)').matches) {
+        if (!this.hasSheetTarget || !this.isCompactLayout()) {
             return;
         }
 
+        if (this.closeTimer) {
+            window.clearTimeout(this.closeTimer);
+            this.closeTimer = null;
+        }
+
         this.isSheetOpen = true;
+        this.sheetTarget.hidden = false;
         this.sheetTarget.classList.add('is-open');
         if (this.hasBackdropTarget) {
             this.backdropTarget.hidden = false;
@@ -79,23 +89,37 @@ export default class extends Controller {
             return;
         }
 
+        if (!this.isCompactLayout()) {
+            this.isSheetOpen = false;
+            this.sheetTarget.hidden = false;
+            this.sheetTarget.classList.remove('is-open');
+            if (this.hasBackdropTarget) {
+                this.backdropTarget.hidden = true;
+                this.backdropTarget.classList.remove('is-visible');
+            }
+            document.body.classList.remove('sheet-open');
+            return;
+        }
+
         this.isSheetOpen = false;
         this.sheetTarget.classList.remove('is-open');
         if (this.hasBackdropTarget) {
             this.backdropTarget.classList.remove('is-visible');
-            window.setTimeout(() => {
+            this.closeTimer = window.setTimeout(() => {
                 if (!this.isSheetOpen && this.hasBackdropTarget) {
                     this.backdropTarget.hidden = true;
                 }
+                if (!this.isSheetOpen) {
+                    this.sheetTarget.hidden = true;
+                }
+                this.closeTimer = null;
             }, skipDelay ? 0 : 180);
         }
         document.body.classList.remove('sheet-open');
     }
 
     handleResize() {
-        if (!window.matchMedia('(max-width: 768px)').matches) {
-            this.closeFilters(true);
-        }
+        this.syncFilterLayout();
     }
 
     normalizeProvider(provider) {
@@ -110,6 +134,30 @@ export default class extends Controller {
         }
 
         return normalized;
+    }
+
+    isCompactLayout() {
+        return window.matchMedia('(max-width: 980px)').matches;
+    }
+
+    syncFilterLayout() {
+        if (!this.hasSheetTarget) {
+            return;
+        }
+
+        if (this.isCompactLayout()) {
+            if (!this.isSheetOpen) {
+                this.sheetTarget.hidden = true;
+                if (this.hasBackdropTarget) {
+                    this.backdropTarget.hidden = true;
+                    this.backdropTarget.classList.remove('is-visible');
+                }
+            }
+            return;
+        }
+
+        this.closeFilters(true);
+        this.sheetTarget.hidden = false;
     }
 
     showInitialItems() {

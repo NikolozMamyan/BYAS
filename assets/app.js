@@ -123,6 +123,7 @@ const edgeSwipeNavigation = (() => {
     const MAX_OFF_AXIS_DISTANCE = 56;
     const MAX_TRANSLATE = 188;
     const isTouchCapable = window.matchMedia('(pointer: coarse)').matches;
+    const isStandaloneApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     let tracking = false;
     let active = false;
     let startX = 0;
@@ -186,11 +187,13 @@ const edgeSwipeNavigation = (() => {
 
     function applyTranslate(distance) {
         const viewportWidth = Math.max(window.innerWidth, 1);
-        const translate = distance * 0.98;
+        const damping = isStandaloneApp ? 0.34 : 0.98;
+        const translate = distance * damping;
+        const maxTranslate = isStandaloneApp ? 72 : MAX_TRANSLATE;
         const visibleTranslate = Math.sign(translate) * Math.min(Math.abs(translate), MAX_TRANSLATE);
         const progress = Math.max(0, Math.min(Math.abs(translate) / Math.max(ACTIVATE_DISTANCE, viewportWidth * 0.28), 1));
         document.documentElement.classList.add('is-edge-swiping');
-        setSwipeState(visibleTranslate, progress, translate < 0 ? -1 : 1);
+        setSwipeState(Math.sign(visibleTranslate) * Math.min(Math.abs(visibleTranslate), maxTranslate), progress, translate < 0 ? -1 : 1);
         const shell = getShell();
         if (shell) {
             shell.style.transition = 'none';

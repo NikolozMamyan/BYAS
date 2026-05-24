@@ -505,15 +505,19 @@ button,
     }
 
     .swipe-preview {
-        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
         background:
             linear-gradient(180deg, rgba(18, 8, 42, 0.94) 0%, rgba(8, 4, 22, 0.97) 100%);
     }
 
+    html::before,
+    body::before,
+    .swipe-preview-layer {
+        transition: none;
+    }
+
     html.is-edge-swiping .app-shell {
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.03),
-            calc(-20px * var(--swipe-nav-direction)) 0 32px rgba(0,0,0,0.28);
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
     }
 }
 

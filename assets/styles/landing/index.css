@@ -175,13 +175,17 @@
 .page {
     position: relative;
     z-index: 2;
+    height: 100dvh;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 36px 20px 36px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px 20px;
     max-width: 420px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
 .logo-wrap {
@@ -191,7 +195,7 @@
 }
 
 .logo-img {
-    width: 240px;
+    width: clamp(172px, 24vw, 220px);
     height: auto;
     filter: drop-shadow(0 0 24px rgba(74, 72, 235, 0.55)) drop-shadow(0 0 48px rgba(248, 60, 176, 0.35));
 }
@@ -209,23 +213,24 @@
 }
 
 .divider-asset-img {
-    width: 200px;
+    width: 176px;
     height: auto;
     display: block;
-    margin: 2px auto 14px;
+    margin: 0 auto 8px;
     animation: fadeIn 1s 0.3s ease both;
 }
 
 .tagline {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 4px;
     animation: fadeIn 0.9s 0.2s ease both;
 }
 
 .tagline h2 {
-    font-size: clamp(20px, 5.5vw, 26px);
+    font-size: clamp(18px, 4.2vw, 24px);
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.22;
+    margin: 0;
 }
 
 .tagline h2 span {
@@ -250,7 +255,10 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 28px;
+    flex: 1 1 auto;
+    align-items: center;
+    min-height: 0;
+    margin-bottom: 0;
     perspective: 1000px;
     animation: cardIn 0.95s 0.35s cubic-bezier(.22, 1, .36, 1) both;
 }
@@ -269,9 +277,9 @@
 
 .passport {
     width: 100%;
+    max-width: 340px;
     background: transparent;
     border-radius: 22px;
-
     overflow: hidden;
     position: relative;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -285,6 +293,7 @@
     display: block;
     width: 100%;
     height: auto;
+    max-height: min(46dvh, 400px);
     object-fit: contain;
     opacity: 1;
     pointer-events: none;
@@ -296,8 +305,9 @@
 
 .cta-section {
     width: 100%;
+    flex: 0 0 auto;
     position: relative;
-    padding: 26px 20px 22px;
+    padding: 18px 16px 16px;
     border-radius: 28px;
     text-align: center;
     background: linear-gradient(180deg, rgba(12, 10, 38, 0.88) 0%, rgba(5, 7, 24, 0.92) 100%);
@@ -345,6 +355,59 @@
     z-index: -1;
 }
 
+.cta-section .btn-primary,
+.cta-section .btn-secondary {
+    min-height: 52px;
+    padding: 0 18px;
+}
+
+.cta-section .divider-or {
+    margin: 12px 0;
+}
+
+.cta-section .legal {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+@media (max-height: 840px) {
+    .page {
+        padding-top: 14px;
+        padding-bottom: 14px;
+        gap: 8px;
+    }
+
+    .logo-img {
+        width: clamp(156px, 21vw, 196px);
+    }
+
+    .divider-asset-img {
+        width: 156px;
+        margin-bottom: 6px;
+    }
+
+    .tagline h2 {
+        font-size: clamp(16px, 3.8vw, 21px);
+    }
+
+    .passport {
+        max-width: 312px;
+    }
+
+    .passport-asset-img {
+        max-height: min(40dvh, 320px);
+    }
+
+    .cta-section {
+        padding: 14px 14px 14px;
+    }
+
+    .cta-section .btn-primary,
+    .cta-section .btn-secondary {
+        min-height: 48px;
+    }
+}
 
 @media (max-width: 480px) {
     .sidebar {
@@ -358,7 +421,23 @@
     }
 
     .logo-img {
-        width: 220px;
+        width: min(180px, 48vw);
+    }
+
+    .divider-asset-img {
+        width: 150px;
+    }
+
+    .tagline h2 {
+        font-size: clamp(16px, 5.1vw, 20px);
+    }
+
+    .passport {
+        max-width: 300px;
+    }
+
+    .passport-asset-img {
+        max-height: min(36dvh, 280px);
     }
 
     .pwa-install__backdrop {
@@ -372,6 +451,19 @@
 
     .pwa-install__title {
         font-size: 24px;
+    }
+
+    .cta-section {
+        padding: 14px 14px 14px;
+    }
+
+    .cta-section .btn-primary,
+    .cta-section .btn-secondary {
+        min-height: 46px;
+    }
+
+    .cta-section .legal {
+        font-size: 11px;
     }
 }
 

@@ -26,6 +26,8 @@
     --radius-xl: 24px;
     --radius-lg: 18px;
     --radius-md: 14px;
+    --swipe-back-offset: 0px;
+    --swipe-back-progress: 0;
 }
 
 * {
@@ -54,11 +56,27 @@ html {
     background: var(--bg);
     height: auto;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+html::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 2147483645;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        radial-gradient(circle at left center, rgba(248, 60, 176, 0.12), transparent 24%),
+        linear-gradient(90deg, rgba(74, 72, 235, 0.18), rgba(6, 4, 18, 0));
+    transition: opacity 120ms ease;
 }
 
 body {
     position: relative;
     padding-bottom: env(safe-area-inset-bottom, 0);
+    transform: translate3d(var(--swipe-back-offset), 0, 0);
+    will-change: opacity, transform;
 }
 
 body::before {
@@ -71,21 +89,43 @@ body::before {
         radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.12), transparent 36%),
         linear-gradient(180deg, rgba(6, 4, 18, 0.1), rgba(6, 4, 18, 0.34));
     opacity: 0;
-    transition: opacity 180ms ease;
+    transition: opacity 70ms ease;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 22px;
+    z-index: 2147483646;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0));
+    transform: translateX(calc(var(--swipe-back-offset) - 22px));
+    transition: opacity 120ms ease;
 }
 
 body {
-    animation: page-enter 220ms ease both;
-    will-change: opacity;
+    animation: page-enter 90ms ease both;
 }
 
 html.is-page-leaving body {
     opacity: 0;
-    transition: opacity 180ms ease;
+    transition: opacity 70ms ease;
 }
 
 html.is-page-leaving body::before {
     opacity: 1;
+}
+
+html.is-edge-swiping::before {
+    opacity: calc(var(--swipe-back-progress) * 0.9);
+}
+
+html.is-edge-swiping body::after {
+    opacity: calc(var(--swipe-back-progress) * 0.95);
 }
 
 @keyframes page-enter {

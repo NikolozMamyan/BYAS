@@ -9,7 +9,7 @@ import './styles/app.css';
 
 const pageTransition = (() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const transitionMs = 180;
+    const transitionMs = 0;
     let isLeaving = false;
 
     function canAnimate() {
@@ -50,7 +50,7 @@ const pageTransition = (() => {
     }
 
     function leave(url, replace = false) {
-        if (!canAnimate() || isLeaving) {
+        if (!canAnimate() || isLeaving || transitionMs === 0) {
             if (replace) {
                 window.location.replace(url);
             } else {
@@ -94,6 +94,162 @@ const pageTransition = (() => {
 
 pageTransition.bind();
 window.BYASPageTransition = pageTransition;
+
+const edgeSwipeNavigation = (() => {
+    const EDGE_SIZE = 28;
+    const ACTIVATE_DISTANCE = 92;
+    const CANCEL_VERTICAL_DISTANCE = 22;
+    const MAX_OFF_AXIS_DISTANCE = 56;
+    const MAX_TRANSLATE = 132;
+    const isTouchCapable = window.matchMedia('(pointer: coarse)').matches;
+    let tracking = false;
+    let active = false;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+
+    function canStart(target, clientX) {
+        if (!isTouchCapable || clientX > EDGE_SIZE) {
+            return false;
+        }
+
+        if (document.body.classList.contains('pwa-install-open')) {
+            return false;
+        }
+
+        if (!(target instanceof Element)) {
+            return true;
+        }
+
+        return !target.closest('input, textarea, select, video, iframe, [data-no-edge-swipe="true"]');
+    }
+
+    function setSwipeState(offset, progress) {
+        document.documentElement.style.setProperty('--swipe-back-offset', `${offset}px`);
+        document.documentElement.style.setProperty('--swipe-back-progress', String(progress));
+    }
+
+    function setTranslate(distance) {
+        const viewportWidth = Math.max(window.innerWidth, 1);
+        const translate = Math.max(0, distance);
+        const visibleTranslate = Math.min(translate, MAX_TRANSLATE);
+        const progress = Math.max(0, Math.min(translate / Math.max(ACTIVATE_DISTANCE, viewportWidth * 0.28), 1));
+        document.documentElement.classList.add('is-edge-swiping');
+        setSwipeState(visibleTranslate, progress);
+        document.body.style.transition = 'none';
+    }
+
+    function reset(animate = true) {
+        document.documentElement.classList.remove('is-edge-swiping');
+
+        if (animate) {
+            document.body.style.transition = 'transform 140ms ease, box-shadow 140ms ease';
+        }
+
+        setSwipeState(0, 0);
+        tracking = false;
+        active = false;
+        startX = 0;
+        startY = 0;
+        currentX = 0;
+
+        window.setTimeout(() => {
+            if (!tracking && !active) {
+                document.body.style.transition = '';
+            }
+        }, 160);
+    }
+
+    function onTouchStart(event) {
+        const touch = event.touches[0];
+
+        if (!touch || !canStart(event.target, touch.clientX)) {
+            return;
+        }
+
+        tracking = true;
+        active = false;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        currentX = touch.clientX;
+    }
+
+    function onTouchMove(event) {
+        if (!tracking) {
+            return;
+        }
+
+        const touch = event.touches[0];
+
+        if (!touch) {
+            reset(false);
+            return;
+        }
+
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+
+        if (!active) {
+            if (Math.abs(deltaY) > CANCEL_VERTICAL_DISTANCE && Math.abs(deltaY) > Math.abs(deltaX)) {
+                reset(false);
+                return;
+            }
+
+            if (deltaX <= 10) {
+                return;
+            }
+
+            if (Math.abs(deltaY) > MAX_OFF_AXIS_DISTANCE) {
+                reset(false);
+                return;
+            }
+
+            active = true;
+        }
+
+        if (deltaX < 0) {
+            reset();
+            return;
+        }
+
+        currentX = touch.clientX;
+        setTranslate(deltaX);
+    }
+
+    function onTouchEnd() {
+        if (!tracking) {
+            return;
+        }
+
+        const deltaX = currentX - startX;
+
+        if (active && deltaX >= ACTIVATE_DISTANCE && window.history.length > 1) {
+            document.documentElement.classList.add('is-edge-swiping');
+            document.body.style.transition = 'transform 140ms ease, box-shadow 140ms ease';
+            setSwipeState(window.innerWidth, 1);
+            window.setTimeout(() => window.history.back(), 90);
+            reset(false);
+            return;
+        }
+
+        reset();
+    }
+
+    function bind() {
+        if (!isTouchCapable) {
+            return;
+        }
+
+        document.addEventListener('touchstart', onTouchStart, { passive: true });
+        document.addEventListener('touchmove', onTouchMove, { passive: true });
+        document.addEventListener('touchend', onTouchEnd, { passive: true });
+        document.addEventListener('touchcancel', () => reset(), { passive: true });
+    }
+
+    return { bind };
+})();
+
+edgeSwipeNavigation.bind();
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

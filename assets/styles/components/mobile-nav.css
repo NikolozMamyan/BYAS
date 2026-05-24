@@ -9,16 +9,20 @@
 
         .bottom-nav {
             height: 62px;
-            background: rgba(15, 18, 26, 0.94);
+            background:
+                linear-gradient(180deg, rgba(18, 8, 42, 0.96) 0%, rgba(8, 4, 22, 0.98) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 8px;
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--border-glow);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                0 0 28px rgba(99, 22, 208, 0.18),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
         }
 
         .nav-link {
@@ -27,38 +31,54 @@
             flex-direction: column;
             align-items: center;
             text-decoration: none;
-            color: var(--text-dim);
-            transition: 0.3s;
+            color: rgba(255, 255, 255, 0.58);
+            transition: color 0.22s ease, transform 0.22s ease;
         }
 
-        .nav-link.active { color: var(--neon-pink); }
+        .nav-link:hover {
+            color: rgba(255, 255, 255, 0.84);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: var(--pink);
+            text-shadow: 0 0 18px rgba(248, 60, 176, 0.28);
+        }
+
         .nav-link i { font-size: 1.05rem; }
         .nav-link span { font-size: 0.62rem; margin-top: 4px; font-weight: 700; }
 
         .nav-scan {
             width: 52px;
             height: 52px;
-            background: linear-gradient(135deg, var(--neon-pink), var(--soft-purple));
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--pink), var(--purple) 55%, var(--cyan));
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: -40px;
-            border: 4px solid var(--bg-deep);
+            border: 4px solid var(--bg);
             color: white;
-            box-shadow: 0 5px 15px rgba(255, 0, 122, 0.4);
+            box-shadow:
+                0 10px 26px rgba(99, 22, 208, 0.34),
+                0 0 26px rgba(248, 60, 176, 0.22);
             text-decoration: none;
-            transition: 0.3s;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
             cursor: pointer;
             appearance: none;
             padding: 0;
         }
 
+        .nav-scan:hover {
+            transform: translateY(-2px);
+        }
+
         .bottom-nav-wrap.is-open .nav-scan,
         .nav-scan.active {
             box-shadow:
-                0 5px 15px rgba(255, 0, 122, 0.4),
-                0 0 0 1px rgba(255,255,255,0.24);
+                0 10px 28px rgba(99, 22, 208, 0.4),
+                0 0 0 1px rgba(255,255,255,0.2),
+                0 0 28px rgba(248, 60, 176, 0.28);
         }
 
         .mobile-hub {
@@ -66,10 +86,15 @@
             left: 0;
             right: 0;
             bottom: 76px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(15, 18, 26, 0.98);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.42);
+            border-radius: 20px;
+            border: 1px solid var(--border-glow);
+            background:
+                radial-gradient(circle at top right, rgba(248, 60, 176, 0.12), transparent 24%),
+                radial-gradient(circle at left center, rgba(74, 72, 235, 0.14), transparent 24%),
+                linear-gradient(180deg, rgba(18, 8, 42, 0.98) 0%, rgba(8, 4, 22, 0.99) 100%);
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.42),
+                0 0 30px rgba(99, 22, 208, 0.18);
             padding: 12px;
         }
 
@@ -88,7 +113,7 @@
         }
 
         .mobile-hub__subtitle {
-            color: rgba(255,255,255,0.58);
+            color: rgba(255,255,255,0.62);
             font-size: 0.72rem;
             margin-top: 3px;
         }
@@ -96,8 +121,8 @@
         .mobile-hub__close {
             width: 36px;
             height: 36px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
             background: rgba(255,255,255,0.04);
             color: white;
             cursor: pointer;
@@ -111,9 +136,10 @@
 
         .mobile-hub__action {
             min-height: 84px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.025));
             color: white;
             text-decoration: none;
             display: grid;
@@ -123,11 +149,18 @@
             padding: 12px;
             font: inherit;
             cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mobile-hub__action:hover {
+            transform: translateY(-1px);
+            border-color: rgba(248, 60, 176, 0.24);
+            box-shadow: 0 10px 24px rgba(99, 22, 208, 0.14);
         }
 
         .mobile-hub__action i {
             font-size: 1rem;
-            color: var(--neon-cyan);
+            color: var(--cyan);
         }
 
         .mobile-hub__action strong {
@@ -149,7 +182,7 @@
         .mobile-hub__status {
             min-height: 18px;
             margin-top: 10px;
-            color: var(--neon-cyan);
+            color: var(--pink);
             font-size: 0.72rem;
             font-weight: 700;
             text-align: center;
@@ -157,8 +190,8 @@
 
         .mobile-hub__scanner {
             margin-top: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
             background: rgba(255,255,255,0.03);
             padding: 10px;
         }
@@ -184,8 +217,8 @@
             content: "";
             position: absolute;
             inset: 16% 16%;
-            border: 2px solid rgba(0,242,255,0.75);
-            border-radius: 8px;
+            border: 2px solid rgba(74, 72, 235, 0.82);
+            border-radius: 14px;
             pointer-events: none;
             box-shadow: 0 0 0 999px rgba(0,0,0,0.22);
         }

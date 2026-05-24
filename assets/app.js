@@ -100,16 +100,37 @@ const edgeSwipeNavigation = (() => {
     const ACTIVATE_DISTANCE = 92;
     const CANCEL_VERTICAL_DISTANCE = 22;
     const MAX_OFF_AXIS_DISTANCE = 56;
-    const MAX_TRANSLATE = 132;
+    const MAX_TRANSLATE = 188;
     const isTouchCapable = window.matchMedia('(pointer: coarse)').matches;
     let tracking = false;
     let active = false;
     let startX = 0;
     let startY = 0;
     let currentX = 0;
+    let swipeDirection = 0;
+
+    function getShell() {
+        return document.getElementById('appShell');
+    }
+
+    function getHorizontalTarget(direction) {
+        const shell = getShell();
+
+        if (!shell) {
+            return '';
+        }
+
+        return direction < 0
+            ? (shell.dataset.swipePrevUrl || '')
+            : (shell.dataset.swipeNextUrl || '');
+    }
+
+    function hasTabSwipeTarget() {
+        return getHorizontalTarget(-1) !== '' || getHorizontalTarget(1) !== '';
+    }
 
     function canStart(target, clientX) {
-        if (!isTouchCapable || clientX > EDGE_SIZE) {
+        if (!isTouchCapable) {
             return false;
         }
 
@@ -121,43 +142,70 @@ const edgeSwipeNavigation = (() => {
             return true;
         }
 
-        return !target.closest('input, textarea, select, video, iframe, [data-no-edge-swipe="true"]');
+        if (target.closest('input, textarea, select, video, iframe, [data-no-edge-swipe="true"]')) {
+            return false;
+        }
+
+        if (hasTabSwipeTarget()) {
+            return true;
+        }
+
+        return clientX <= EDGE_SIZE;
     }
 
-    function setSwipeState(offset, progress) {
-        document.documentElement.style.setProperty('--swipe-back-offset', `${offset}px`);
-        document.documentElement.style.setProperty('--swipe-back-progress', String(progress));
+    function setSwipeState(offset, progress, direction) {
+        document.documentElement.style.setProperty('--swipe-nav-offset', `${offset}px`);
+        document.documentElement.style.setProperty('--swipe-nav-progress', String(progress));
+        document.documentElement.style.setProperty('--swipe-nav-direction', String(direction));
     }
 
     function setTranslate(distance) {
         const viewportWidth = Math.max(window.innerWidth, 1);
-        const translate = Math.max(0, distance);
-        const visibleTranslate = Math.min(translate, MAX_TRANSLATE);
-        const progress = Math.max(0, Math.min(translate / Math.max(ACTIVATE_DISTANCE, viewportWidth * 0.28), 1));
+        const translate = distance * 0.98;
+        const visibleTranslate = Math.sign(translate) * Math.min(Math.abs(translate), MAX_TRANSLATE);
+        const progress = Math.max(0, Math.min(Math.abs(translate) / Math.max(ACTIVATE_DISTANCE, viewportWidth * 0.28), 1));
         document.documentElement.classList.add('is-edge-swiping');
-        setSwipeState(visibleTranslate, progress);
-        document.body.style.transition = 'none';
+        setSwipeState(visibleTranslate, progress, translate < 0 ? -1 : 1);
+        const shell = getShell();
+        if (shell) {
+            shell.style.transition = 'none';
+        }
     }
 
     function reset(animate = true) {
         document.documentElement.classList.remove('is-edge-swiping');
+        const shell = getShell();
 
         if (animate) {
-            document.body.style.transition = 'transform 140ms ease, box-shadow 140ms ease';
+            if (shell) {
+                shell.style.transition = 'transform 160ms ease, box-shadow 160ms ease';
+            }
         }
 
-        setSwipeState(0, 0);
+        setSwipeState(0, 0, 1);
         tracking = false;
         active = false;
         startX = 0;
         startY = 0;
         currentX = 0;
+        swipeDirection = 0;
 
         window.setTimeout(() => {
             if (!tracking && !active) {
-                document.body.style.transition = '';
+                if (shell) {
+                    shell.style.transition = '';
+                }
             }
         }, 160);
+    }
+
+    function prepareNavigationExit() {
+        tracking = false;
+        active = false;
+        startX = 0;
+        startY = 0;
+        currentX = 0;
+        swipeDirection = 0;
     }
 
     function onTouchStart(event) {
@@ -195,7 +243,7 @@ const edgeSwipeNavigation = (() => {
                 return;
             }
 
-            if (deltaX <= 10) {
+            if (Math.abs(deltaX) <= 10) {
                 return;
             }
 
@@ -204,12 +252,17 @@ const edgeSwipeNavigation = (() => {
                 return;
             }
 
-            active = true;
-        }
+            swipeDirection = deltaX > 0 ? -1 : 1;
+            const targetUrl = getHorizontalTarget(swipeDirection);
 
-        if (deltaX < 0) {
-            reset();
-            return;
+            if (targetUrl === '') {
+                if (!(startX <= EDGE_SIZE && deltaX > 0 && window.history.length > 1)) {
+                    reset(false);
+                    return;
+                }
+            }
+
+            active = true;
         }
 
         currentX = touch.clientX;
@@ -222,13 +275,28 @@ const edgeSwipeNavigation = (() => {
         }
 
         const deltaX = currentX - startX;
+        const targetUrl = getHorizontalTarget(swipeDirection);
+        const shell = getShell();
 
-        if (active && deltaX >= ACTIVATE_DISTANCE && window.history.length > 1) {
+        if (active && Math.abs(deltaX) >= ACTIVATE_DISTANCE && targetUrl !== '') {
             document.documentElement.classList.add('is-edge-swiping');
-            document.body.style.transition = 'transform 140ms ease, box-shadow 140ms ease';
-            setSwipeState(window.innerWidth, 1);
-            window.setTimeout(() => window.history.back(), 90);
-            reset(false);
+            if (shell) {
+                shell.style.transition = 'transform 160ms ease, box-shadow 160ms ease';
+            }
+            setSwipeState(swipeDirection === 1 ? -window.innerWidth : window.innerWidth, 1, swipeDirection === 1 ? -1 : 1);
+            prepareNavigationExit();
+            window.setTimeout(() => pageTransition.leave(targetUrl), 95);
+            return;
+        }
+
+        if (active && deltaX >= ACTIVATE_DISTANCE && startX <= EDGE_SIZE && window.history.length > 1) {
+            document.documentElement.classList.add('is-edge-swiping');
+            if (shell) {
+                shell.style.transition = 'transform 160ms ease, box-shadow 160ms ease';
+            }
+            setSwipeState(window.innerWidth, 1, 1);
+            prepareNavigationExit();
+            window.setTimeout(() => window.history.back(), 95);
             return;
         }
 
@@ -244,6 +312,7 @@ const edgeSwipeNavigation = (() => {
         document.addEventListener('touchmove', onTouchMove, { passive: true });
         document.addEventListener('touchend', onTouchEnd, { passive: true });
         document.addEventListener('touchcancel', () => reset(), { passive: true });
+        window.addEventListener('pageshow', () => reset(false));
     }
 
     return { bind };

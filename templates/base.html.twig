@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+{% set currentRoute = app.request.attributes.get('_route')|default('') %}
+{% set isFrontApp = app.user and currentRoute starts with 'app_front_' %}
+{% set swipePrevUrl = '' %}
+{% set swipeNextUrl = '' %}
+{% if currentRoute == 'app_front_passport' %}
+  {% set swipeNextUrl = path('app_front_leaderboard') %}
+{% elseif currentRoute starts with 'app_front_leaderboard' %}
+  {% set swipePrevUrl = path('app_front_passport') %}
+  {% set swipeNextUrl = path('app_front_play_history') %}
+{% elseif currentRoute starts with 'app_front_play_history' %}
+  {% set swipePrevUrl = path('app_front_leaderboard') %}
+{% endif %}
 <html lang="{{ app.request.locale|default('en') }}">
   <head>
     <meta charset="UTF-8" />
@@ -31,13 +43,21 @@
       {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
   </head>
-      <body  data-turbo="false">
-        {% if app.user and app.request.attributes.get('_route') starts with 'app_front_' %}
-        {% include "components/app_header.html.twig" %}
-        {% endif %}
-        {% block body %}{% endblock %}
-        {% if app.user and app.request.attributes.get('_route') starts with 'app_front_' %}
-        {% include "components/mobile_nav.html.twig" %}
-        {% endif %}
+      <body data-turbo="false" data-route="{{ currentRoute }}">
+        <div
+          class="app-shell"
+          id="appShell"
+          data-app-route="{{ currentRoute }}"
+          data-swipe-prev-url="{{ swipePrevUrl }}"
+          data-swipe-next-url="{{ swipeNextUrl }}"
+        >
+          {% if isFrontApp %}
+          {% include "components/app_header.html.twig" %}
+          {% endif %}
+          {% block body %}{% endblock %}
+          {% if isFrontApp %}
+          {% include "components/mobile_nav.html.twig" %}
+          {% endif %}
+        </div>
     </body>
 </html>

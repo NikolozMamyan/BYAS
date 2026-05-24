@@ -26,8 +26,9 @@
     --radius-xl: 24px;
     --radius-lg: 18px;
     --radius-md: 14px;
-    --swipe-back-offset: 0px;
-    --swipe-back-progress: 0;
+    --swipe-nav-offset: 0px;
+    --swipe-nav-progress: 0;
+    --swipe-nav-direction: 1;
 }
 
 * {
@@ -67,7 +68,7 @@ html::before {
     pointer-events: none;
     opacity: 0;
     background:
-        radial-gradient(circle at left center, rgba(248, 60, 176, 0.12), transparent 24%),
+        radial-gradient(circle at center, rgba(248, 60, 176, 0.14), transparent 28%),
         linear-gradient(90deg, rgba(74, 72, 235, 0.18), rgba(6, 4, 18, 0));
     transition: opacity 120ms ease;
 }
@@ -75,8 +76,15 @@ html::before {
 body {
     position: relative;
     padding-bottom: env(safe-area-inset-bottom, 0);
-    transform: translate3d(var(--swipe-back-offset), 0, 0);
-    will-change: opacity, transform;
+    will-change: opacity;
+}
+
+.app-shell {
+    position: relative;
+    min-height: 100%;
+    transform: translate3d(var(--swipe-nav-offset), 0, 0);
+    will-change: transform;
+    transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 body::before {
@@ -90,21 +98,6 @@ body::before {
         linear-gradient(180deg, rgba(6, 4, 18, 0.1), rgba(6, 4, 18, 0.34));
     opacity: 0;
     transition: opacity 70ms ease;
-}
-
-body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 22px;
-    z-index: 2147483646;
-    pointer-events: none;
-    opacity: 0;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0));
-    transform: translateX(calc(var(--swipe-back-offset) - 22px));
-    transition: opacity 120ms ease;
 }
 
 body {
@@ -121,11 +114,14 @@ html.is-page-leaving body::before {
 }
 
 html.is-edge-swiping::before {
-    opacity: calc(var(--swipe-back-progress) * 0.9);
+    opacity: calc(var(--swipe-nav-progress) * 0.9);
 }
 
-html.is-edge-swiping body::after {
-    opacity: calc(var(--swipe-back-progress) * 0.95);
+html.is-edge-swiping .app-shell {
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        calc(-34px * var(--swipe-nav-direction)) 0 58px rgba(0,0,0,0.5),
+        calc(-10px * var(--swipe-nav-direction)) 0 18px rgba(248, 60, 176, calc(var(--swipe-nav-progress) * 0.14));
 }
 
 @keyframes page-enter {

@@ -66,7 +66,17 @@
               </button>
 
               <div class="onboarding-fandom-cover">
-                <div class="onboarding-fandom-placeholder"></div>
+                {% if fandom.image %}
+                  <img
+                    class="onboarding-fandom-image"
+                    src="{{ asset('img/choseGroup/' ~ fandom.image) }}"
+                    alt="{{ fandom.name }}"
+                    loading="lazy"
+                  >
+                  <div class="onboarding-fandom-overlay" aria-hidden="true"></div>
+                {% else %}
+                  <div class="onboarding-fandom-placeholder"></div>
+                {% endif %}
               </div>
 
               <div class="onboarding-fandom-name">{{ fandom.name }}</div>

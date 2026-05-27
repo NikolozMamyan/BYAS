@@ -86,11 +86,43 @@ class OnboardingController extends AbstractController
     }
 
     /**
-     * @return list<array{name: string, fandom: string, slug: string, theme: string}>
+     * @return list<array{name: string, fandom: string, slug: string, theme: string, image: ?string}>
      */
     private function fandomCatalog(): array
     {
         $themes = ['pink', 'violet', 'blue', 'red', 'indigo', 'purple'];
+        $images = [
+            'blackpink' => 'Blackpink.png',
+            'bts' => 'BTS.png',
+            'stray-kids' => 'stray kids.png',
+            'seventeen' => 'seventeen.png',
+            'twice' => 'twice.png',
+            'newjeans' => 'newjeans.png',
+            'ive' => 'ive.png',
+            'le-sserafim' => 'le sserafim.png',
+            'aespa' => 'aespa.png',
+            'txt' => 'txt.png',
+            'enhypen' => 'enhypen.png',
+            'ateez' => 'ateez.png',
+            'g-idle' => 'I-DLE.png',
+            'itzy' => 'itzy.png',
+            'babymonster' => 'babymonster.png',
+            'nmixx' => 'nmixx.png',
+            'illit' => 'illit.png',
+            'kiss-of-life' => 'kiss of life.png',
+            'red-velvet' => 'red velvet.png',
+            'girls-generation' => 'girl_s generation.png',
+            'mamamoo' => 'mamamoo.png',
+            'exo' => 'exo.png',
+            'nct-127' => 'nct.png',
+            'nct-dream' => 'nct dream.png',
+            'riize' => 'riize.png',
+            'the-boyz' => 'the boyz.png',
+            'zerobaseone' => 'zerobaseone.png',
+            'shinee' => 'shinee.png',
+            'bigbang' => 'bigbang.png',
+            'monsta-x' => 'monsta x.png',
+        ];
         $entries = [
             ['name' => 'BLACKPINK', 'fandom' => 'BLINK', 'slug' => 'blackpink'],
             ['name' => 'BTS', 'fandom' => 'ARMY', 'slug' => 'bts'],
@@ -127,6 +159,7 @@ class OnboardingController extends AbstractController
         return array_map(
             static fn (array $entry, int $index): array => $entry + [
                 'theme' => $themes[$index % count($themes)],
+                'image' => $images[$entry['slug']] ?? null,
             ],
             $entries,
             array_keys($entries),

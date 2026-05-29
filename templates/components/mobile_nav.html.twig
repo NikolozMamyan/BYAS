@@ -81,14 +81,14 @@
     <nav class="bottom-nav">
         <a href="{{ path('app_front_passport') }}"
            class="nav-link {{ app.request.attributes.get('_route') == 'app_front_passport' ? 'active' : '' }}">
-            <i class="fas fa-id-card"></i>
+            <img src="{{ asset('img/nav-top/nav_passport.png') }}" alt="" class="nav-link__icon">
             <span>{{ 'mobile_nav.passport'|trans }}</span>
         </a>
 
         <a href="{{ path('app_front_leaderboard') }}"
            class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_leaderboard' ? 'active' : '' }}">
-            <i class="fas fa-chart-line"></i>
-            <span>{{ 'mobile_nav.leaderboard'|trans }}</span>
+            <img src="{{ asset('img/nav-top/nav_ranking.png') }}" alt="" class="nav-link__icon">
+            <span>{{ 'mobile_nav.ranking'|trans }}</span>
         </a>
 
         <button
@@ -97,21 +97,20 @@
             aria-label="{{ 'mobile_hub.open'|trans }}"
             data-action="mobile-hub#toggle"
         >
-            <i class="fas fa-qrcode fa-lg"></i>
+            <img src="{{ asset('img/nav-top/share.png') }}" alt="">
+            <span>{{ 'mobile_nav.share'|trans }}</span>
         </button>
+
+        <a href="{{ path('app_front_collection_index') }}"
+           class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_collection_' ? 'active' : '' }}">
+            <img src="{{ asset('img/nav-top/nav_vault.png') }}" alt="" class="nav-link__icon">
+            <span>{{ 'mobile_nav.vault'|trans }}</span>
+        </a>
 
         <a href="{{ path('app_front_play_history') }}"
            class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_play_history' ? 'active' : '' }}">
-            <i class="fas fa-clock-rotate-left"></i>
-            <span>{{ 'mobile_nav.play_history'|trans }}</span>
-        </a>
-
-        <a href="#"
-           class="nav-link {{ app.request.attributes.get('_route') starts with 'app_front_circles' ? 'active' : '' }}"
-           aria-disabled="true"
-           title="{{ 'mobile_nav.chat_soon'|trans }}">
-            <i class="fas fa-comment-dots"></i>
-            <span>{{ 'mobile_nav.chat'|trans }}</span>
+            <img src="{{ asset('img/nav-top/missions.png') }}" alt="" class="nav-link__icon">
+            <span>{{ 'mobile_nav.missions'|trans }}</span>
         </a>
     </nav>
 </div>

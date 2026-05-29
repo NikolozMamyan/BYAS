@@ -1,37 +1,90 @@
         .bottom-nav-wrap {
             position: fixed;
-            bottom: max(12px, env(safe-area-inset-bottom, 0));
-            left: 12px;
-            right: 12px;
+            bottom: max(16px, env(safe-area-inset-bottom, 0));
+            left: max(10px, env(safe-area-inset-left, 0));
+            right: max(10px, env(safe-area-inset-right, 0));
             z-index: 9999;
         }
 
         .bottom-nav {
-            height: 62px;
+            position: relative;
+            width: min(100%, 920px);
+            height: 72px;
+            margin: 0 auto;
             background:
-                linear-gradient(180deg, rgba(18, 8, 42, 0.96) 0%, rgba(8, 4, 22, 0.98) 100%);
+                radial-gradient(circle at 50% -24%, rgba(248, 60, 176, 0.3), transparent 20%),
+                linear-gradient(180deg, rgba(15, 10, 35, 0.95) 0%, rgba(5, 4, 16, 0.98) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(72px, 0.9fr) minmax(0, 1fr) minmax(0, 1fr);
             align-items: center;
-            padding: 0 8px;
-            border: 1px solid var(--border-glow);
+            justify-items: stretch;
+            column-gap: clamp(10px, 2vw, 24px);
+            padding: 8px clamp(24px, 4vw, 54px) 9px;
+            border: 0;
+            border-radius: 999px;
             box-shadow:
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                0 0 28px rgba(99, 22, 208, 0.18),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+                0 26px 48px rgba(0, 0, 0, 0.54),
+                0 18px 42px rgba(248, 60, 176, 0.18);
+        }
+
+        .bottom-nav::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(90deg, rgba(74, 72, 235, 0.82), rgba(248, 60, 176, 0.7));
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            pointer-events: none;
+        }
+
+        .bottom-nav::after {
+            content: "";
+            position: absolute;
+            left: 20%;
+            right: 20%;
+            bottom: -18px;
+            height: 18px;
+            border-radius: 50%;
+            background:
+                url("../../img/nav-top/BACKGROUND_BOTTOM_NAV.png") center / 100% 100% no-repeat,
+                radial-gradient(ellipse at center, rgba(248, 60, 176, 0.5), rgba(99, 22, 208, 0.22) 45%, transparent 72%);
+            filter: blur(12px);
+            pointer-events: none;
         }
 
         .nav-link {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-rows: 32px auto;
+            place-items: center;
+            justify-content: center;
+            min-width: 0;
+            height: 100%;
+            padding: 5px 2px 8px;
             text-decoration: none;
             color: rgba(255, 255, 255, 0.58);
             transition: color 0.22s ease, transform 0.22s ease;
+        }
+
+        .nav-link + .nav-link::before,
+        .nav-link + .nav-scan::before,
+        .nav-scan + .nav-link::before {
+            content: "";
+            position: absolute;
+            left: calc((clamp(4px, 1.2vw, 14px) / -2) - 1px);
+            top: 25%;
+            bottom: 25%;
+            width: 1px;
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.24), transparent);
+            opacity: 0.42;
+            pointer-events: none;
         }
 
         .nav-link:hover {
@@ -40,27 +93,67 @@
         }
 
         .nav-link.active {
-            color: var(--pink);
+            color: white;
             text-shadow: 0 0 18px rgba(248, 60, 176, 0.28);
         }
 
-        .nav-link i { font-size: 1.05rem; }
-        .nav-link span { font-size: 0.62rem; margin-top: 4px; font-weight: 700; }
+        .nav-link.active::after {
+            content: "";
+            width: 15px;
+            height: 3px;
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--pink), #ff7ee4);
+            box-shadow: 0 0 16px rgba(248, 60, 176, 0.75);
+        }
+
+        .nav-link__icon {
+            width: 31px;
+            height: 31px;
+            object-fit: contain;
+            display: block;
+            opacity: 0.72;
+            filter: grayscale(0.08);
+            transition: opacity 0.18s ease, filter 0.18s ease, transform 0.18s ease;
+        }
+
+        .nav-link.active .nav-link__icon,
+        .nav-link:hover .nav-link__icon {
+            opacity: 1;
+            filter: drop-shadow(0 0 12px rgba(248, 60, 176, 0.4));
+        }
+
+        .nav-link span {
+            max-width: 100%;
+            color: currentColor;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
 
         .nav-scan {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, var(--pink), var(--purple) 55%, var(--cyan));
-            border-radius: 16px;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 0;
+            border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: -40px;
-            border: 4px solid var(--bg);
+            flex-direction: column;
+            align-self: center;
+            justify-self: center;
+            margin: 0;
             color: white;
-            box-shadow:
-                0 10px 26px rgba(99, 22, 208, 0.34),
-                0 0 26px rgba(248, 60, 176, 0.22);
+            box-shadow: none;
             text-decoration: none;
             transition: transform 0.22s ease, box-shadow 0.22s ease;
             cursor: pointer;
@@ -72,12 +165,30 @@
             transform: translateY(-2px);
         }
 
+        .nav-scan img {
+            width: 62px;
+            height: 62px;
+            display: block;
+            object-fit: contain;
+            filter: drop-shadow(0 0 18px rgba(74, 72, 235, 0.46));
+            pointer-events: none;
+            transform: translateY(-25px);
+        }
+
+        .nav-scan span {
+            margin-top: -20px;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
         .bottom-nav-wrap.is-open .nav-scan,
         .nav-scan.active {
-            box-shadow:
-                0 10px 28px rgba(99, 22, 208, 0.4),
-                0 0 0 1px rgba(255,255,255,0.2),
-                0 0 28px rgba(248, 60, 176, 0.28);
+            filter: drop-shadow(0 0 20px rgba(248, 60, 176, 0.38));
         }
 
         .mobile-hub {
@@ -238,6 +349,40 @@
         }
 
         @media (max-width: 768px) {
+            .bottom-nav {
+                width: min(100%, 560px);
+                height: 68px;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(64px, 0.82fr) minmax(0, 1fr) minmax(0, 1fr);
+                column-gap: 6px;
+                padding: 7px 14px 8px;
+            }
+
+            .nav-link span,
+            .nav-scan span {
+                font-size: 0.54rem;
+                letter-spacing: 0.03em;
+            }
+
+            .nav-link__icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            .nav-scan {
+                height: 100%;
+                margin-top: 0;
+            }
+
+            .nav-scan img {
+                width: 56px;
+                height: 56px;
+                transform: translateY(-23px);
+            }
+
+            .nav-scan span {
+                margin-top: -18px;
+            }
+
             .mobile-hub {
                 position: fixed;
                 left: 10px;

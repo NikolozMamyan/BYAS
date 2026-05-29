@@ -5,35 +5,39 @@
     data-controller="notifications-panel"
     data-notifications-panel-url-value="{{ path('app_front_notifications_panel') }}"
 >
-    <div class="app-header__side app-header__side--left">
-        <a href="{{ path('app_front_passport_settings') }}" class="app-header__icon" aria-label="{{ 'app_header.settings'|trans }}">
-            <i class="fas fa-gear"></i>
-        </a>
-    </div>
+    <div class="app-header__bar">
+        <div class="app-header__side app-header__side--left">
+            <a href="{{ app.request.uri }}" class="app-header__icon" aria-label="{{ 'app_header.refresh'|trans }}">
+                <img src="{{ asset('img/nav-top/top_bar_refrech.png') }}" alt="">
+            </a>
 
-    <div class="app-header__center">
-        <a href="{{ path('app_front_passport') }}" class="app-header__brand" aria-label="{{ 'app_header.home'|trans }}">
-            <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
-        </a>
-    </div>
+            <button
+                type="button"
+                class="app-header__icon"
+                aria-label="{{ 'app_header.notifications'|trans }}"
+                data-action="notifications-panel#toggle"
+                data-notifications-panel-target="button"
+            >
+                <img src="{{ asset('img/nav-top/top_bar_pulse.png') }}" alt="">
+                <span class="app-header__badge" data-notifications-panel-target="badge"></span>
+            </button>
+        </div>
 
-    <div class="app-header__side app-header__side--right">
-        <button
-            type="button"
-            class="app-header__icon"
-            aria-label="{{ 'app_header.notifications'|trans }}"
-            data-action="notifications-panel#toggle"
-            data-notifications-panel-target="button"
-        >
-            <i class="fas fa-bell"></i>
-            <span class="app-header__badge" data-notifications-panel-target="badge"></span>
-        </button>
+        <div class="app-header__center">
+            <a href="{{ path('app_front_passport') }}" class="app-header__brand" aria-label="{{ 'app_header.home'|trans }}">
+                <img src="{{ asset('img/logo/BYAS LOGO.png') }}" alt="BYAS">
+            </a>
+        </div>
 
-        {% include 'components/user_avatar.html.twig' with {
-            avatarUrl: app.user.avatarUrl,
-            displayName: app.user.displayName|default(app.user.userIdentifier),
-            avatarClass: 'app-header__avatar'
-        } only %}
+        <div class="app-header__side app-header__side--right">
+            <a href="{{ path('app_front_passport_settings') }}" class="app-header__avatar-link" aria-label="{{ 'app_header.settings'|trans }}">
+                {% include 'components/user_avatar.html.twig' with {
+                    avatarUrl: app.user.avatarUrl,
+                    displayName: app.user.displayName|default(app.user.userIdentifier),
+                    avatarClass: 'app-header__avatar'
+                } only %}
+            </a>
+        </div>
     </div>
 
     <div class="notif-panel__backdrop" data-notifications-panel-target="backdrop" data-action="click->notifications-panel#close" hidden></div>

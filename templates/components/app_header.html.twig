@@ -30,7 +30,7 @@
         </div>
 
         <div class="app-header__side app-header__side--right">
-            <a href="{{ path('app_front_passport_settings') }}" class="app-header__avatar-link" aria-label="{{ 'app_header.settings'|trans }}">
+            <a href="{{ path('app_front_passport_settings') }}" class="app-header__avatar-link" aria-label="{{ 'app_header.settings'|trans }}" data-level="{{ app.user.globalLevel|default('') }}">
                 {% include 'components/user_avatar.html.twig' with {
                     avatarUrl: app.user.avatarUrl,
                     displayName: app.user.displayName|default(app.user.userIdentifier),

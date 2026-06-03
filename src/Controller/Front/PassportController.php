@@ -120,7 +120,7 @@ class PassportController extends AbstractController
             'items' => $user->getCollectionItems(),
             'collectionHighlights' => $this->buildCollectionHighlights($user->getCollectionItems()->toArray()),
             'userBadges' => $userBadges,
-            'featuredBadges' => array_slice($userBadges, 0, 3),
+            'featuredBadges' => array_slice($userBadges, 0, 5),
             'globalRank' => $userRepository->getGlobalRankPosition($user),
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
             'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
@@ -321,7 +321,7 @@ class PassportController extends AbstractController
 
         uasort($groups, static fn (array $left, array $right): int => $right['count'] <=> $left['count']);
 
-        return array_slice(array_values($groups), 0, 3);
+        return array_slice(array_values($groups), 0, 4);
     }
 
     private function iconForCollectionType(?string $label): string

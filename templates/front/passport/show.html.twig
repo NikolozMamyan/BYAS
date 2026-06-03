@@ -6,13 +6,18 @@
     {{ parent() }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('styles/front/passport-show.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('styles/front/passport-show.css') }}">
 {% endblock %}
 
 {% block body %}
 {% set successFlashes = app.flashes('success') %}
 {% set errorFlashes = app.flashes('error') %}
+{% set passportAsset = 'img/passport/' %}
+{% set displayName = profile.username|default(user.displayName) %}
+{% set primaryFandomName = topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : ('passport.byas_fan'|trans) %}
+{% set topFandomXp = topFandoms|length ? topFandoms[0].xp : 0 %}
+{% set badgeAssets = ['verified-badge.png', 'shield-star.png', 'weekly-star.png', 'trophy-heart.png', 'sparkle-core.png'] %}
 <main
     class="passport-page native-screen is-hydrating"
     data-controller="screen-shell passport-sync"
@@ -42,48 +47,51 @@
                 <span class="screen-skeleton__bar screen-skeleton__bar--full"></span>
             </div>
         </div>
-        <div class="screen-skeleton__grid screen-skeleton__grid--two">
-            <div class="screen-skeleton__card"></div>
-            <div class="screen-skeleton__card"></div>
-        </div>
         <div class="screen-skeleton__grid screen-skeleton__grid--three">
             <div class="screen-skeleton__card"></div>
             <div class="screen-skeleton__card"></div>
             <div class="screen-skeleton__card"></div>
         </div>
+        <div class="screen-skeleton__grid screen-skeleton__grid--two">
+            <div class="screen-skeleton__card"></div>
+            <div class="screen-skeleton__card"></div>
+        </div>
     </div>
+
     <div class="screen-content">
-    <div class="passport-stack">
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="hero-grid">
+        <div class="passport-stack">
+            <section class="passport-panel passport-hero">
+                <div class="passport-panel__inner">
                     <div class="hero-main">
                         <div class="hero-avatar-wrap">
                             <div class="hero-avatar-ring">
                                 {% include 'components/user_avatar.html.twig' with {
                                     avatarUrl: user.avatarUrl,
-                                    displayName: profile.username|default(user.displayName),
+                                    displayName: displayName,
                                     avatarClass: 'hero-avatar'
                                 } only %}
                             </div>
                             <a href="{{ path('app_front_passport_settings') }}" class="hero-avatar-edit" aria-label="{{ 'passport.edit'|trans }}">
-                                <i class="fas fa-pen"></i>
+                                <img src="{{ asset(passportAsset ~ 'edit-pencil.png') }}" alt="">
                             </a>
                         </div>
 
                         <div class="hero-copy">
                             <div class="hero-name-row">
-                                <h1 class="hero-name">{{ profile.username|default(user.displayName) }}</h1>
-                                <i class="fas fa-badge-check hero-verified"></i>
+                                <h1 class="hero-name">{{ displayName }}</h1>
+                                <img class="hero-verified" src="{{ asset(passportAsset ~ 'verified-badge.png') }}" alt="">
                             </div>
+
                             <div class="hero-handle">
                                 <i class="fas fa-heart"></i>
-                                {{ topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : ('passport.byas_fan'|trans) }}
+                                {{ primaryFandomName }}
                             </div>
+
                             <div class="hero-caption">{{ 'passport.base_level'|trans }}</div>
                             <div class="hero-level">{{ 'passport.level'|trans }} <span>{{ user.globalLevel }}</span></div>
+
                             <div class="hero-tier">
-                                <i class="fas fa-sparkles"></i>
+                                <img src="{{ asset(passportAsset ~ 'sparkle-core.png') }}" alt="">
                                 {{ globalLevelBadge.fullTitle }}
                             </div>
 
@@ -92,28 +100,27 @@
                                     <div class="hero-progress__fill" style="width: {{ globalProgress.percent }}%;"></div>
                                 </div>
                                 <div class="hero-progress__meta">
-                                    <span>{{ user.globalXp }} XP</span>
-                                    <span>{{ globalProgress.next }} XP target</span>
+                                    {{ user.globalXp|number_format(0, '.', ',') }} / {{ globalProgress.next|default(user.globalXp)|number_format(0, '.', ',') }} XP
                                 </div>
                             </div>
 
-                            <div class="hero-actions">
+                            <div class="passport-actions">
                                 {% if connectedSyncProviders is empty %}
-                                    <a id="syncHistoryBtn" class="hero-btn hero-btn--primary hero-btn--connect" href="{{ path('app_spotify_start') }}" data-passport-sync-target="syncButton">
+                                    <a id="syncHistoryBtn" class="passport-action passport-action--primary" href="{{ path('app_spotify_start') }}" data-passport-sync-target="syncButton">
                                         <i class="fas fa-plug-circle-bolt"></i>
                                         {{ 'passport.connect_first_source'|trans }}
                                     </a>
                                 {% else %}
-                                    <button id="syncHistoryBtn" class="hero-btn hero-btn--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync">
+                                    <button id="syncHistoryBtn" class="passport-action passport-action--primary" type="button" data-passport-sync-target="syncButton" data-action="passport-sync#sync">
                                         <i class="fas fa-rotate"></i>
                                         {{ 'passport.sync'|trans }}
                                     </button>
                                 {% endif %}
-                                <a href="{{ path('app_front_passport_share') }}" class="hero-btn">
+                                <a href="{{ path('app_front_passport_share') }}" class="passport-action">
                                     <i class="fas fa-share-nodes"></i>
                                     {{ 'passport.share'|trans }}
                                 </a>
-                                <a href="{{ path('app_front_collection_index') }}" class="hero-btn">
+                                <a href="{{ path('app_front_collection_index') }}" class="passport-action">
                                     <i class="fas fa-layer-group"></i>
                                     {{ 'passport.collection'|trans }}
                                 </a>
@@ -126,195 +133,227 @@
                             <span data-passport-sync-target="feedbackText"></span>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    {% if connectedSyncProviders is empty %}
-                        <section class="streaming-onboarding" aria-labelledby="streamingOnboardingTitle">
-                            <div class="streaming-onboarding__icon">
-                                <i class="fas fa-wave-square"></i>
-                            </div>
-                            <div class="streaming-onboarding__copy">
-                                <div class="streaming-onboarding__kicker">{{ 'passport.streaming_onboarding.kicker'|trans }}</div>
-                                <h2 id="streamingOnboardingTitle">{{ 'passport.streaming_onboarding.title'|trans }}</h2>
-                                <p>{{ 'passport.streaming_onboarding.text'|trans }}</p>
-                            </div>
-                            <div class="streaming-onboarding__actions streaming-onboarding__actions--compact">
-                                <a class="streaming-source streaming-source--spotify" href="{{ path('app_spotify_start') }}">
-                                    <i class="fab fa-spotify"></i>
-                                    <span>Spotify</span>
-                                </a>
-                                <a class="streaming-source streaming-source--youtube" href="{{ path('app_youtube_start') }}">
-                                    <i class="fab fa-youtube"></i>
-                                    <span>YouTube</span>
-                                </a>
-                            </div>
-                        </section>
+            {% if connectedSyncProviders is empty %}
+                <section class="passport-panel streaming-onboarding" aria-labelledby="streamingOnboardingTitle">
+                    <div class="passport-panel__inner streaming-onboarding__inner">
+                        <div class="streaming-onboarding__icon">
+                            <i class="fas fa-wave-square"></i>
+                        </div>
+                        <div class="streaming-onboarding__copy">
+                            <div class="streaming-onboarding__kicker">{{ 'passport.streaming_onboarding.kicker'|trans }}</div>
+                            <h2 id="streamingOnboardingTitle">{{ 'passport.streaming_onboarding.title'|trans }}</h2>
+                            <p>{{ 'passport.streaming_onboarding.text'|trans }}</p>
+                        </div>
+                        <div class="streaming-onboarding__actions">
+                            <a class="streaming-source streaming-source--spotify" href="{{ path('app_spotify_start') }}">
+                                <i class="fab fa-spotify"></i>
+                                <span>Spotify</span>
+                            </a>
+                            <a class="streaming-source streaming-source--youtube" href="{{ path('app_youtube_start') }}">
+                                <i class="fab fa-youtube"></i>
+                                <span>YouTube</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="passport-panel">
+                <div class="passport-panel__inner">
+                    <div class="section-head">
+                        <div class="section-title">
+                            <img src="{{ asset(passportAsset ~ 'fandom-users.png') }}" alt="">
+                            {{ 'passport.top_fandoms'|trans }}
+                        </div>
+                        <a href="{{ path('app_public_passport', { shareSlug: profile.shareSlug }) }}" class="section-link">{{ 'common.view_all'|trans }} <i class="fas fa-chevron-right"></i></a>
+                    </div>
+
+                    {% if topFandoms is not empty %}
+                        <div class="fandom-grid">
+                            {% for fandom in topFandoms %}
+                                {% set fandomBadge = attribute(fandomLevelBadges, fandom.id) %}
+                                {% set fandomName = fandom.artist ? fandom.artist.name : ('passport.artist_fallback'|trans) %}
+                                {% set fandomPercent = topFandomXp > 0 ? ((fandom.xp / topFandomXp) * 100)|round(0, 'floor') : 100 %}
+                                <article class="fandom-card">
+                                    <div class="fandom-rank{% if loop.index == 2 %} fandom-rank--secondary{% elseif loop.index == 3 %} fandom-rank--tertiary{% endif %}">{{ loop.index }}</div>
+                                    <div class="fandom-mark">
+                                        <span>{{ fandomName|slice(0, 2)|upper }}</span>
+                                    </div>
+                                    <div class="fandom-copy">
+                                        <div class="fandom-artist">{{ fandomName }}</div>
+                                        <div class="fandom-title">
+                                            <i class="fas fa-heart"></i>
+                                            {{ fandomBadge.fullTitle }}
+                                        </div>
+                                    </div>
+                                    <div class="fandom-meta">
+                                        <span>{{ 'passport.level'|trans }} {{ fandom.level }}</span>
+                                        <span>{{ fandom.rankPosition ? '#' ~ fandom.rankPosition : fandom.xp|number_format(0, '.', ',') ~ ' XP' }}</span>
+                                    </div>
+                                    <div class="fandom-line">
+                                        <span style="width: {{ fandomPercent }}%;"></span>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">{{ 'passport.empty_fandoms'|trans }}</div>
                     {% endif %}
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="stats-grid">
-                    <article class="stat-card">
-                        <div class="stat-card__label">
-                            <i class="fas fa-globe"></i>
-                            {{ 'passport.global_rank'|trans }}
+            <section class="passport-panel">
+                <div class="passport-panel__inner">
+                    <div class="section-head">
+                        <div class="section-title">
+                            <img src="{{ asset(passportAsset ~ 'collection-stack.png') }}" alt="">
+                            {{ 'passport.collection_mine'|trans }}
                         </div>
-                        <div class="stat-card__value">{{ globalRank ? '#' ~ globalRank : '--' }}</div>
-                        <div class="stat-card__meta">{{ 'passport.active_fandoms'|trans({ '%count%': fandoms|length }) }}</div>
-                    </article>
-
-                    <article class="stat-card stat-card--accent">
-                        <div class="stat-card__label">
-                            <i class="fas fa-heart"></i>
-                            {{ 'passport.fandom_rank'|trans({ '%name%': topFandoms|length and topFandoms[0].artist ? topFandoms[0].artist.name : ('passport.byas_fan'|trans) }) }}
-                        </div>
-                        <div class="stat-card__value">{{ topFandoms|length and topFandoms[0].rankPosition ? '#' ~ topFandoms[0].rankPosition : '--' }}</div>
-                        <div class="stat-card__meta">{{ 'passport.badges_unlocked'|trans({ '%count%': userBadges|length }) }}</div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="section-head">
-                    <div class="section-title">
-                        <i class="fas fa-users"></i>
-                        {{ 'passport.top_fandoms'|trans }}
+                        <a href="{{ path('app_front_collection_index') }}" class="section-link">{{ 'common.view_all'|trans }} <i class="fas fa-chevron-right"></i></a>
                     </div>
-                    <a href="{{ path('app_public_passport', { shareSlug: profile.shareSlug }) }}" class="section-link">{{ 'common.view_all'|trans }}</a>
-                </div>
 
-                {% if topFandoms is not empty %}
-                    <div class="fandom-grid">
-                        {% for fandom in topFandoms %}
-                            {% set fandomBadge = attribute(fandomLevelBadges, fandom.id) %}
-                            <article class="fandom-card">
-                                <div class="fandom-head">
-                                    <div class="fandom-rank{% if loop.index == 2 %} fandom-rank--secondary{% elseif loop.index == 3 %} fandom-rank--tertiary{% endif %}">
-                                        {{ loop.index }}
-                                    </div>
-                                    <i class="fas fa-heart heart-icon--violet"></i>
-                                </div>
-                                <div class="fandom-artist">{{ fandom.artist ? fandom.artist.name : ('passport.artist_fallback'|trans) }}</div>
-                                <div class="fandom-title">{{ fandomBadge.fullTitle }}</div>
-                                <div class="fandom-meta">
-                                    <span>{{ 'passport.level'|trans }} {{ fandom.level }}</span>
-                                    <span>{{ fandom.rankPosition ? '#' ~ fandom.rankPosition : user.globalXp ~ ' XP' }}</span>
-                                </div>
-                                <div class="fandom-line"></div>
-                            </article>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">{{ 'passport.empty_fandoms'|trans }}</div>
-                {% endif %}
-            </div>
-        </section>
-
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="section-head">
-                    <div class="section-title">
-                        <i class="fas fa-layer-group"></i>
-                        {{ 'passport.collection_mine'|trans }}
-                    </div>
-                    <a href="{{ path('app_front_collection_index') }}" class="section-link">{{ 'common.view_all'|trans }}</a>
-                </div>
-
-                {% if collectionHighlights is not empty %}
-                    <div class="collection-grid">
-                        {% for highlight in collectionHighlights %}
-                            <article class="collection-card">
-                                <div class="collection-icon">
-                                    <i class="fas {{ highlight.icon }}"></i>
-                                </div>
-                                <div>
-                                    <div class="collection-value">{{ highlight.count }}</div>
+                    {% if collectionHighlights is not empty %}
+                        <div class="collection-grid">
+                            {% for highlight in collectionHighlights %}
+                                {% set labelKey = highlight.label|lower %}
+                                {% set collectionAsset = 'collection-stack.png' %}
+                                {% if 'light' in labelKey %}
+                                    {% set collectionAsset = 'lightstick.png' %}
+                                {% elseif 'photo' in labelKey or 'card' in labelKey %}
+                                    {% set collectionAsset = 'photocard.png' %}
+                                {% elseif 'event' in labelKey %}
+                                    {% set collectionAsset = 'event-ticket.png' %}
+                                {% elseif 'album' in labelKey or 'vinyl' in labelKey or 'cd' in labelKey %}
+                                    {% set collectionAsset = 'album-note.png' %}
+                                {% endif %}
+                                <article class="collection-card">
+                                    <img src="{{ asset(passportAsset ~ collectionAsset) }}" alt="">
+                                    <div class="collection-value">{{ highlight.count|number_format(0, '.', ',') }}</div>
                                     <div class="collection-label">{{ highlight.label }}</div>
-                                </div>
-                            </article>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">{{ 'passport.empty_collection'|trans }}</div>
-                {% endif %}
-            </div>
-        </section>
-
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="section-head">
-                    <div class="section-title">
-                        <i class="fas fa-shield-star"></i>
-                        {{ 'passport.rarest_badges'|trans }}
-                    </div>
-                    <span class="section-link">{{ 'passport.total_count'|trans({ '%count%': userBadges|length }) }}</span>
-                </div>
-
-                {% if featuredBadges is not empty %}
-                    <div class="badge-grid">
-                        {% for userBadge in featuredBadges %}
-                            <article class="badge-card">
-                                <div class="badge-crest">
-                                    <i class="fas {% if loop.index == 1 %}fa-crown{% elseif loop.index == 2 %}fa-gem{% else %}fa-star{% endif %}"></i>
-                                </div>
-                                <div class="badge-name">{{ userBadge.badge.name }}</div>
-                                <div class="badge-meta">
-                                    {{ userBadge.badge.description|default('passport.badge_default_description'|trans) }}
-                                </div>
-                            </article>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">{{ 'passport.empty_badges'|trans }}</div>
-                {% endif %}
-            </div>
-        </section>
-
-        <section class="passport-panel">
-            <div class="passport-panel__inner">
-                <div class="share-card">
-                    <div class="share-qr">
-                        <i class="fas fa-qrcode"></i>
-                    </div>
-                    <div>
-                        <div class="share-title">{{ 'passport.share_title'|trans }}</div>
-                        <div class="share-text">{{ 'passport.share_text'|trans }}</div>
-                        <div class="share-link-row">
-                            <a href="{{ path('app_front_passport_share') }}" class="hero-btn hero-btn--primary">
-                                <i class="fas fa-image"></i>
-                                {{ 'passport.share_card'|trans }}
-                            </a>
-                            <a href="{{ publicPassportUrl }}" class="hero-btn">
-                                <i class="fas fa-arrow-up-right-from-square"></i>
-                                {{ 'passport.public_page'|trans }}
-                            </a>
+                                </article>
+                            {% endfor %}
                         </div>
-                    </div>
-                    <div class="share-mini">BYAS</div>
+                    {% else %}
+                        <div class="empty-state">{{ 'passport.empty_collection'|trans }}</div>
+                    {% endif %}
                 </div>
-            </div>
-        </section>
+            </section>
 
-        {% if successFlashes is not empty %}
-            <div class="flash-grid">
-                {% for message in successFlashes %}
-                    <div class="flash-card flash-card--success">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+            <section class="passport-panel">
+                <div class="passport-panel__inner">
+                    <div class="section-head">
+                        <div class="section-title">
+                            <img src="{{ asset(passportAsset ~ 'shield-star.png') }}" alt="">
+                            {{ 'passport.rarest_badges'|trans }}
+                        </div>
+                        <span class="section-link">{{ 'passport.total_count'|trans({ '%count%': userBadges|length }) }}</span>
+                    </div>
 
-        {% if errorFlashes is not empty %}
-            <div class="flash-grid">
-                {% for message in errorFlashes %}
-                    <div class="flash-card flash-card--error">{{ message }}</div>
-                {% endfor %}
+                    {% if featuredBadges is not empty %}
+                        <div class="badge-grid">
+                            {% for userBadge in featuredBadges %}
+                                {% set badgeAsset = badgeAssets[loop.index0 % (badgeAssets|length)] %}
+                                <article class="badge-card">
+                                    <img class="badge-crest" src="{{ asset(passportAsset ~ badgeAsset) }}" alt="">
+                                    <div class="badge-name">{{ userBadge.badge.name }}</div>
+                                    <div class="badge-meta">
+                                        {{ userBadge.badge.description|default('passport.badge_default_description'|trans) }}
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">{{ 'passport.empty_badges'|trans }}</div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="passport-panel metric-strip" aria-label="{{ 'passport.title'|trans }}">
+                <div class="passport-panel__inner metric-strip__inner">
+                    <article class="metric-item">
+                        <img src="{{ asset(passportAsset ~ 'weekly-star.png') }}" alt="">
+                        <div>
+                            <strong>{{ user.globalXp|number_format(0, '.', ',') }} XP</strong>
+                            <span>{{ 'passport.level'|trans }} {{ user.globalLevel }}</span>
+                        </div>
+                    </article>
+                    <article class="metric-item">
+                        <img src="{{ asset(passportAsset ~ 'rank-up.png') }}" alt="">
+                        <div>
+                            <strong>{{ globalRank ? '#' ~ globalRank : '--' }}</strong>
+                            <span>{{ 'passport.global_rank'|trans }}</span>
+                        </div>
+                    </article>
+                    <article class="metric-item">
+                        <img src="{{ asset(passportAsset ~ 'streaming-clock.png') }}" alt="">
+                        <div>
+                            <strong>{{ connectedSyncProviders|length }}</strong>
+                            <span>{{ 'passport.connected_sources'|trans }}</span>
+                        </div>
+                    </article>
+                    <article class="metric-item">
+                        <img src="{{ asset(passportAsset ~ 'missions-target.png') }}" alt="">
+                        <div>
+                            <strong>{{ contactIntentCount }}</strong>
+                            <span>{{ 'passport.message_intents'|trans }}</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <div class="passport-focus-grid">
+                <section class="passport-panel focus-card focus-card--level">
+                    <div class="passport-panel__inner focus-card__inner">
+                        <div class="focus-card__copy">
+                            <div class="focus-card__label">
+                                <img src="{{ asset(passportAsset ~ 'streak-flame-outline.png') }}" alt="">
+                                {{ 'passport.level'|trans }}
+                            </div>
+                            <div class="focus-card__value">{{ user.globalLevel }}</div>
+                            <div class="focus-card__title">{{ globalLevelBadge.fullTitle }}</div>
+                            <div class="focus-card__text">{{ user.globalXp|number_format(0, '.', ',') }} XP</div>
+                        </div>
+                        <img class="focus-card__art focus-card__art--flame" src="{{ asset(passportAsset ~ 'streak-flame.png') }}" alt="">
+                    </div>
+                </section>
+
+                <section class="passport-panel focus-card focus-card--rank">
+                    <div class="passport-panel__inner focus-card__inner">
+                        <div class="focus-card__copy">
+                            <div class="focus-card__label">
+                                <img src="{{ asset(passportAsset ~ 'trophy-heart.png') }}" alt="">
+                                {{ 'passport.global_rank'|trans }}
+                            </div>
+                            <div class="rank-list">
+                                <div><strong>{{ globalRank ? '#' ~ globalRank : '--' }}</strong><span>{{ 'passport.global_scope'|trans }}</span></div>
+                                <div><strong>{{ topFandoms|length and topFandoms[0].rankPosition ? '#' ~ topFandoms[0].rankPosition : '--' }}</strong><span>{{ primaryFandomName }}</span></div>
+                                <div><strong>{{ fandoms|length }}</strong><span>{{ 'passport.active_fandoms'|trans({ '%count%': fandoms|length }) }}</span></div>
+                            </div>
+                        </div>
+                        <img class="focus-card__art focus-card__art--globe" src="{{ asset(passportAsset ~ 'rank-globe.png') }}" alt="">
+                    </div>
+                </section>
             </div>
-        {% endif %}
-    </div>
+
+            {% if successFlashes is not empty %}
+                <div class="flash-grid">
+                    {% for message in successFlashes %}
+                        <div class="flash-card flash-card--success">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if errorFlashes is not empty %}
+                <div class="flash-grid">
+                    {% for message in errorFlashes %}
+                        <div class="flash-card flash-card--error">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
     </div>
 </main>
 {% endblock %}

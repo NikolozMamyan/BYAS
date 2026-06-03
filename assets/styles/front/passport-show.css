@@ -1,901 +1,1229 @@
-body {
-            background:
-                radial-gradient(circle at 18% 12%, rgba(74, 72, 235, 0.28), transparent 26%),
-                radial-gradient(circle at 78% 14%, rgba(248, 60, 176, 0.18), transparent 24%),
-                radial-gradient(circle at 50% 80%, rgba(99, 22, 208, 0.22), transparent 30%),
-                var(--bg);
-        }
-
-        .passport-page {
-            position: relative;
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 92px 14px 108px;
-        }
-
-        .passport-page::before {
-            content: "";
-            position: absolute;
-            inset: 0 auto auto 50%;
-            width: min(560px, 90vw);
-            height: 560px;
-            transform: translateX(-50%);
-            background:
-                radial-gradient(circle, rgba(99, 22, 208, 0.28) 0%, rgba(99, 22, 208, 0) 65%);
-            filter: blur(18px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .passport-stack {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            gap: 14px;
-        }
-
-        .passport-panel {
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(74, 72, 235, 0.82), rgba(99, 22, 208, 0.45), rgba(248, 60, 176, 0.7));
-            box-shadow: 0 22px 52px rgba(2, 0, 12, 0.62);
-        }
-
-        .passport-panel::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.16), transparent 14%),
-                radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.08), transparent 18%),
-                radial-gradient(circle at 82% 80%, rgba(248, 60, 176, 0.18), transparent 20%);
-            opacity: 0.75;
-            pointer-events: none;
-        }
-
-        .passport-panel__inner {
-            position: relative;
-            z-index: 1;
-            border-radius: 19px;
-            padding: 16px;
-            background:
-                linear-gradient(180deg, rgba(10, 7, 24, 0.96) 0%, rgba(7, 5, 20, 0.98) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .hero-grid {
-            display: grid;
-            gap: 16px;
-        }
-
-        .hero-main {
-            display: grid;
-            grid-template-columns: 112px minmax(0, 1fr);
-            gap: 16px;
-            align-items: center;
-        }
-
-        .hero-avatar-wrap {
-            position: relative;
-        }
-
-        .hero-avatar-ring {
-            width: 112px;
-            height: 112px;
-            border-radius: 50%;
-            padding: 3px;
-            background: linear-gradient(135deg, #7f84ff 0%, var(--pink) 100%);
-            box-shadow:
-                0 0 0 3px rgba(125, 83, 255, 0.2),
-                0 0 30px rgba(116, 81, 255, 0.42);
-        }
-
-        .hero-avatar,
-        .hero-avatar.avatar-placeholder {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(10, 7, 24, 0.95);
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, rgba(248, 60, 176, 0.2), rgba(74, 72, 235, 0.28));
-            color: white;
-            font-size: 2rem;
-            font-weight: 800;
-        }
-
-        .hero-avatar-edit {
-            position: absolute;
-            right: 2px;
-            bottom: 4px;
-            width: 30px;
-            height: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 50%;
-            background: rgba(10, 7, 24, 0.92);
-            display: grid;
-            place-items: center;
-            color: white;
-            text-decoration: none;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.38);
-        }
-
-        .hero-copy {
-            min-width: 0;
-        }
-
-        .hero-name-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .hero-name {
-            margin: 0;
-            font-size: clamp(2rem, 4vw, 2.55rem);
-            line-height: 0.92;
-            letter-spacing: -0.03em;
-            text-transform: uppercase;
-        }
-
-        .hero-verified {
-            color: #a88cff;
-            font-size: 0.95rem;
-        }
-
-        .hero-handle {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            background: rgba(248, 60, 176, 0.12);
-            border: 1px solid rgba(248, 60, 176, 0.24);
-            color: #ff76c8;
-            font: 700 0.82rem/1 'Rajdhani', sans-serif;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .hero-caption {
-            margin-top: 14px;
-            color: rgba(255, 255, 255, 0.62);
-            font: 600 0.72rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-        }
-
-        .hero-level {
-            margin-top: 4px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 5vw, 2.9rem);
-            font-weight: 800;
-            line-height: 1;
-            color: #d9dbff;
-            text-shadow: 0 0 24px rgba(120, 106, 255, 0.25);
-        }
-
-        .hero-level span {
-            color: #7fb1ff;
-        }
-
-        .hero-tier {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            padding: 7px 12px;
-            border-radius: 999px;
-            background: rgba(99, 22, 208, 0.16);
-            border: 1px solid rgba(99, 22, 208, 0.38);
-            color: #f1d7ff;
-            font: 700 0.84rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .hero-tier i {
-            color: #96a5ff;
-        }
-
-        .hero-progress {
-            margin-top: 16px;
-        }
-
-        .hero-progress__bar {
-            height: 10px;
-            border-radius: 999px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(248, 60, 176, 0.2);
-        }
-
-        .hero-progress__fill {
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #4aa0ff 0%, #744dff 44%, #f83cb0 100%);
-            box-shadow: 0 0 22px rgba(116, 77, 255, 0.46);
-        }
-
-        .hero-progress__meta {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 8px;
-            color: rgba(255, 255, 255, 0.76);
-            font: 700 0.88rem/1 'Rajdhani', sans-serif;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 14px;
-        }
-
-        .hero-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(255, 255, 255, 0.04);
-            color: white;
-            text-decoration: none;
-            font: 700 0.85rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-        }
-
-        .hero-btn:active,
-        .streaming-source:active {
-            transform: scale(0.985);
-        }
-
-        .hero-btn--primary {
-            background: linear-gradient(90deg, rgba(74, 72, 235, 0.32), rgba(248, 60, 176, 0.24));
-            border-color: rgba(132, 102, 255, 0.34);
-            box-shadow: 0 12px 28px rgba(74, 72, 235, 0.2);
-        }
-
-        .hero-btn--connect {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(90deg, rgba(29, 185, 84, 0.28), rgba(74, 72, 235, 0.26), rgba(248, 60, 176, 0.28));
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .hero-btn--connect::after {
-            content: "";
-            position: absolute;
-            inset: -40% auto -40% -70%;
-            width: 55%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: skewX(-18deg);
-            animation: streaming-cta-sheen 2.8s ease-in-out infinite;
-        }
-
-        .streaming-onboarding {
-            display: grid;
-            grid-template-columns: auto minmax(0, 1fr);
-            gap: 14px;
-            align-items: start;
-            padding: 14px;
-            border-radius: 18px;
-            border: 1px solid rgba(0, 242, 255, 0.18);
-            background:
-                radial-gradient(circle at 0% 0%, rgba(0, 242, 255, 0.12), transparent 32%),
-                linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 18px 42px rgba(0,0,0,0.22);
-        }
-
-        .streaming-onboarding__icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            display: grid;
-            place-items: center;
-            color: var(--neon-cyan);
-            background: rgba(0, 242, 255, 0.08);
-            border: 1px solid rgba(0, 242, 255, 0.18);
-        }
-
-        .streaming-onboarding__copy {
-            min-width: 0;
-        }
-
-        .streaming-onboarding__kicker {
-            color: var(--neon-cyan);
-            font: 800 0.72rem/1 'Rajdhani', sans-serif;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
-
-        .streaming-onboarding h2 {
-            margin: 6px 0 0;
-            font-size: clamp(1.35rem, 4vw, 1.8rem);
-            line-height: 1;
-            text-transform: uppercase;
-        }
-
-        .streaming-onboarding p {
-            margin: 8px 0 0;
-            color: rgba(255, 255, 255, 0.68);
-            font: 600 0.86rem/1.4 'Rajdhani', sans-serif;
-        }
-
-        .streaming-onboarding__actions {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
-        }
-
-        .streaming-onboarding__actions--compact {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .streaming-source {
-            min-height: 46px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: white;
-            text-decoration: none;
-            font: 800 0.8rem/1 'Rajdhani', sans-serif;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.04);
-            transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
-        }
-
-        .streaming-source:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.22);
-            background: rgba(255,255,255,0.07);
-        }
-
-        .streaming-source--spotify i {
-            color: #1DB954;
-        }
-
-        .streaming-source--youtube i {
-            color: #ff3d5a;
-        }
-
-        .streaming-source--apple i {
-            color: #fc3c44;
-        }
-
-        @keyframes streaming-cta-sheen {
-            0%, 45% {
-                transform: translateX(0) skewX(-18deg);
-            }
-
-            100% {
-                transform: translateX(340%) skewX(-18deg);
-            }
-        }
-
-        .heart-icon--violet {
-            color: #9f80ff;
-        }
-
-        .sync-provider-icon--empty {
-            color: var(--text-dim);
-        }
-
-        .sync-provider-icon--spotify {
-            color: #1DB954;
-        }
-
-        .sync-provider-icon--youtube {
-            color: #ff3d5a;
-        }
-
-        .sync-provider-icon--apple {
-            color: #fc3c44;
-        }
-
-        .stats-grid,
-        .fandom-grid,
-        .collection-grid,
-        .badge-grid,
-        .activity-grid,
-        .flash-grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .section-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font: 700 1rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .section-link {
-            color: rgba(255, 255, 255, 0.76);
-            text-decoration: none;
-            font: 700 0.86rem/1 'Rajdhani', sans-serif;
-        }
-
-        .stat-card,
-        .fandom-card,
-        .collection-card,
-        .badge-card,
-        .activity-card,
-        .flash-card,
-        .share-card {
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: linear-gradient(180deg, rgba(12, 8, 28, 0.92) 0%, rgba(8, 6, 22, 0.94) 100%);
-        }
-
-        .stat-card {
-            padding: 16px;
-            min-width: 0;
-        }
-
-        .stat-card__label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: rgba(255, 255, 255, 0.72);
-            font: 700 0.82rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .stat-card__value {
-            margin-top: 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.6rem, 4vw, 2.15rem);
-            color: #8fd2ff;
-        }
-
-        .stat-card__meta {
-            margin-top: 8px;
-            color: rgba(255, 255, 255, 0.55);
-            font: 600 0.74rem/1.35 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .stat-card--accent .stat-card__value {
-            color: #ff61c5;
-        }
-
-        .fandom-grid,
-        .collection-grid,
-        .badge-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .fandom-card,
-        .badge-card {
-            padding: 14px;
-        }
-
-        .fandom-rank {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--pink), #ff77cb);
-            color: white;
-            font: 800 0.82rem/1 'Orbitron', sans-serif;
-            box-shadow: 0 0 18px rgba(248, 60, 176, 0.32);
-        }
-
-        .fandom-rank--secondary {
-            background: linear-gradient(135deg, var(--cyan), #8e8cff);
-            box-shadow: 0 0 18px rgba(74, 72, 235, 0.32);
-        }
-
-        .fandom-rank--tertiary {
-            background: linear-gradient(135deg, #9d55ff, #6d4eff);
-            box-shadow: 0 0 18px rgba(109, 78, 255, 0.28);
-        }
-
-        .fandom-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .fandom-artist {
-            margin-top: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .fandom-title {
-            margin-top: 4px;
-            color: rgba(255, 255, 255, 0.62);
-            font: 600 0.82rem/1.35 'Rajdhani', sans-serif;
-        }
-
-        .fandom-meta {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            margin-top: 16px;
-            color: #ff61c5;
-            font: 700 0.84rem/1 'Rajdhani', sans-serif;
-        }
-
-        .fandom-meta span:last-child {
-            color: #af88ff;
-        }
-
-        .fandom-line {
-            height: 4px;
-            border-radius: 999px;
-            margin-top: 12px;
-            background: linear-gradient(90deg, #f83cb0, #7e67ff);
-            opacity: 0.95;
-        }
-
-        .collection-card {
-            padding: 18px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-width: 0;
-        }
-
-        .collection-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(180deg, rgba(248, 60, 176, 0.18), rgba(74, 72, 235, 0.16));
-            color: #ff5ec2;
-            box-shadow: inset 0 0 0 1px rgba(248, 60, 176, 0.18), 0 0 18px rgba(99, 22, 208, 0.18);
-            flex: 0 0 auto;
-        }
-
-        .collection-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            line-height: 1;
-        }
-
-        .collection-label {
-            margin-top: 6px;
-            color: rgba(255, 255, 255, 0.74);
-            font: 700 0.78rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .badge-card {
-            text-align: center;
-        }
-
-        .badge-crest {
-            width: 88px;
-            height: 88px;
-            margin: 0 auto 12px;
-            border-radius: 24px;
-            display: grid;
-            place-items: center;
-            background:
-                radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.18), transparent 24%),
-                linear-gradient(180deg, rgba(126, 93, 255, 0.26) 0%, rgba(248, 60, 176, 0.18) 100%);
-            border: 1px solid rgba(165, 145, 255, 0.26);
-            box-shadow:
-                inset 0 0 18px rgba(255, 255, 255, 0.08),
-                0 0 24px rgba(116, 77, 255, 0.24);
-            color: #f3d3ff;
-            font-size: 2rem;
-        }
-
-        .badge-card:nth-child(3n) .badge-crest {
-            background:
-                radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.2), transparent 24%),
-                linear-gradient(180deg, rgba(255, 191, 92, 0.22) 0%, rgba(255, 133, 56, 0.14) 100%);
-            border-color: rgba(255, 176, 86, 0.28);
-            box-shadow:
-                inset 0 0 18px rgba(255, 255, 255, 0.08),
-                0 0 24px rgba(255, 150, 78, 0.2);
-            color: #ffd28d;
-        }
-
-        .badge-name {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 32px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(248, 60, 176, 0.18);
-            color: #ff7fcf;
-            font: 700 0.78rem/1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .badge-meta {
-            margin-top: 10px;
-            color: rgba(255, 255, 255, 0.68);
-            font: 600 0.8rem/1.35 'Rajdhani', sans-serif;
-        }
-
-        .share-card {
-            display: grid;
-            grid-template-columns: 92px minmax(0, 1fr) 120px;
-            gap: 14px;
-            padding: 16px;
-            align-items: center;
-        }
-
-        .share-qr {
-            width: 92px;
-            height: 92px;
-            border-radius: 14px;
-            padding: 8px;
-            background: white;
-            display: grid;
-            place-items: center;
-            color: #05050a;
-            font-size: 2rem;
-        }
-
-        .share-title {
-            font: 800 1.05rem/1.1 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .share-text {
-            margin-top: 6px;
-            color: rgba(255, 255, 255, 0.68);
-            font: 600 0.84rem/1.4 'Rajdhani', sans-serif;
-        }
-
-        .share-link-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .share-mini {
-            display: grid;
-            place-items: center;
-            min-height: 92px;
-            border-radius: 16px;
-            background:
-                linear-gradient(160deg, rgba(15, 11, 36, 0.96), rgba(28, 13, 58, 0.96));
-            border: 1px solid rgba(138, 104, 255, 0.28);
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
-            transform: rotate(-10deg);
-            color: #89d6ff;
-            font: 800 1.55rem/1 'Orbitron', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .activity-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .activity-card {
-            padding: 14px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .activity-item:last-child {
-            border-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .activity-item:first-child {
-            padding-top: 0;
-        }
-
-        .activity-item__title {
-            font-weight: 700;
-        }
-
-        .activity-item__meta {
-            margin-top: 4px;
-            color: rgba(255, 255, 255, 0.6);
-            font: 600 0.78rem/1.35 'Rajdhani', sans-serif;
-        }
-
-        .activity-item__pill {
-            flex: 0 0 auto;
-            padding: 7px 10px;
-            border-radius: 999px;
-            background: rgba(74, 72, 235, 0.16);
-            border: 1px solid rgba(74, 72, 235, 0.26);
-            color: #a6b6ff;
-            font: 700 0.78rem/1 'Rajdhani', sans-serif;
-        }
-
-        .flash-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .flash-card {
-            padding: 14px 16px;
-            color: white;
-        }
-
-        .flash-card--success {
-            border-color: rgba(86, 226, 175, 0.2);
-            background: linear-gradient(180deg, rgba(14, 46, 39, 0.68), rgba(8, 23, 21, 0.82));
-        }
-
-        .flash-card--error {
-            border-color: rgba(255, 110, 158, 0.22);
-            background: linear-gradient(180deg, rgba(61, 17, 33, 0.7), rgba(28, 10, 18, 0.84));
-        }
-
-        .empty-state {
-            padding: 18px;
-            border-radius: 16px;
-            border: 1px dashed rgba(255, 255, 255, 0.12);
-            color: rgba(255, 255, 255, 0.6);
-            text-align: center;
-            font: 600 0.84rem/1.4 'Rajdhani', sans-serif;
-        }
-
-        @media (max-width: 767px) {
-            .passport-page {
-                padding-top: 84px;
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-
-            .hero-main {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .passport-panel,
-            .passport-panel__inner,
-            .stat-card,
-            .fandom-card,
-            .collection-card,
-            .badge-card,
-            .share-card,
-            .empty-state {
-                border-radius: 18px;
-            }
-
-            .hero-avatar-wrap {
-                margin: 0 auto;
-            }
-
-            .hero-name-row,
-            .hero-handle,
-            .hero-tier,
-            .hero-actions {
-                justify-content: center;
-                display: grid;
-                grid-template-columns: 1fr;
-            }
-
-            .hero-btn {
-                width: 100%;
-                justify-content: center;
-                min-height: 46px;
-            }
-
-            .activity-grid,
-            .share-card {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .fandom-grid,
-            .collection-grid,
-            .badge-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 13px 12px;
-            }
-
-            .stat-card__label {
-                font-size: 0.7rem;
-            }
-
-            .stat-card__value {
-                font-size: clamp(1.6rem, 8vw, 2.1rem);
-            }
-
-            .fandom-card,
-            .badge-card {
-                padding: 10px 8px;
-            }
-
-            .fandom-rank {
-                width: 22px;
-                height: 22px;
-                font-size: 0.68rem;
-            }
-
-            .fandom-artist,
-            .collection-label,
-            .badge-name {
-                font-size: 0.68rem;
-            }
-
-            .fandom-title,
-            .fandom-meta,
-            .badge-meta {
-                font-size: 0.64rem;
-            }
-
-            .collection-card {
-                padding: 12px 8px;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                gap: 8px;
-            }
-
-            .collection-icon {
-                width: 38px;
-                height: 38px;
-            }
-
-            .collection-value {
-                font-size: 1.55rem;
-            }
-
-            .badge-crest {
-                width: 58px;
-                height: 58px;
-                border-radius: 18px;
-                font-size: 1.45rem;
-            }
-
-            .share-card {
-                justify-items: start;
-            }
-
-            .share-mini {
-                width: 100%;
-                min-height: 82px;
-                transform: none;
-            }
-        }
+body[data-route="app_front_passport"] {
+    background:
+        linear-gradient(180deg, rgba(2, 2, 12, 0.24), #02020a 86%),
+        url("../../img/passport/background-stars.png") center top / cover fixed no-repeat,
+        #02020a;
+    color: #fff;
+}
+
+body[data-route="app_front_passport"] .app-header {
+    min-height: 96px;
+    padding: 14px max(20px, env(safe-area-inset-right, 0)) 8px max(20px, env(safe-area-inset-left, 0));
+    background: linear-gradient(180deg, rgba(2, 2, 12, 0.92), rgba(2, 2, 12, 0));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+body[data-route="app_front_passport"] .app-header__bar {
+    width: min(100%, 946px);
+    min-height: 74px;
+    padding: 0;
+    grid-template-columns: minmax(132px, 1fr) auto minmax(74px, 1fr);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+body[data-route="app_front_passport"] .app-header__side--left {
+    gap: 26px;
+}
+
+body[data-route="app_front_passport"] .app-header__icon {
+    width: 56px;
+    height: 68px;
+    display: grid;
+    grid-template-rows: 48px auto;
+    place-items: center;
+    overflow: visible;
+    color: #fff;
+}
+
+body[data-route="app_front_passport"] .app-header__side--left .app-header__icon + .app-header__icon::before {
+    content: "";
+    position: absolute;
+    left: -14px;
+    top: 12px;
+    bottom: 16px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+}
+
+body[data-route="app_front_passport"] .app-header__side--left .app-header__icon::after {
+    content: "SYNC";
+    font: 800 0.66rem/1 "Rajdhani", sans-serif;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+body[data-route="app_front_passport"] .app-header__side--left .app-header__icon:nth-child(2)::after {
+    content: "ACTIVITY";
+}
+
+body[data-route="app_front_passport"] .app-header__icon img {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 0 14px rgba(151, 91, 255, 0.34));
+}
+
+body[data-route="app_front_passport"] .app-header__brand img {
+    width: 220px;
+    filter:
+        drop-shadow(0 0 14px rgba(70, 195, 255, 0.42))
+        drop-shadow(0 0 18px rgba(255, 68, 190, 0.34));
+}
+
+body[data-route="app_front_passport"] .app-header__avatar-link {
+    position: relative;
+}
+
+body[data-route="app_front_passport"] .app-header__avatar-link::after {
+    content: attr(data-level);
+    position: absolute;
+    right: -7px;
+    bottom: -5px;
+    min-width: 25px;
+    height: 25px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 2px solid rgba(5, 4, 18, 0.98);
+    background: linear-gradient(135deg, #4eb9ff, #7f58ff 50%, #ff4cca);
+    color: white;
+    font: 800 0.78rem/1 "Orbitron", sans-serif;
+    box-shadow: 0 0 16px rgba(105, 102, 255, 0.72);
+}
+
+body[data-route="app_front_passport"] .app-header__avatar,
+body[data-route="app_front_passport"] .app-header__avatar.avatar-placeholder {
+    width: 66px;
+    height: 66px;
+    border: 2px solid rgba(171, 117, 255, 0.96);
+    box-shadow:
+        0 0 0 4px rgba(81, 142, 255, 0.22),
+        0 0 28px rgba(255, 72, 195, 0.38);
+}
+
+.passport-page {
+    position: relative;
+    max-width: 946px;
+    margin: 0 auto;
+    padding: 116px 24px 132px;
+    font-family: "Rajdhani", sans-serif;
+}
+
+.passport-stack {
+    position: relative;
+    display: grid;
+    gap: 10px;
+}
+
+.passport-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(67, 117, 255, 0.74), rgba(135, 81, 255, 0.28) 48%, rgba(255, 55, 180, 0.76));
+    box-shadow:
+        0 22px 48px rgba(0, 0, 0, 0.48),
+        0 0 24px rgba(78, 91, 255, 0.12);
+}
+
+.passport-panel__inner {
+    position: relative;
+    z-index: 1;
+    min-height: 100%;
+    border-radius: 21px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background:
+        linear-gradient(180deg, rgba(4, 5, 22, 0.9), rgba(3, 3, 14, 0.96)),
+        rgba(3, 3, 14, 0.94);
+}
+
+.passport-hero .passport-panel__inner {
+    padding: 30px 30px 28px;
+    background:
+        linear-gradient(90deg, rgba(6, 7, 28, 0.78), rgba(3, 3, 16, 0.9)),
+        url("../../img/passport/background-stars.png") center / cover no-repeat,
+        rgba(3, 3, 16, 0.96);
+}
+
+.hero-main {
+    display: grid;
+    grid-template-columns: minmax(190px, 38%) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+}
+
+.hero-avatar-wrap {
+    position: relative;
+    align-self: center;
+}
+
+.hero-avatar-ring {
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+    padding: 4px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #54c5ff, #9468ff 42%, #ff4cbd);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.16),
+        0 0 34px rgba(139, 86, 255, 0.58),
+        0 0 36px rgba(255, 65, 185, 0.28);
+}
+
+.hero-avatar,
+.hero-avatar.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: grid;
+    place-items: center;
+    border: 4px solid rgba(9, 5, 25, 0.94);
+    background: linear-gradient(135deg, rgba(94, 180, 255, 0.22), rgba(255, 79, 196, 0.2));
+    color: white;
+    font: 800 3rem/1 "Orbitron", sans-serif;
+}
+
+.hero-avatar-edit {
+    position: absolute;
+    right: 8%;
+    bottom: 8%;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 2px solid rgba(255, 255, 255, 0.82);
+    background: rgba(3, 3, 14, 0.92);
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.5);
+}
+
+.hero-avatar-edit img {
+    width: 27px;
+    height: 27px;
+    object-fit: contain;
+}
+
+.hero-copy {
+    min-width: 0;
+}
+
+.hero-name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.hero-name {
+    margin: 0;
+    min-width: 0;
+    color: #fff;
+    font: 700 3.05rem/0.95 "Rajdhani", sans-serif;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    text-shadow: 0 0 22px rgba(255, 255, 255, 0.18);
+}
+
+.hero-verified {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    flex: 0 0 auto;
+}
+
+.hero-handle,
+.hero-tier {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-width: 0;
+    border-radius: 10px;
+    background: rgba(3, 3, 14, 0.74);
+    border: 1px solid rgba(255, 62, 184, 0.48);
+    color: #ff66c8;
+    box-shadow: inset 0 0 0 1px rgba(99, 85, 255, 0.15);
+    text-transform: uppercase;
+}
+
+.hero-handle {
+    gap: 9px;
+    margin-top: 10px;
+    padding: 7px 12px;
+    font: 800 1.22rem/1 "Rajdhani", sans-serif;
+}
+
+.hero-handle i {
+    color: #ff3cad;
+    text-shadow: 0 0 16px rgba(255, 62, 184, 0.62);
+}
+
+.hero-caption {
+    margin-top: 22px;
+    color: rgba(255, 255, 255, 0.7);
+    font: 700 1.22rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.hero-level {
+    margin-top: 5px;
+    color: #fff;
+    font: 800 3.8rem/0.95 "Rajdhani", sans-serif;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.hero-level span {
+    color: #65cfff;
+    text-shadow:
+        0 0 20px rgba(74, 205, 255, 0.48),
+        0 0 26px rgba(255, 72, 198, 0.24);
+}
+
+.hero-tier {
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    color: #ff9ad8;
+    font: 800 1.08rem/1 "Rajdhani", sans-serif;
+}
+
+.hero-tier img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.hero-progress {
+    margin-top: 24px;
+}
+
+.hero-progress__bar {
+    height: 24px;
+    padding: 3px;
+    overflow: hidden;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 60, 184, 0.56);
+    background: rgba(4, 4, 18, 0.82);
+}
+
+.hero-progress__fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4fc8ff, #7a62ff 42%, #ff3fc0);
+    box-shadow:
+        0 0 20px rgba(79, 200, 255, 0.34),
+        0 0 20px rgba(255, 63, 192, 0.34);
+}
+
+.hero-progress__meta {
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.82);
+    text-align: right;
+    font: 800 1.1rem/1 "Rajdhani", sans-serif;
+}
+
+.passport-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 17px;
+}
+
+.passport-action {
+    min-width: 0;
+    min-height: 39px;
+    padding: 9px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.045);
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    font: 800 0.78rem/1.05 "Rajdhani", sans-serif;
+}
+
+.passport-action--primary {
+    border-color: rgba(255, 72, 198, 0.36);
+    background: linear-gradient(90deg, rgba(76, 197, 255, 0.18), rgba(255, 63, 192, 0.18));
+    box-shadow: 0 0 18px rgba(129, 92, 255, 0.18);
+}
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.section-title,
+.section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.92);
+    text-decoration: none;
+    text-transform: uppercase;
+    font: 800 1.16rem/1 "Rajdhani", sans-serif;
+}
+
+.section-title img {
+    width: 29px;
+    height: 29px;
+    object-fit: contain;
+}
+
+.section-link {
+    flex: 0 0 auto;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    text-transform: none;
+}
+
+.fandom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.fandom-card,
+.collection-card,
+.badge-card,
+.metric-item,
+.flash-card {
+    min-width: 0;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        linear-gradient(180deg, rgba(8, 8, 30, 0.82), rgba(3, 3, 14, 0.92));
+    box-shadow:
+        inset 0 0 0 1px rgba(81, 141, 255, 0.06),
+        0 16px 28px rgba(0, 0, 0, 0.22);
+}
+
+.fandom-card {
+    position: relative;
+    padding: 18px 18px 16px;
+    display: grid;
+    gap: 10px;
+}
+
+.fandom-rank {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    transform: translate(-8px, -8px);
+    background: linear-gradient(135deg, #ff3dac, #ff75d1);
+    color: #fff;
+    font: 800 0.9rem/1 "Orbitron", sans-serif;
+    box-shadow: 0 0 18px rgba(255, 61, 172, 0.58);
+}
+
+.fandom-rank--secondary {
+    background: linear-gradient(135deg, #45c7ff, #805dff);
+    box-shadow: 0 0 18px rgba(69, 199, 255, 0.48);
+}
+
+.fandom-rank--tertiary {
+    background: linear-gradient(135deg, #ac58ff, #704eff);
+    box-shadow: 0 0 18px rgba(172, 88, 255, 0.44);
+}
+
+.fandom-mark {
+    width: 74px;
+    height: 74px;
+    margin: 2px auto 0;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 2px solid rgba(255, 64, 188, 0.66);
+    background: rgba(0, 0, 0, 0.72);
+    box-shadow:
+        0 0 22px rgba(255, 64, 188, 0.22),
+        inset 0 0 18px rgba(75, 196, 255, 0.1);
+}
+
+.fandom-mark span {
+    color: white;
+    font: 800 1.18rem/1 "Orbitron", sans-serif;
+}
+
+.fandom-copy {
+    min-width: 0;
+    text-align: center;
+}
+
+.fandom-artist {
+    color: #fff;
+    font: 800 1.08rem/1.05 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.fandom-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 7px;
+    max-width: 100%;
+    color: rgba(255, 255, 255, 0.7);
+    font: 700 0.82rem/1.15 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.fandom-title i {
+    color: #ff4fc1;
+}
+
+.fandom-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: #ff62c8;
+    font: 800 1rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+}
+
+.fandom-meta span:last-child {
+    color: #a88cff;
+}
+
+.fandom-line {
+    height: 12px;
+    padding: 2px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.fandom-line span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff42b9, #966dff);
+}
+
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.collection-card {
+    padding: 12px 10px;
+    display: grid;
+    grid-template-columns: auto minmax(0, auto);
+    align-items: center;
+    justify-content: center;
+    gap: 8px 10px;
+    text-align: left;
+}
+
+.collection-card img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    grid-row: span 2;
+    filter: drop-shadow(0 0 13px rgba(255, 72, 198, 0.28));
+}
+
+.collection-value {
+    color: #fff;
+    font: 800 2rem/1 "Rajdhani", sans-serif;
+}
+
+.collection-label {
+    color: rgba(255, 255, 255, 0.78);
+    font: 800 0.82rem/1.05 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.badge-card {
+    padding: 10px 8px;
+    text-align: center;
+}
+
+.badge-crest {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    margin: 0 auto 8px;
+    display: block;
+    filter: drop-shadow(0 0 18px rgba(134, 92, 255, 0.3));
+}
+
+.badge-name {
+    min-height: 32px;
+    display: grid;
+    place-items: center;
+    color: #ff9ad8;
+    font: 800 0.8rem/1.08 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+
+.badge-meta {
+    margin-top: 5px;
+    color: rgba(255, 255, 255, 0.72);
+    font: 700 0.72rem/1.2 "Rajdhani", sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.metric-strip__inner {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    padding: 12px 14px;
+}
+
+.metric-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.metric-item + .metric-item {
+    border-left: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.metric-item img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.metric-item strong {
+    display: block;
+    color: #fff;
+    font: 800 1rem/1 "Rajdhani", sans-serif;
+}
+
+.metric-item span {
+    display: block;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.72);
+    font: 700 0.76rem/1.08 "Rajdhani", sans-serif;
+}
+
+.passport-focus-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.2fr);
+    gap: 14px;
+}
+
+.focus-card__inner {
+    min-height: 210px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.focus-card__copy {
+    min-width: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.focus-card__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #fff;
+    font: 800 1.2rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+}
+
+.focus-card__label img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.focus-card__value {
+    margin-top: 20px;
+    color: #fff;
+    font: 800 4.1rem/0.86 "Rajdhani", sans-serif;
+}
+
+.focus-card__title {
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.86);
+    font: 800 1rem/1.1 "Rajdhani", sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.focus-card__text {
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.68);
+    font: 700 0.9rem/1.2 "Rajdhani", sans-serif;
+}
+
+.focus-card__art {
+    object-fit: contain;
+    pointer-events: none;
+    filter: drop-shadow(0 0 24px rgba(151, 91, 255, 0.45));
+}
+
+.focus-card__art--flame {
+    width: 154px;
+    margin-right: -6px;
+}
+
+.focus-card__art--globe {
+    width: 212px;
+    margin-right: -20px;
+}
+
+.rank-list {
+    display: grid;
+    gap: 13px;
+    margin-top: 20px;
+}
+
+.rank-list div {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+    align-items: baseline;
+}
+
+.rank-list strong {
+    color: #fff;
+    font: 800 1.75rem/1 "Rajdhani", sans-serif;
+}
+
+.rank-list span {
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font: 700 1rem/1.1 "Rajdhani", sans-serif;
+    overflow-wrap: anywhere;
+}
+
+.streaming-onboarding__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+}
+
+.streaming-onboarding__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    color: var(--neon-cyan);
+    background: rgba(0, 242, 255, 0.08);
+    border: 1px solid rgba(0, 242, 255, 0.18);
+}
+
+.streaming-onboarding__kicker {
+    color: var(--neon-cyan);
+    font: 800 0.78rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+}
+
+.streaming-onboarding h2 {
+    margin: 6px 0 0;
+    font: 800 1.25rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+}
+
+.streaming-onboarding p {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.68);
+    font: 700 0.86rem/1.32 "Rajdhani", sans-serif;
+}
+
+.streaming-onboarding__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(98px, 1fr));
+    gap: 8px;
+}
+
+.streaming-source {
+    min-height: 42px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+    font: 800 0.8rem/1 "Rajdhani", sans-serif;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.streaming-source--spotify i {
+    color: #1db954;
+}
+
+.streaming-source--youtube i {
+    color: #ff3d5a;
+}
+
+.flash-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.flash-card {
+    padding: 14px 16px;
+    color: white;
+}
+
+.flash-card--success {
+    border-color: rgba(86, 226, 175, 0.2);
+    background: linear-gradient(180deg, rgba(14, 46, 39, 0.74), rgba(8, 23, 21, 0.86));
+}
+
+.flash-card--error {
+    border-color: rgba(255, 110, 158, 0.22);
+    background: linear-gradient(180deg, rgba(61, 17, 33, 0.74), rgba(28, 10, 18, 0.9));
+}
+
+.empty-state {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.66);
+    text-align: center;
+    font: 700 0.92rem/1.35 "Rajdhani", sans-serif;
+}
+
+@media (max-width: 760px) {
+    body[data-route="app_front_passport"] .app-header {
+        min-height: 92px;
+        padding: 12px 18px 4px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__bar {
+        min-height: 72px;
+        grid-template-columns: minmax(112px, 1fr) auto minmax(64px, 1fr);
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left {
+        gap: 18px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon {
+        width: 48px;
+        height: 62px;
+        grid-template-rows: 42px auto;
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon img {
+        width: 42px;
+        height: 42px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left .app-header__icon::after {
+        font-size: 0.58rem;
+    }
+
+    body[data-route="app_front_passport"] .app-header__brand img {
+        width: 148px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__avatar,
+    body[data-route="app_front_passport"] .app-header__avatar.avatar-placeholder {
+        width: 56px;
+        height: 56px;
+    }
+
+    .passport-page {
+        padding: 102px 20px 128px;
+    }
+
+    .passport-panel__inner {
+        padding: 16px;
+    }
+
+    .passport-hero .passport-panel__inner {
+        padding: 24px 22px 22px;
+    }
+
+    .hero-main {
+        grid-template-columns: minmax(128px, 39%) minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .hero-name {
+        font-size: 2.35rem;
+    }
+
+    .hero-verified {
+        width: 28px;
+        height: 28px;
+    }
+
+    .hero-handle {
+        font-size: 1rem;
+    }
+
+    .hero-caption {
+        margin-top: 17px;
+        font-size: 1.02rem;
+    }
+
+    .hero-level {
+        font-size: 3rem;
+    }
+
+    .hero-tier {
+        font-size: 0.92rem;
+    }
+
+    .passport-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .fandom-grid {
+        gap: 10px;
+    }
+
+    .fandom-card {
+        padding: 15px 9px 12px;
+    }
+
+    .fandom-mark {
+        width: 58px;
+        height: 58px;
+    }
+
+    .fandom-artist {
+        font-size: 0.92rem;
+    }
+
+    .fandom-title,
+    .fandom-meta {
+        font-size: 0.72rem;
+    }
+
+    .collection-grid {
+        gap: 8px;
+    }
+
+    .collection-card {
+        padding: 10px 7px;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .collection-card img {
+        width: 44px;
+        height: 44px;
+        grid-row: auto;
+    }
+
+    .collection-value {
+        font-size: 1.65rem;
+    }
+
+    .collection-label {
+        font-size: 0.68rem;
+    }
+
+    .badge-grid {
+        gap: 8px;
+    }
+
+    .badge-card {
+        padding: 8px 5px;
+    }
+
+    .badge-crest {
+        width: 64px;
+        height: 64px;
+    }
+
+    .badge-name {
+        font-size: 0.64rem;
+    }
+
+    .badge-meta {
+        font-size: 0.6rem;
+    }
+
+    .metric-strip__inner {
+        padding: 10px 6px;
+    }
+
+    .metric-item {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 6px;
+        padding: 6px 7px;
+    }
+
+    .metric-item img {
+        width: 31px;
+        height: 31px;
+    }
+
+    .metric-item strong {
+        font-size: 0.82rem;
+    }
+
+    .metric-item span {
+        font-size: 0.62rem;
+    }
+
+    .passport-focus-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .focus-card__inner {
+        min-height: 176px;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .focus-card__art {
+        position: absolute;
+        right: 4px;
+        bottom: 0;
+        opacity: 0.88;
+    }
+
+    .focus-card__art--flame {
+        width: 112px;
+    }
+
+    .focus-card__art--globe {
+        width: 128px;
+    }
+
+    .focus-card__label {
+        font-size: 0.96rem;
+    }
+
+    .focus-card__value {
+        margin-top: 14px;
+        font-size: 3.3rem;
+    }
+
+    .focus-card__title,
+    .focus-card__text {
+        max-width: 70%;
+    }
+
+    .rank-list {
+        gap: 9px;
+        margin-top: 14px;
+    }
+
+    .rank-list div {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .rank-list strong {
+        font-size: 1.28rem;
+    }
+
+    .rank-list span {
+        font-size: 0.78rem;
+    }
+
+    .streaming-onboarding__inner {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .streaming-onboarding__actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 430px) {
+    body[data-route="app_front_passport"] .app-header {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__bar {
+        grid-template-columns: minmax(98px, 1fr) auto minmax(52px, 1fr);
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left {
+        gap: 12px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon {
+        width: 42px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon img {
+        width: 38px;
+        height: 38px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left .app-header__icon + .app-header__icon::before {
+        left: -7px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left .app-header__icon::after {
+        font-size: 0.52rem;
+    }
+
+    body[data-route="app_front_passport"] .app-header__brand img {
+        width: 126px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__avatar,
+    body[data-route="app_front_passport"] .app-header__avatar.avatar-placeholder {
+        width: 48px;
+        height: 48px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__avatar-link::after {
+        min-width: 22px;
+        height: 22px;
+        font-size: 0.66rem;
+    }
+
+    .passport-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .passport-hero .passport-panel__inner {
+        padding: 18px 18px 20px;
+    }
+
+    .hero-main {
+        grid-template-columns: minmax(116px, 38%) minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .hero-avatar-ring {
+        padding: 3px;
+    }
+
+    .hero-avatar-edit {
+        width: 36px;
+        height: 36px;
+    }
+
+    .hero-avatar-edit img {
+        width: 21px;
+        height: 21px;
+    }
+
+    .hero-name {
+        font-size: 2rem;
+    }
+
+    .hero-verified {
+        width: 24px;
+        height: 24px;
+    }
+
+    .hero-handle {
+        padding: 6px 9px;
+        font-size: 0.86rem;
+    }
+
+    .hero-caption {
+        font-size: 0.88rem;
+    }
+
+    .hero-level {
+        font-size: 2.5rem;
+    }
+
+    .hero-tier {
+        padding: 7px 9px;
+        font-size: 0.78rem;
+    }
+
+    .hero-tier img {
+        width: 22px;
+        height: 22px;
+    }
+
+    .hero-progress__bar {
+        height: 18px;
+    }
+
+    .hero-progress__meta {
+        font-size: 0.92rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .section-link {
+        font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-main,
+    .passport-focus-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-avatar-wrap {
+        max-width: 178px;
+        margin: 0 auto;
+    }
+
+    .hero-copy {
+        text-align: center;
+    }
+
+    .hero-name-row,
+    .hero-handle,
+    .hero-tier {
+        justify-content: center;
+    }
+
+    .hero-progress__meta {
+        text-align: center;
+    }
+}

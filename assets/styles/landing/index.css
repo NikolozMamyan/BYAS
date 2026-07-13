@@ -416,28 +416,32 @@
 
     .page {
         max-width: 100%;
+        gap: 8px;
+        padding-top: 12px;
+        padding-bottom: 12px;
         padding-left: 16px;
         padding-right: 16px;
     }
 
     .logo-img {
-        width: min(180px, 48vw);
+        width: min(168px, 45vw);
     }
 
     .divider-asset-img {
-        width: 150px;
+        width: 140px;
+        margin-bottom: 4px;
     }
 
     .tagline h2 {
-        font-size: clamp(16px, 5.1vw, 20px);
+        font-size: clamp(15px, 4.8vw, 19px);
     }
 
     .passport {
-        max-width: 300px;
+        max-width: 286px;
     }
 
     .passport-asset-img {
-        max-height: min(36dvh, 280px);
+        max-height: min(33dvh, 252px);
     }
 
     .pwa-install__backdrop {
@@ -454,16 +458,71 @@
     }
 
     .cta-section {
-        padding: 14px 14px 14px;
+        padding: 12px 12px 12px;
     }
 
     .cta-section .btn-primary,
     .cta-section .btn-secondary {
-        min-height: 46px;
+        min-height: 44px;
     }
 
     .cta-section .legal {
         font-size: 11px;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) and (max-height: 760px) {
+    .page {
+        gap: 6px;
+        padding: 10px 14px 12px;
+    }
+
+    .logo-img {
+        width: min(148px, 42vw);
+    }
+
+    .divider-asset-img {
+        width: 126px;
+        margin-bottom: 2px;
+    }
+
+    .tagline {
+        margin-bottom: 0;
+    }
+
+    .tagline h2 {
+        font-size: clamp(14px, 4.5vw, 17px);
+        line-height: 1.16;
+    }
+
+    .passport {
+        max-width: 258px;
+    }
+
+    .passport-asset-img {
+        max-height: min(29dvh, 220px);
+    }
+
+    .cta-section {
+        padding: 10px 12px;
+        border-radius: 24px;
+    }
+
+    .cta-section .btn-primary,
+    .cta-section .btn-secondary {
+        min-height: 42px;
+        font-size: 15px;
+    }
+
+    .cta-section .divider-or {
+        margin: 8px 0;
+    }
+
+    .cta-section .legal {
+        margin-top: 8px;
+        font-size: 10px;
+        line-height: 1.3;
     }
 }
 

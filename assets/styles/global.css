@@ -250,7 +250,7 @@ html.is-edge-swiping .bottom-nav-wrap {
     }
 }
 
-body[data-turbo="false"] {
+body.has-mobile-nav {
     padding-bottom: max(env(safe-area-inset-bottom, 0), 96px);
 }
 

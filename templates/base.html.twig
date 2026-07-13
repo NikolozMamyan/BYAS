@@ -61,7 +61,11 @@
       {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
       </head>
-      <body data-turbo="false" data-route="{{ currentRoute }}">
+      <body
+        class="{{ isFrontApp ? 'has-mobile-nav' : 'is-public-page' }}"
+        data-turbo="false"
+        data-route="{{ currentRoute }}"
+      >
         {% if isFrontApp and (swipePrevUrl or swipeNextUrl) %}
         <div class="swipe-preview-layer" aria-hidden="true">
           {% if swipePrevUrl %}

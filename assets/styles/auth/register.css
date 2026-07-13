@@ -3,18 +3,28 @@
   --register-card-width: 640px;
 }
 
+html,
 body {
-  min-height: 100vh;
+  height: 100dvh;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  min-height: 100dvh;
   margin: 0;
   background: #04030d;
   color: #fff;
   font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
 }
 
 .register-page {
   position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
+  min-height: 100dvh;
+  overflow: hidden;
   isolation: isolate;
 }
 
@@ -108,8 +118,10 @@ body {
   position: relative;
   z-index: 1;
   width: min(var(--register-shell-width), calc(100% - 48px));
+  min-height: 100dvh;
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 24px 0 180px;
+  padding: 20px 0 32px;
 }
 
 .register-back {
@@ -573,59 +585,273 @@ body {
 @media (max-width: 900px) {
   .register-shell {
     width: min(100% - 28px, 760px);
-    padding: 24px 0 210px;
+    padding: 14px 0 20px;
   }
 
   .register-back {
     position: relative;
     top: 0;
     left: 0;
-    width: 68px;
-    height: 68px;
-    font-size: 28px;
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
   }
 
   .register-brand {
-    padding-top: 34px;
-    margin-bottom: 30px;
+    padding-top: 14px;
+    margin-bottom: 14px;
+  }
+
+  .register-brand img {
+    width: min(220px, 62vw);
   }
 
   .register-card-inner {
-    padding: 36px 24px 32px;
+    padding: 24px 18px 20px;
+  }
+
+  .register-divider {
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .register-divider-star {
+    font-size: 24px;
+  }
+
+  .register-copy {
+    margin-bottom: 14px;
+  }
+
+  .register-copy h1 {
+    margin-bottom: 10px;
+    font-size: clamp(24px, 7.4vw, 34px);
+  }
+
+  .register-copy p {
+    font-size: 15px;
+  }
+
+  .lang-switcher {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .lang-switcher__label {
+    font-size: 11px;
+  }
+
+  .lang-switcher__select,
+  .lang-switcher__button {
+    min-height: 42px;
+    font-size: 13px;
+  }
+
+  .register-actions {
+    gap: 12px;
   }
 
   .register-social,
   .register-email-trigger,
   .register-submit {
-    min-height: 74px;
-    font-size: 18px;
-    gap: 14px;
+    min-height: 58px;
+    font-size: 16px;
+    gap: 10px;
   }
 
   .register-social i,
-  .register-email-trigger i {
-    font-size: 28px;
+  .register-email-trigger i,
+  .register-submit i {
+    font-size: 22px;
   }
 
   .register-email-icon {
     width: 36px;
   }
 
+  .register-email-block {
+    gap: 14px;
+  }
+
+  .register-or {
+    gap: 14px;
+    margin: 12px 0;
+  }
+
   .register-or-text {
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .register-field input {
-    min-height: 58px;
-    padding-left: 54px;
-    font-size: 16px;
+    min-height: 52px;
+    padding-left: 50px;
+    font-size: 15px;
   }
 
-  .lang-switcher {
-    width: 100%;
+  .register-field-icon {
+    left: 18px;
+    font-size: 18px;
+  }
+
+  .register-feedback {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .register-legal {
+    margin-top: 14px;
+    gap: 12px;
+  }
+
+  .register-legal p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .register-login-link {
+    margin-top: 14px;
+    font-size: 13px;
   }
 
   .lang-switcher__controls {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) and (max-height: 900px) {
+  .register-shell {
+    width: min(100% - 20px, 760px);
+    padding: 10px 0 14px;
+  }
+
+  .register-back {
+    width: 50px;
+    height: 50px;
+    font-size: 21px;
+  }
+
+  .register-brand {
+    padding-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  .register-brand img {
+    width: min(176px, 50vw);
+  }
+
+  .register-card {
+    border-radius: 28px;
+  }
+
+  .register-card-inner {
+    padding: 18px 14px 14px;
+  }
+
+  .register-divider {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .register-divider-star {
+    font-size: 20px;
+  }
+
+  .register-copy {
+    margin-bottom: 10px;
+  }
+
+  .register-copy h1 {
+    margin-bottom: 8px;
+    font-size: clamp(21px, 7vw, 28px);
+  }
+
+  .register-copy p {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .lang-switcher {
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .lang-switcher__select,
+  .lang-switcher__button {
+    min-height: 40px;
+  }
+
+  .register-social,
+  .register-email-trigger,
+  .register-submit {
+    min-height: 48px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .register-social i,
+  .register-email-trigger i,
+  .register-submit i {
+    font-size: 20px;
+  }
+
+  .register-google-mark,
+  .register-google-mark svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .register-email-icon {
+    width: 28px;
+  }
+
+  .register-or {
+    margin: 10px 0;
+  }
+
+  .register-or-text {
+    font-size: 16px;
+  }
+
+  .register-form {
+    gap: 8px;
+  }
+
+  .register-field input {
+    min-height: 46px;
+    padding: 0 18px 0 46px;
+    border-radius: 18px;
+    font-size: 14px;
+  }
+
+  .register-field-icon {
+    left: 16px;
+    font-size: 16px;
+  }
+
+  .register-feedback {
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .register-legal {
+    margin-top: 12px;
+    gap: 10px;
+  }
+
+  .register-legal-icon {
+    width: 26px;
+    flex-basis: 26px;
+    font-size: 16px;
+  }
+
+  .register-legal p {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .register-login-link {
+    margin-top: 10px;
+    font-size: 12px;
   }
 }

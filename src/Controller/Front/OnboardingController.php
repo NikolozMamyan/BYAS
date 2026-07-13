@@ -158,6 +158,7 @@ class OnboardingController extends AbstractController
 
         return array_map(
             static fn (array $entry, int $index): array => $entry + [
+                'name' => strtoupper($entry['name']),
                 'theme' => $themes[$index % count($themes)],
                 'image' => $images[$entry['slug']] ?? null,
             ],

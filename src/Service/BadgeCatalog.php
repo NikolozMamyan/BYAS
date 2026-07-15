@@ -56,7 +56,7 @@ class BadgeCatalog
             self::LIMITED_FOUNDER => [
                 'name' => 'Founder',
                 'description' => 'Limited badge reserved for the founding BYAS community.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/limited_founder.png',
                 'scope' => 'global',
                 'ruleType' => 'manual',
                 'ruleConfig' => ['collection' => 'limited'],
@@ -64,7 +64,7 @@ class BadgeCatalog
             self::EVENT_CONCERT => [
                 'name' => 'Concert',
                 'description' => 'Event badge celebrating a concert experience.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/event_concert.png',
                 'scope' => 'global',
                 'ruleType' => 'manual',
                 'ruleConfig' => ['collection' => 'event'],
@@ -72,7 +72,7 @@ class BadgeCatalog
             self::STREAK_30_DAYS => [
                 'name' => '30 Day Streak',
                 'description' => 'Used BYAS for 30 consecutive days.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/30_days.png',
                 'scope' => 'global',
                 'ruleType' => 'streak',
                 'ruleConfig' => ['days' => 30],
@@ -80,7 +80,7 @@ class BadgeCatalog
             self::MILESTONE_LEVEL_50 => [
                 'name' => 'Level 50',
                 'description' => 'Reached global fan level 50.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/lvl_50.png',
                 'scope' => 'global',
                 'ruleType' => 'global_level',
                 'ruleConfig' => ['level' => 50],
@@ -88,7 +88,7 @@ class BadgeCatalog
             self::SOCIAL_TOP_1_PERCENT => [
                 'name' => 'Top 1%',
                 'description' => 'Ranked among the top one percent of the BYAS community.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/social_record_1.png',
                 'scope' => 'global',
                 'ruleType' => 'rank_percentile',
                 'ruleConfig' => ['percentile' => 1],
@@ -96,7 +96,7 @@ class BadgeCatalog
             self::COLLECTION_ALBUM => [
                 'name' => 'Album Collector',
                 'description' => 'Added an album to the BYAS collection.',
-                'iconUrl' => null,
+                'iconUrl' => 'img/badges/colector_badge.png',
                 'scope' => 'global',
                 'ruleType' => 'collection',
                 'ruleConfig' => ['type' => 'album'],

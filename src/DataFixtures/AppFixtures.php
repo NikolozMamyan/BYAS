@@ -27,6 +27,7 @@ class AppFixtures extends Fixture
             $badge
                 ->setName($definition['name'])
                 ->setDescription($definition['description'])
+                ->setIconUrl($definition['iconUrl'])
                 ->setScope($definition['scope'])
                 ->setRuleType($definition['ruleType'])
                 ->setRuleConfig($definition['ruleConfig'])

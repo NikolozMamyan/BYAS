@@ -2,25 +2,22 @@
 
 <header
     class="app-header"
-    data-controller="notifications-panel"
-    data-notifications-panel-url-value="{{ path('app_front_notifications_panel') }}"
+    data-controller="header-sync"
+    data-header-sync-failed-message-value="{{ 'passport.sync_status.failed'|trans }}"
 >
     <div class="app-header__bar">
         <div class="app-header__side app-header__side--left">
-            <a href="{{ app.request.uri }}" class="app-header__icon" aria-label="{{ 'app_header.refresh'|trans }}">
+            <button type="button" class="app-header__icon" aria-label="{{ 'passport.sync'|trans }}" data-header-sync-target="button" data-action="header-sync#sync">
                 <img src="{{ asset('img/nav-top/top_bar_refrech.png') }}" alt="">
-            </a>
+            </button>
 
-            <button
-                type="button"
+            <a
+                href="{{ path('app_front_play_history') }}"
                 class="app-header__icon"
-                aria-label="{{ 'app_header.notifications'|trans }}"
-                data-action="notifications-panel#toggle"
-                data-notifications-panel-target="button"
+                aria-label="{{ 'app_header.activity'|trans }}"
             >
                 <img src="{{ asset('img/nav-top/top_bar_pulse.png') }}" alt="">
-                <span class="app-header__badge" data-notifications-panel-target="badge"></span>
-            </button>
+            </a>
         </div>
 
         <div class="app-header__center">
@@ -40,13 +37,4 @@
         </div>
     </div>
 
-    <div class="notif-panel__backdrop" data-notifications-panel-target="backdrop" data-action="click->notifications-panel#close" hidden></div>
-    <div class="notif-panel" data-notifications-panel-target="panel" hidden>
-        <div class="notif-panel__shell" data-notifications-panel-target="content">
-            <div class="notif-panel__empty">
-                <i class="fas fa-spinner fa-spin"></i>
-                <div>{{ 'app_header.loading_notifications'|trans }}</div>
-            </div>
-        </div>
-    </div>
 </header>

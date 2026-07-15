@@ -12,6 +12,8 @@ use App\Service\AppleMusicService;
 use App\Service\AvatarManager;
 use App\Service\LevelBadgeCatalog;
 use App\Service\NotificationCenter;
+use App\Service\PassportFandomService;
+use App\Service\PassportMetricsService;
 use App\Service\PublicPassportProfileService;
 use App\Service\XpEngine;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,6 +38,8 @@ class PassportController extends AbstractController
         AppleMusicService $appleMusicService,
         LevelBadgeCatalog $levelBadgeCatalog,
         NotificationCenter $notificationCenter,
+        PassportFandomService $passportFandomService,
+        PassportMetricsService $passportMetricsService,
     ): Response
     {
         $user = $this->getUser();
@@ -93,8 +97,10 @@ class PassportController extends AbstractController
             $notificationCenter->ensureStreamingSetupReminder($user);
         }
 
-        $fandoms = $user->getUserFandoms()->toArray();
-        usort($fandoms, static fn ($a, $b): int => $b->getXp() <=> $a->getXp());
+        $fandoms = $passportFandomService->visibleFor($user);
+        $primaryFandom = $passportFandomService->firstFandom($fandoms);
+        $globalRank = $userRepository->getGlobalRankPosition($user);
+        $passportMetrics = $passportMetricsService->forUser($user, $globalRank);
 
         $userBadges = $user->getUserBadges()->toArray();
         usort(
@@ -107,6 +113,7 @@ class PassportController extends AbstractController
             'profile' => $profile,
             'fandoms' => $fandoms,
             'topFandoms' => array_slice($fandoms, 0, 3),
+            'primaryFandom' => $primaryFandom,
             'oauthAccounts' => $user->getOauthAccounts(),
             'streamingAccounts' => $streamingAccounts,
             'spotifyAccount' => $spotifyAccount,
@@ -121,10 +128,12 @@ class PassportController extends AbstractController
             'collectionHighlights' => $this->buildCollectionHighlights($user->getCollectionItems()->toArray()),
             'userBadges' => $userBadges,
             'featuredBadges' => array_slice($userBadges, 0, 5),
-            'globalRank' => $userRepository->getGlobalRankPosition($user),
+            'globalRank' => $globalRank,
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
             'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             'fandomLevelBadges' => $this->buildFandomLevelBadges($fandoms, $levelBadgeCatalog),
+            'fandomRanks' => $passportFandomService->ranks(array_slice($fandoms, 0, 3)),
+            'passportMetrics' => $passportMetrics,
             'publicVisitCount' => $visitRepository->countForProfile($profile),
             'publicVisitCount7d' => $visitRepository->countForProfileSince($profile, new \DateTimeImmutable('-7 days')),
             'recentPublicVisits' => $visitRepository->findRecentForProfile($profile, 5),
@@ -171,7 +180,7 @@ class PassportController extends AbstractController
             'topFandom' => $fandoms[0] ?? null,
             'topFandomLevelBadge' => isset($fandoms[0]) ? $levelBadgeCatalog->forLevel($fandoms[0]->getLevel()) : null,
             'userBadges' => array_slice($userBadges, 0, 3),
-            'globalRank' => $userRepository->getGlobalRankPosition($user),
+            'globalRank' => $globalRank,
             'globalProgress' => $xpEngine->progressForXp($user->getGlobalXp()),
             'globalLevelBadge' => $levelBadgeCatalog->forLevel($user->getGlobalLevel()),
             'shareUrl' => $this->generateUrl('app_public_passport', [
@@ -230,6 +239,11 @@ class PassportController extends AbstractController
                     $displayName = $user->getDisplayName() ?? 'Fan';
                 }
 
+                $countryCode = strtoupper(trim((string) $request->request->get('countryCode', '')));
+                if ($countryCode !== '' && preg_match('/^[A-Z]{2}$/', $countryCode) !== 1) {
+                    throw new \InvalidArgumentException('Country must use a two-letter ISO code.');
+                }
+
                 $user
                     ->setFirstName($firstName !== '' ? $firstName : null)
                     ->setLastName($lastName !== '' ? $lastName : null)
@@ -242,6 +256,7 @@ class PassportController extends AbstractController
                 }
 
                 $profile
+                    ->setCountryCode($countryCode !== '' ? $countryCode : null)
                     ->setIsProfilePublic($request->request->has('isProfilePublic'))
                     ->setShowGlobalRank($request->request->has('showGlobalRank'))
                     ->setShowFandomLevels($request->request->has('showFandomLevels'))
@@ -298,7 +313,12 @@ class PassportController extends AbstractController
      */
     private function buildCollectionHighlights(array $items): array
     {
-        $groups = [];
+        $groups = [
+            'albums' => ['label' => 'Albums', 'count' => 0, 'icon' => 'fa-compact-disc'],
+            'lightsticks' => ['label' => 'Lightsticks', 'count' => 0, 'icon' => 'fa-lightbulb'],
+            'photocards' => ['label' => 'Photocards', 'count' => 0, 'icon' => 'fa-id-badge'],
+            'events' => ['label' => 'Events', 'count' => 0, 'icon' => 'fa-ticket'],
+        ];
 
         foreach ($items as $item) {
             if (!$item instanceof \App\Entity\CollectionItem) {
@@ -306,33 +326,23 @@ class PassportController extends AbstractController
             }
 
             $label = trim((string) $item->getType()?->getLabel());
-            $key = $label !== '' ? mb_strtolower($label) : 'collection';
+            $normalized = mb_strtolower($label);
+            $key = match (true) {
+                str_contains($normalized, 'light') => 'lightsticks',
+                str_contains($normalized, 'photo'), str_contains($normalized, 'card') => 'photocards',
+                str_contains($normalized, 'event'), str_contains($normalized, 'ticket') => 'events',
+                str_contains($normalized, 'album'), str_contains($normalized, 'vinyl'), str_contains($normalized, 'cd') => 'albums',
+                default => null,
+            };
 
-            if (!isset($groups[$key])) {
-                $groups[$key] = [
-                    'label' => $label !== '' ? $label : 'Collection',
-                    'count' => 0,
-                    'icon' => $this->iconForCollectionType($label),
-                ];
+            if ($key === null) {
+                continue;
             }
 
             $groups[$key]['count'] += max(1, $item->getQuantity());
         }
 
-        uasort($groups, static fn (array $left, array $right): int => $right['count'] <=> $left['count']);
-
-        return array_slice(array_values($groups), 0, 4);
+        return array_values($groups);
     }
 
-    private function iconForCollectionType(?string $label): string
-    {
-        $normalized = mb_strtolower(trim((string) $label));
-
-        return match (true) {
-            str_contains($normalized, 'light') => 'fa-lightbulb',
-            str_contains($normalized, 'photo'), str_contains($normalized, 'card') => 'fa-id-badge',
-            str_contains($normalized, 'vinyl'), str_contains($normalized, 'album'), str_contains($normalized, 'cd') => 'fa-compact-disc',
-            default => 'fa-record-vinyl',
-        };
-    }
 }

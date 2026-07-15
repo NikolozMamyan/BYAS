@@ -118,6 +118,7 @@ class StreamingSyncService
     {
         $data = $this->spotifyDataService->getRecentlyPlayed($user, 50);
         $items = $data['items'] ?? [];
+        $artistImages = $this->spotifyArtistImages($user);
 
         $fetched = 0;
         $inserted = 0;
@@ -169,6 +170,7 @@ class StreamingSyncService
 
             $seenPlays[$playKey] = true;
 
+            $artistName = $this->extractSpotifyArtistName($track);
             $history = new StreamingPlayHistory();
             $history
                 ->setUser($user)
@@ -177,11 +179,15 @@ class StreamingSyncService
                 ->setProviderItemId($providerItemId)
                 ->setProviderType('track')
                 ->setItemName((string) ($track['name'] ?? 'Unknown title'))
-                ->setArtistName($this->extractSpotifyArtistName($track))
+                ->setArtistName($artistName)
                 ->setAlbumName($this->extractSpotifyAlbumName($track))
                 ->setDurationMs(isset($track['duration_ms']) ? (int) $track['duration_ms'] : null)
                 ->setPlayedAt($playedAt)
-                ->setRawData($item);
+                ->setRawData($item + [
+                    'byas_artist_image_url' => $artistName !== null
+                        ? ($artistImages[mb_strtolower($artistName)] ?? null)
+                        : null,
+                ]);
 
             $this->entityManager->persist($history);
             $transaction = $this->xpEngine->awardStreamingPlay($history);
@@ -407,6 +413,36 @@ class StreamingSyncService
         $name = $album['name'] ?? null;
 
         return is_string($name) && trim($name) !== '' ? trim($name) : null;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function spotifyArtistImages(User $user): array
+    {
+        try {
+            $data = $this->spotifyDataService->getTopArtists($user, 'medium_term', 50);
+        } catch (\Throwable) {
+            return [];
+        }
+
+        $artistImages = [];
+
+        foreach ($data['items'] ?? [] as $artist) {
+            if (!is_array($artist)) {
+                continue;
+            }
+
+            $name = $artist['name'] ?? null;
+            $images = $artist['images'] ?? null;
+            $url = is_array($images) ? ($images[0]['url'] ?? null) : null;
+
+            if (is_string($name) && trim($name) !== '' && is_string($url) && trim($url) !== '') {
+                $artistImages[mb_strtolower(trim($name))] = trim($url);
+            }
+        }
+
+        return $artistImages;
     }
 
     private function extractYoutubeChannelName(array $snippet): ?string

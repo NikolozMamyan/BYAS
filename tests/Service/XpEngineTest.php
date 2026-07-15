@@ -82,6 +82,40 @@ class XpEngineTest extends TestCase
         self::assertSame(0, $user->getGlobalXp());
     }
 
+    public function testYoutubePlayAddsGlobalXpWithoutCreatingAFandom(): void
+    {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects(self::exactly(2))->method('persist');
+
+        $xpRepository = $this->createMock(XpTransactionRepository::class);
+        $xpRepository->method('existsForSource')->willReturn(false);
+
+        $badgeAwarder = $this->createMock(BadgeAwarder::class);
+        $badgeAwarder->expects(self::once())
+            ->method('awardForXpEvent')
+            ->with(
+                self::isInstanceOf(User::class),
+                XpEngine::SOURCE_STREAMING_PLAY,
+                self::isString(),
+                null,
+                self::isArray(),
+            );
+
+        $engine = new XpEngine($entityManager, $xpRepository, $badgeAwarder);
+        $user = (new User())->setEmail('youtube@example.com')->setDisplayName('YouTube Fan');
+        $history = $this->buildHistory($user)
+            ->setProvider('youtube')
+            ->setProviderType('video')
+            ->setArtistName('KTV-FR');
+
+        $transaction = $engine->awardStreamingPlay($history);
+
+        self::assertNotNull($transaction);
+        self::assertSame(10, $user->getGlobalXp());
+        self::assertNull($transaction->getArtist());
+        self::assertNull($transaction->getUserFandom());
+    }
+
     public function testProgressForXpUsesLevelCurve(): void
     {
         $engine = new XpEngine(

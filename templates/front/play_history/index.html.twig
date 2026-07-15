@@ -177,59 +177,7 @@
                                 </a>
                             {% endif %}
                             
-                            <button class="action-btn toggle-details" title="{{ 'play_history.show_details'|trans }}" data-action="play-history#toggleDetails">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
                         </div>
-                    </div>
-
-                    <!-- Details Section (Hidden by default) -->
-                    <div class="play-details">
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">{{ 'play_history.provider_item_id'|trans }}</span>
-                                <span class="detail-value">{{ play.providerItemId }}</span>
-                            </div>
-                            
-                            <div class="detail-item">
-                                <span class="detail-label">{{ 'play_history.type'|trans }}</span>
-                                <span class="detail-value">{{ play.providerType|capitalize }}</span>
-                            </div>
-                            
-                            <div class="detail-item">
-                                <span class="detail-label">{{ 'play_history.played_at'|trans }}</span>
-                                <span class="detail-value">{{ play.playedAt|date('d/m/Y H:i:s') }}</span>
-                            </div>
-                            
-                            <div class="detail-item">
-                                <span class="detail-label">{{ 'play_history.imported_at'|trans }}</span>
-                                <span class="detail-value">{{ play.createdAt|date('d/m/Y H:i:s') }}</span>
-                            </div>
-
-                            {% if play.streamingAccount %}
-                                <div class="detail-item">
-                                    <span class="detail-label">{{ 'play_history.account_id'|trans }}</span>
-                                    <span class="detail-value">#{{ play.streamingAccount.id }}</span>
-                                </div>
-                            {% endif %}
-
-                            {% if play.durationMs %}
-                                <div class="detail-item">
-                                    <span class="detail-label">{{ 'play_history.duration'|trans }}</span>
-                                    <span class="detail-value">{{ 'play_history.duration_seconds'|trans({ '%count%': (play.durationMs / 1000)|round }) }}</span>
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <details class="raw-data-toggle">
-                            <summary>
-                                <i class="fas fa-code"></i>
-                                {{ 'play_history.view_raw_data'|trans }}
-                            </summary>
-                            <div class="raw-data-content">
-                                <pre>{{ play.rawData|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-                            </div>
-                        </details>
                     </div>
                 </div>
             {% endfor %}

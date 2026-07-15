@@ -51,4 +51,18 @@ class XpTransactionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function sumAwardedSince(User $user, \DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('xt')
+            ->select('COALESCE(SUM(xt.xpAmount), 0)')
+            ->andWhere('xt.user = :user')
+            ->andWhere('xt.direction = :direction')
+            ->andWhere('xt.occurredAt >= :since')
+            ->setParameter('user', $user)
+            ->setParameter('direction', 'credit')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

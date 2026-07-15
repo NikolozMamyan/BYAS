@@ -855,3 +855,193 @@ body {
     font-size: 12px;
   }
 }
+
+/* Viewport-fit registration layout with room for validation and the keyboard. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  padding-bottom: 0;
+}
+
+.register-page {
+  height: 100dvh;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.register-shell {
+  width: min(500px, calc(100% - 20px));
+  min-height: 100%;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.register-back {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+}
+
+.register-brand {
+  padding-top: 0;
+  margin-bottom: 8px;
+}
+
+.register-brand img {
+  width: min(158px, 44vw);
+}
+
+.register-card {
+  width: 100%;
+  border-radius: 26px;
+}
+
+.register-card-inner {
+  padding: 14px 14px 12px;
+}
+
+.register-divider {
+  margin-bottom: 10px;
+}
+
+.register-copy {
+  margin-bottom: 9px;
+}
+
+.register-copy h1 {
+  margin-bottom: 5px;
+  font-size: clamp(21px, 6.5vw, 30px);
+  line-height: 1.05;
+}
+
+.register-copy p {
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.lang-switcher {
+  margin-bottom: 8px;
+  gap: 5px;
+}
+
+.lang-switcher__controls {
+  grid-template-columns: minmax(0, 1fr) 70px;
+  gap: 7px;
+}
+
+.lang-switcher__select,
+.lang-switcher__button {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  min-height: 36px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.lang-switcher__button {
+  padding-inline: 5px;
+}
+
+.register-actions,
+.register-email-block,
+.register-form {
+  gap: 7px;
+}
+
+.register-social,
+.register-email-trigger,
+.register-submit,
+.register-field input {
+  min-height: 43px;
+}
+
+.register-social,
+.register-email-trigger,
+.register-submit {
+  font-size: 14px;
+}
+
+.register-google-mark,
+.register-google-mark svg {
+  width: 25px;
+  height: 25px;
+}
+
+.register-or {
+  margin: 8px 0;
+}
+
+.register-field input {
+  padding-left: 46px;
+  font-size: 14px;
+}
+
+.register-submit {
+  margin-top: 1px;
+}
+
+.register-legal {
+  margin-top: 7px;
+  justify-content: center;
+}
+
+.register-legal-icon {
+  display: none;
+}
+
+.register-legal p {
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.register-login-link {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+@media (max-height: 700px) {
+  .register-shell {
+    padding-block: 7px;
+  }
+
+  .register-brand img {
+    width: min(136px, 40vw);
+  }
+
+  .register-divider {
+    display: none;
+  }
+
+  .register-copy p {
+    display: none;
+  }
+
+  .register-card-inner {
+    padding: 11px 12px 9px;
+  }
+
+  .register-social,
+  .register-email-trigger,
+  .register-submit,
+  .register-field input {
+    min-height: 40px;
+  }
+}
+
+@media (max-height: 560px) {
+  .register-shell {
+    justify-content: flex-start;
+  }
+}

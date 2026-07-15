@@ -17,5 +17,7 @@ class BadgeCatalogTest extends TestCase
         self::assertSame(XpEngine::SOURCE_STREAMING_PLAY, $badges[BadgeCatalog::FIRST_STREAM]['ruleConfig']['sourceType']);
         self::assertSame(10, $badges[BadgeCatalog::GLOBAL_LEVEL_10]['ruleConfig']['level']);
         self::assertSame('fandom', $badges[BadgeCatalog::FANDOM_LEVEL_10]['scope']);
+        self::assertCount(6, BadgeCatalog::SHOWCASE_CODES);
+        self::assertArrayHasKey(BadgeCatalog::LIMITED_FOUNDER, $badges);
     }
 }

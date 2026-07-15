@@ -122,6 +122,7 @@ class BadgeAwarder
             ->setCode($code)
             ->setName($name)
             ->setDescription($definition['description'])
+            ->setIconUrl($definition['iconUrl'])
             ->setScope($definition['scope'])
             ->setRuleType($definition['ruleType'])
             ->setRuleConfig($definition['ruleConfig'])

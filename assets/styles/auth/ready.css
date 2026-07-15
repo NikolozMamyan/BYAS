@@ -292,3 +292,107 @@ body {
     font-size: 11px;
   }
 }
+
+/* Center the confirmation screen without creating a second viewport. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  padding-bottom: 0;
+}
+
+.ready-page {
+  height: 100dvh;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.ready-shell {
+  width: min(500px, calc(100% - 18px));
+  min-height: 100%;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ready-brand {
+  margin-bottom: 6px;
+}
+
+.ready-brand img {
+  width: min(150px, 42vw);
+}
+
+.ready-copy h1 {
+  font-size: clamp(25px, 8vw, 38px);
+}
+
+.ready-copy p {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.ready-passport-wrap {
+  width: min(250px, 54vw);
+  max-height: 40dvh;
+  margin: 8px auto 6px;
+}
+
+.ready-passport {
+  max-height: 40dvh;
+  object-fit: contain;
+}
+
+.ready-fandom {
+  margin: 3px 0 7px;
+}
+
+.ready-fandom-name {
+  margin-top: 2px;
+  font-size: clamp(21px, 6.8vw, 29px);
+}
+
+.ready-submit {
+  min-height: 45px;
+  font-size: 15px;
+}
+
+.ready-footnote {
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+@media (max-height: 650px) {
+  .ready-shell {
+    padding-block: 6px;
+  }
+
+  .ready-brand img {
+    width: min(128px, 38vw);
+  }
+
+  .ready-copy p,
+  .ready-footnote {
+    display: none;
+  }
+
+  .ready-passport-wrap,
+  .ready-passport {
+    max-height: 35dvh;
+  }
+
+  .ready-submit {
+    min-height: 41px;
+  }
+}
+
+@media (max-height: 500px) {
+  .ready-shell {
+    justify-content: flex-start;
+  }
+}

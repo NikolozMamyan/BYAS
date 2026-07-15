@@ -77,4 +77,16 @@ class StreamingPlayHistoryRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function sumDurationMsSince(User $user, \DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('history')
+            ->select('COALESCE(SUM(history.durationMs), 0)')
+            ->andWhere('history.user = :user')
+            ->andWhere('history.playedAt >= :since')
+            ->setParameter('user', $user)
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

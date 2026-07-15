@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 const DISMISS_KEY = 'byas-pwa-install-dismissed-at';
 const INSTALLED_KEY = 'byas-pwa-installed';
 const DISMISS_TTL = 7 * 24 * 60 * 60 * 1000;
-const FALLBACK_DELAY = 1400;
+const FALLBACK_DELAY = 12000;
 
 export default class extends Controller {
     static targets = ['dialog', 'status', 'installButton'];
@@ -63,16 +63,19 @@ export default class extends Controller {
         this.deferredPrompt = event;
         this.installAvailable = true;
 
-        if (this.fallbackTimer !== null) {
-            window.clearTimeout(this.fallbackTimer);
-            this.fallbackTimer = null;
-        }
-
         if (this.isInstalled() || this.dismissedForSession || this.wasDismissedRecently()) {
             return;
         }
 
-        this.open();
+        if (this.fallbackTimer !== null) {
+            window.clearTimeout(this.fallbackTimer);
+        }
+
+        this.fallbackTimer = window.setTimeout(() => {
+            if (!this.isInstalled() && !this.dismissedForSession && !this.wasDismissedRecently()) {
+                this.open();
+            }
+        }, FALLBACK_DELAY);
     }
 
     handleAppInstalled() {

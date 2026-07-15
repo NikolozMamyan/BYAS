@@ -1248,3 +1248,179 @@ body[data-route="app_front_passport"] .app-header__avatar.avatar-placeholder {
         text-align: center;
     }
 }
+
+/* Feedback pass: denser identity card, ranked fandom colors and accessible badge details. */
+.passport-page {
+    padding-top: 74px;
+}
+
+.passport-hero .passport-panel__inner {
+    padding: 22px 24px;
+}
+
+.hero-name {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(1.65rem, 4vw, 2.7rem);
+}
+
+.hero-copy {
+    align-self: center;
+}
+
+.fandom-card {
+    --fandom-accent: #ff42b9;
+    --fandom-accent-soft: #966dff;
+}
+
+.fandom-card--rank-2 {
+    --fandom-accent: #45c7ff;
+    --fandom-accent-soft: #586dff;
+}
+
+.fandom-card--rank-3 {
+    --fandom-accent: #ac58ff;
+    --fandom-accent-soft: #f05cff;
+}
+
+.fandom-mark {
+    overflow: hidden;
+    border-color: var(--fandom-accent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--fandom-accent) 36%, transparent);
+}
+
+.fandom-mark img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.fandom-title i,
+.fandom-meta span:first-child,
+.fandom-meta span:last-child {
+    color: var(--fandom-accent);
+}
+
+.fandom-line span {
+    background: linear-gradient(90deg, var(--fandom-accent), var(--fandom-accent-soft));
+}
+
+.collection-card {
+    align-items: center;
+}
+
+.collection-value {
+    font-size: clamp(0.85rem, 2.6vw, 1.65rem);
+    line-height: 1.05;
+}
+
+.badge-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.badge-card summary {
+    list-style: none;
+    display: grid;
+    justify-items: center;
+}
+
+.badge-card summary::-webkit-details-marker {
+    display: none;
+}
+
+.badge-crest {
+    width: 68px;
+    height: 68px;
+}
+
+.badge-meta {
+    position: absolute;
+    z-index: 4;
+    left: 8px;
+    right: 8px;
+    bottom: calc(100% - 10px);
+    margin: 0;
+    padding: 9px;
+    border: 1px solid rgba(176, 116, 255, 0.38);
+    border-radius: 10px;
+    background: rgba(7, 5, 24, 0.97);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.46);
+}
+
+.metric-item strong {
+    font-size: clamp(0.92rem, 2.4vw, 1.15rem);
+}
+
+@media (max-width: 760px) {
+    body[data-route="app_front_passport"] .app-header {
+        min-height: 56px;
+        padding: 5px 9px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__bar {
+        min-height: 44px;
+        padding: 3px 9px;
+        grid-template-columns: minmax(72px, 1fr) auto minmax(42px, 1fr);
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon {
+        width: 27px;
+        height: 27px;
+        display: inline-flex;
+    }
+
+    body[data-route="app_front_passport"] .app-header__icon img {
+        width: 27px;
+        height: 27px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__brand img {
+        width: min(112px, 30vw);
+    }
+
+    body[data-route="app_front_passport"] .app-header__avatar,
+    body[data-route="app_front_passport"] .app-header__avatar.avatar-placeholder {
+        width: 31px;
+        height: 31px;
+    }
+
+    body[data-route="app_front_passport"] .app-header__side--left .app-header__icon::after,
+    body[data-route="app_front_passport"] .app-header__avatar-link::after,
+    body[data-route="app_front_passport"] .app-header__side--left .app-header__icon + .app-header__icon::before {
+        display: none;
+    }
+
+    .passport-page {
+        padding: 66px 12px 118px;
+    }
+
+    .passport-hero .passport-panel__inner {
+        padding: 16px 14px;
+    }
+
+    .hero-main {
+        grid-template-columns: minmax(105px, 31%) minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .hero-name {
+        font-size: clamp(1.35rem, 6vw, 1.8rem);
+    }
+
+    .hero-caption {
+        margin-top: 10px;
+    }
+
+    .hero-level {
+        font-size: 2.45rem;
+    }
+
+    .badge-crest {
+        width: 58px;
+        height: 58px;
+    }
+}

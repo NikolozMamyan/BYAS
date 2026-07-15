@@ -526,6 +526,97 @@
     }
 }
 
+/* Keep the public entry screen inside the usable mobile viewport. */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    padding-bottom: 0;
+}
+
+.page {
+    height: 100dvh;
+    min-height: 0;
+}
+
+@supports (height: 100svh) {
+    .page {
+        height: 100svh;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        justify-content: center;
+    }
+
+    .passport-wrap {
+        flex: 0 1 auto;
+    }
+
+    .cta-section .divider-or {
+        margin: 7px 0;
+    }
+
+    .cta-section .legal {
+        margin-top: 7px;
+        line-height: 1.25;
+    }
+}
+
+@media (max-width: 480px) and (max-height: 700px) {
+    .page {
+        gap: 4px;
+        padding: 7px 12px 8px;
+    }
+
+    .logo-img {
+        width: min(132px, 38vw);
+    }
+
+    .divider-asset-img {
+        width: 106px;
+        height: 20px;
+        margin: -2px 0 0;
+    }
+
+    .tagline h2 {
+        font-size: clamp(13px, 4vw, 16px);
+    }
+
+    .passport {
+        max-width: 226px;
+    }
+
+    .passport-asset-img {
+        max-height: min(27dvh, 184px);
+    }
+
+    .cta-section {
+        padding: 8px 10px;
+        border-radius: 21px;
+    }
+
+    .cta-section .btn-primary,
+    .cta-section .btn-secondary {
+        min-height: 38px;
+        padding-inline: 14px;
+        font-size: 14px;
+    }
+
+    .cta-section .divider-or {
+        margin: 5px 0;
+    }
+
+    .cta-section .legal {
+        margin-top: 5px;
+        font-size: 9px;
+    }
+}
+
 .p-footer-main {
     flex: 1;
 }

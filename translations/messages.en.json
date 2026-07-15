@@ -1,4 +1,5 @@
 {
+  "app_header.activity": "Play history",
   "app_header.home": "BYAS home",
   "app_header.loading_notifications": "Loading notifications...",
   "app_header.notifications": "Notifications",
@@ -146,6 +147,10 @@
   "notifications.view_all": "View all",
   "onboarding.footnote": "You can change your fandom anytime in settings.",
   "onboarding.heading": "Choose your fandom",
+  "onboarding.next": "Next fandoms",
+  "onboarding.no_results": "No fandom matches your search.",
+  "onboarding.pagination": "Fandom pages",
+  "onboarding.previous": "Previous fandoms",
   "onboarding.search": "Search your fandom",
   "onboarding.select_fandom": "Select %name%",
   "onboarding.subtitle": "This will define your identity",
@@ -323,5 +328,16 @@
   "swipe.preview.next": "Next page",
   "swipe.preview.passport": "Preview your identity card, XP level and fandom highlights.",
   "swipe.preview.play_history": "Preview your recent listening timeline and imported plays.",
-  "swipe.preview.previous": "Previous page"
+  "swipe.preview.previous": "Previous page",
+  "passport.add_your_first": "Add your first",
+  "passport.country_scope": "Country",
+  "passport.day_streak": "day streak",
+  "passport.keep_it_going": "Keep it going!",
+  "passport.missions": "Missions",
+  "passport.rank_this_week": "Rank this week",
+  "passport.streaming_this_week": "Streaming this week",
+  "passport.streak": "Streak",
+  "passport.this_week": "This week",
+  "settings.account.country": "Country code",
+  "settings.account.country_help": "Two-letter ISO code used for your country ranking, for example FR."
 }

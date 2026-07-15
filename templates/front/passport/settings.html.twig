@@ -62,6 +62,20 @@
                     <label>{{ 'settings.account.email'|trans }}</label>
                     <input class="input" value="{{ user.email }}" disabled>
                 </div>
+                <div class="field">
+                    <label for="countryCode">{{ 'settings.account.country'|trans }}</label>
+                    <input
+                        class="input"
+                        id="countryCode"
+                        name="countryCode"
+                        value="{{ profile.countryCode|default('') }}"
+                        maxlength="2"
+                        pattern="[A-Za-z]{2}"
+                        placeholder="FR"
+                        autocapitalize="characters"
+                    >
+                    <span class="muted">{{ 'settings.account.country_help'|trans }}</span>
+                </div>
             </div>
         </section>
 

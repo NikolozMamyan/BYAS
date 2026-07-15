@@ -3,6 +3,7 @@
 namespace App\Controller\Front;
 
 use App\Entity\User;
+use App\Service\OnboardingFandomService;
 use App\Service\PublicPassportProfileService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,6 +49,7 @@ class OnboardingController extends AbstractController
     public function ready(
         Request $request,
         PublicPassportProfileService $publicPassportProfileService,
+        OnboardingFandomService $onboardingFandomService,
     ): Response
     {
         $user = $this->getUser();
@@ -76,6 +78,7 @@ class OnboardingController extends AbstractController
             }
         }
 
+        $onboardingFandomService->select($user, $selected);
         $publicPassportProfileService->completeOnboarding($user);
 
         return $this->render('front/auth/ready.html.twig', [

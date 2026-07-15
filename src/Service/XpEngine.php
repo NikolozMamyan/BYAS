@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Artist;
+use App\Entity\StreamingAccount;
 use App\Entity\StreamingPlayHistory;
 use App\Entity\User;
 use App\Entity\UserFandom;
@@ -52,8 +53,15 @@ class XpEngine
         }
 
         $artist = null;
-        if ($history->getArtistName() !== null && trim($history->getArtistName()) !== '') {
-            $artist = $this->findOrCreateArtist($history->getArtistName());
+        if (
+            $history->getProvider() !== StreamingAccount::PROVIDER_YOUTUBE
+            && $history->getArtistName() !== null
+            && trim($history->getArtistName()) !== ''
+        ) {
+            $artist = $this->findOrCreateArtist(
+                $history->getArtistName(),
+                $this->extractArtistImageUrl($history),
+            );
         }
 
         return $this->awardXp(
@@ -200,7 +208,7 @@ class XpEngine
         ];
     }
 
-    private function findOrCreateArtist(string $name): Artist
+    private function findOrCreateArtist(string $name, ?string $coverImageUrl = null): Artist
     {
         $cleanName = trim($name);
         $slug = $this->slugForArtist($cleanName);
@@ -212,6 +220,10 @@ class XpEngine
         $artist = $this->entityManager->getRepository(Artist::class)->findOneBy(['slug' => $slug]);
 
         if ($artist instanceof Artist) {
+            if ($coverImageUrl !== null && trim((string) $artist->getCoverImageUrl()) === '') {
+                $artist->setCoverImageUrl($coverImageUrl);
+            }
+
             $this->artistsBySlug[$slug] = $artist;
 
             return $artist;
@@ -223,10 +235,36 @@ class XpEngine
             ->setSlug($slug)
             ->setType('artist');
 
+        if ($coverImageUrl !== null) {
+            $artist->setCoverImageUrl($coverImageUrl);
+        }
+
         $this->entityManager->persist($artist);
         $this->artistsBySlug[$slug] = $artist;
 
         return $artist;
+    }
+
+    private function extractArtistImageUrl(StreamingPlayHistory $history): ?string
+    {
+        $rawData = $history->getRawData();
+        $provider = $history->getProvider();
+
+        if ($provider === StreamingAccount::PROVIDER_SPOTIFY) {
+            $url = $rawData['byas_artist_image_url'] ?? null;
+
+            return is_string($url) && trim($url) !== '' ? trim($url) : null;
+        }
+
+        if ($provider === StreamingAccount::PROVIDER_APPLE_MUSIC) {
+            $url = $rawData['attributes']['artwork']['url'] ?? null;
+
+            if (is_string($url) && trim($url) !== '') {
+                return str_replace(['{w}', '{h}'], ['512', '512'], trim($url));
+            }
+        }
+
+        return null;
     }
 
     private function findOrCreateUserFandom(User $user, Artist $artist, \DateTimeImmutable $occurredAt): UserFandom
